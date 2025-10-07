@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Clientes - CRM Elegance</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style type="text/tailwindcss">
+        :root {
+            --color-primary: #F2AD0D;
+            --color-primary-hover: #e09e0b;
+            --color-background: #000000;
+            --color-surface: #121212;
+            --color-surface-light: #1F1F1F;
+            --color-text: #FFFFFF;
+            --color-text-secondary: #999999;
+            --color-border: #2D2D2D;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        /* Estilos da Tela de Login */
+        #auth-section {
+            background-color: #000;
+        }
+        .gradient-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(ellipse 80% 60% at 50% 130%, rgba(242, 173, 13, 0.4), transparent);
+        }
+        .glassmorphism {
+            background: rgba(18, 18, 18, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 8px 32px 0 rgba(242, 173, 13, 0.1);
+        }
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #000;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(242, 173, 13, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(242, 173, 13, 0.3);
+        }
+        .input-field {
+            background-color: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(242, 173, 13, 0.25);
+            background-color: transparent;
+        }
+        .input-field::placeholder {
+            color: var(--color-text-secondary);
+        }
+
+        /* Estilos do App Principal */
+        .nav-link.active {
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--color-background); }
+        ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-hover); }
+
+        #refresh-chats-button.loading { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .view-toggle-btn {
+            @apply px-4 py-2 text-sm rounded-md transition-colors;
+        }
+        .view-toggle-btn.active {
+            @apply bg-[--color-primary] text-black font-semibold;
+        }
+        .view-toggle-btn:not(.active) {
+            @apply text-[--color-text-secondary] hover:bg-[--color-surface-light];
+        }
+    </style>
+</head>
+
+<body class="font-sans">
+
+    <!-- Seção de Login (visível por padrão) -->
+    <section id="auth-section" class="relative min-h-screen overflow-hidden">
+        <div class="gradient-bg"></div>
+        <div class="relative z-10 flex flex-col min-h-screen">
+            <header class="py-4 px-6 md:px-12">
+                <nav class="flex items-center justify-between">
+                    <a class="flex items-center gap-2 text-xl font-bold text-white" href="#">
+                        <span class="material-symbols-outlined text-[--color-primary]" style="font-size: 28px;">diamond</span>
+                        CRM Elegance
+                    </a>
+                </nav>
+            </header>
+            <main class="flex-grow flex items-center justify-center p-4">
+                <div class="w-full max-w-md">
+                    <div class="glassmorphism rounded-xl p-8 md:p-10">
+                        <div class="text-center mb-8">
+                            <h1 class="text-3xl font-bold text-white">Login</h1>
+                            <p class="text-text-secondary text-sm mt-2">Bem-vindo(a) de volta!</p>
+                        </div>
+                        <form class="space-y-5 mt-8" id="login-form">
+                            <div>
+                                <label class="sr-only" for="email-input">Email</label>
+                                <input class="input-field w-full py-3 px-4 rounded-lg" id="email-input" name="email" placeholder="Seu e-mail" type="email" required>
+                            </div>
+                            <div>
+                                <label class="sr-only" for="password-input">Senha</label>
+                                 <div class="relative">
+                                    <input class="input-field w-full py-3 px-4 rounded-lg pr-10" id="password-input" name="password" placeholder="Sua senha" type="password" required>
+                                    <span id="password-toggle" class="material-symbols-outlined text-text-secondary absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer">visibility_off</span>
+                                </div>
+                            </div>
+                             <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <input id="remember-me-checkbox" type="checkbox" class="h-4 w-4 rounded border-[--color-border] bg-transparent text-[--color-primary] focus:ring-[--color-primary]">
+                                    <label for="remember-me-checkbox" class="ml-2 text-sm text-text-secondary">Lembrar de mim</label>
+                                </div>
+                            </div>
+                            <div id="login-error" class="text-red-500 text-sm text-center h-5"></div>
+                            <button class="btn-primary w-full py-3 rounded-lg text-sm" type="submit">Entrar</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- App Principal (escondido por padrão) -->
+    <div id="app" class="h-screen w-full flex-col hidden">
+       <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[--color-border] px-10 py-3">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4 text-white">
+                     <span class="material-symbols-outlined text-[--color-primary]" style="font-size: 28px;">diamond</span>
+                    <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CRM Elegance</h2>
+                </div>
+                <nav id="nav-links" class="flex items-center gap-9">
+                    <a href="#dashboard" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Dashboard</a>
+                    <a href="#conversas" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Conversas</a>
+                    <a href="#agendamentos" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Agendamentos</a>
+                    <a href="#clientes" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Clientes</a>
+                </nav>
+            </div>
+            <div class="flex flex-1 justify-end items-center gap-4">
+                 <a href="#configuracoes" id="user-profile-link" class="flex items-center gap-3 cursor-pointer">
+                    <img id="user-avatar-header" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" />
+                     <div class="text-sm">
+                        <p class="font-semibold text-white" id="user-name-header">Admin</p>
+                        <p class="text-text-secondary" id="user-role-header">Admin</p>
+                    </div>
+                 </a>
+                 <button id="logout-button" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-red-800/50 hover:bg-red-800/80 text-white gap-2 text-sm font-bold leading-normal tracking-[-0.015em] min-w-0 px-2.5" title="Sair">
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </div>
+        </header>
+        
+        <div id="main-content" class="flex-1 overflow-auto relative px-4 sm:px-10 lg:px-20 py-5">
+            <div class="layout-content-container flex flex-col w-full h-full">
+
+                <!-- Seção Dashboard -->
+                <section id="dashboard-section" class="page-section hidden">
+                     <div class="flex flex-wrap justify-between gap-3 p-4">
+                        <div class="flex min-w-72 flex-col gap-3">
+                            <h2 class="text-white tracking-light text-[32px] font-bold leading-tight">Dashboard</h2>
+                            <p class="text-[--color-text-secondary] text-sm font-normal leading-normal">Visão geral do seu CRM</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Consultas Para Hoje</p><p id="consultas-para-hoje-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Consultas Marcadas Hoje</p><p id="consultas-marcadas-hoje-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Próxima Semana</p><p id="consultas-proxima-semana-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Conversão</p><p id="taxa-conversao-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Realizadas no Mês</p><p id="consultas-realizadas-mes-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Restantes no Mês</p><p id="consultas-restantes-mes-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Cancelamento</p><p id="taxa-canceladas-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Remarcação</p><p id="taxa-remarcadas-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
+                        <div class="lg:col-span-2 flex flex-col gap-2 rounded-lg border border-[--color-border] p-6">
+                            <canvas id="consultasChart"></canvas>
+                        </div>
+                        <div class="flex flex-col gap-2 rounded-lg border border-[--color-border] p-6">
+                            <canvas id="conversaoChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção Conversas -->
+                <section id="conversas-section" class="page-section hidden h-full">
+                    <div class="flex h-full border border-solid border-[--color-border] rounded-md overflow-hidden">
+                         <main id="list-col" class="w-full md:w-[380px] bg-[--color-surface] border-r border-[--color-border] flex flex-col h-full flex-shrink-0">
+                            <div class="p-4 border-b border-[--color-border] flex-shrink-0">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h1 class="text-2xl font-bold">Conversas</h1>
+                                    <button id="refresh-chats-button" class="p-2 text-[--color-text-secondary] hover:bg-[--color-surface-light] rounded-full" title="Atualizar">
+                                        <span class="material-symbols-outlined">refresh</span>
+                                    </button>
+                                </div>
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[--color-text-secondary]">search</span>
+                                    <input type="text" placeholder="Buscar..." class="w-full bg-[--color-surface-light] border border-[--color-border] rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[--color-primary]">
+                                </div>
+                            </div>
+                            <div id="patient-list" class="flex-1 overflow-y-auto">
+                                <!-- A lista de pacientes será renderizada aqui -->
+                            </div>
+                        </main>
+                        <div id="content-col" class="flex-1 flex flex-col bg-[--color-surface] md:relative absolute inset-0 transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0">
+                            <div id="chat-placeholder" class="flex flex-1 items-center justify-center text-center">
+                                 <div class="p-8 rounded-lg">
+                                    <span class="material-symbols-outlined text-6xl text-white opacity-80">chat</span>
+                                    <p class="mt-4 text-lg text-white">Selecione uma conversa para começar</p>
+                                </div>
+                            </div>
+                            <div id="chat-view" class="hidden flex-col h-full">
+                                <div class="p-3 border-b border-white/10 flex justify-between items-center flex-shrink-0 bg-[--color-surface-light]/80">
+                                    <div id="chat-header-normal" class="flex items-center gap-3 w-full">
+                                        <button id="back-to-list-btn" class="p-2 mr-2 text-[--color-text-secondary] rounded-full md:hidden">
+                                            <span class="material-symbols-outlined">arrow_back</span>
+                                        </button>
+                                        <div id="chat-client-info" class="flex items-center gap-3 cursor-pointer flex-grow">
+                                            <img id="chat-avatar" src="" class="w-10 h-10 rounded-full" />
+                                            <div>
+                                                <h2 id="chat-name" class="font-bold text-base"></h2>
+                                                <p id="chat-status" class="text-xs text-gray-400"></p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2 relative">
+                                            <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface]"><span class="material-symbols-outlined">videocam</span></button>
+                                            <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface]"><span class="material-symbols-outlined">call</span></button>
+                                            <button id="chat-menu-button" class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface]"><span class="material-symbols-outlined">more_vert</span></button>
+                                            <div id="chat-dropdown-menu" class="hidden absolute top-full right-0 mt-2 w-48 bg-[--color-surface-light] rounded-md shadow-lg z-20 border border-[--color-border]">
+                                                <a href="#" class="block px-4 py-2 text-sm text-text hover:bg-[--color-border]">Ver contato</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-text hover:bg-[--color-border]">Limpar conversa</a>
+                                                <a href="#" class="block px-4 py-2 text-sm text-red-500 hover:bg-[--color-border]">Bloquear</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2">
+                                    <!-- Mensagens do Chat -->
+                                </div>
+                                <div class="p-3 flex items-center gap-3 bg-[--color-surface]/80">
+                                    <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">mood</span></button>
+                                    <input id="chat-input" type="text" placeholder="Digite uma mensagem" class="w-full bg-[--color-surface-light] border-none rounded-lg py-3 px-4 focus:outline-none" disabled>
+                                    <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">attach_file</span></button>
+                                    <button id="send-button" class="p-3 bg-[--color-primary] text-black rounded-full hover:bg-[--color-primary-hover] disabled:bg-slate-600 flex-shrink-0">
+                                        <span class="material-symbols-outlined">send</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Seção Agendamentos (NOVO LAYOUT) -->
+                <section id="agendamentos-section" class="page-section hidden p-0 md:p-4 flex flex-col md:flex-row gap-4 h-full">
+                    
+                    <!-- Coluna da Esquerda (Sidebar) -->
+                    <div id="calendar-sidebar" class="w-full md:w-80 lg:w-96 flex-shrink-0 bg-[--color-surface] rounded-lg p-4 flex flex-col gap-4">
+                        <div class="flex items-center gap-3 border-b border-[--color-border] pb-4">
+                             <img id="user-avatar-calendar" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" />
+                             <div>
+                                <p class="font-semibold text-white" id="user-name-calendar">Admin</p>
+                                <p class="text-xs text-[--color-text-secondary]">Consultor</p>
+                            </div>
+                        </div>
+
+                        <!-- Mini Calendário -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 id="mini-calendar-month-year" class="text-base font-semibold"></h3>
+                                <div class="flex">
+                                    <button id="mini-prev-month-btn" class="p-1 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined text-base">chevron_left</span></button>
+                                    <button id="mini-next-month-btn" class="p-1 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined text-base">chevron_right</span></button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-7 text-center text-xs text-[--color-text-secondary] mb-2">
+                                <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                            </div>
+                            <div id="mini-calendar-grid" class="grid grid-cols-7 text-center text-sm">
+                                <!-- Dias do mini calendário -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Coluna da Direita (Agenda) -->
+                    <div class="flex-grow bg-[--color-surface] rounded-lg p-4 flex flex-col">
+                        <div class="flex flex-wrap justify-between items-center border-b border-[--color-border] pb-4 mb-4 gap-4">
+                           <div class="flex items-center gap-2">
+                                <button id="prev-week-btn" class="p-2 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined">chevron_left</span></button>
+                                <h3 id="weekly-view-date-range" class="text-lg font-semibold whitespace-nowrap"></h3>
+                                <button id="next-week-btn" class="p-2 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined">chevron_right</span></button>
+                                <button id="today-btn" class="ml-4 px-3 py-1.5 border border-[--color-border] rounded-md text-sm hover:bg-[--color-surface-light]">Hoje</button>
+                           </div>
+                           <div id="view-toggle-buttons" class="flex items-center gap-2 bg-[--color-surface-light] p-1 rounded-lg">
+                               <button class="view-toggle-btn active" data-view="weekly">Semanal</button>
+                               <button class="view-toggle-btn" data-view="daily">Diário</button>
+                           </div>
+                        </div>
+
+                         <!-- Container para as Views da Agenda -->
+                        <div id="agenda-views-container" class="flex-grow h-0 relative">
+                            <!-- Visualização Semanal -->
+                            <div id="weekly-view" class="h-full flex flex-col">
+                                <div id="weekly-header" class="grid grid-cols-7 flex-shrink-0">
+                                    <!-- Cabeçalho dos dias da semana -->
+                                </div>
+                                <div id="weekly-body" class="flex-grow overflow-y-auto relative">
+                                    <!-- Linhas de Hora e Agendamentos -->
+                                </div>
+                            </div>
+                            <!-- Visualização Diária -->
+                            <div id="daily-view" class="h-full hidden flex flex-col">
+                                <div id="daily-body" class="flex-grow overflow-y-auto relative">
+                                    <!-- Linhas de Hora e Agendamentos do dia -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Seção Detalhes do Cliente -->
+                <section id="client-detail-section" class="page-section hidden p-4">
+                     <!-- Conteúdo será gerado via JS -->
+                </section>
+
+                <!-- Seção Clientes -->
+                <section id="clientes-section" class="page-section hidden p-4">
+                    <div class="flex flex-wrap justify-between gap-3 mb-4">
+                        <h2 class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Clientes</h2>
+                    </div>
+                    <div class="overflow-hidden rounded-lg border border-[--color-border] bg-[--color-surface]">
+                        <table class="w-full text-left">
+                            <thead class="bg-[--color-surface-light]">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-white w-[40%] text-sm font-medium leading-normal">Nome</th>
+                                    <th class="px-4 py-3 text-left text-white w-[30%] text-sm font-medium leading-normal">Telefone</th>
+                                    <th class="px-4 py-3 text-left text-white w-[30%] text-sm font-medium leading-normal">Data de Cadastro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="client-table-body">
+                                <tr><td colspan="3" class="text-center p-8 text-[--color-text-secondary]">Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Seção Configurações/Perfil -->
+                <section id="configuracoes-section" class="page-section hidden p-4">
+                     <div class="flex flex-wrap justify-between gap-3 mb-4"><p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Meu Perfil</p></div>
+                     <div class="max-w-2xl space-y-8">
+                         <div>
+                             <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Informações da Empresa</h3>
+                             <div class="space-y-4 p-4">
+                                <div><label class="block mb-1 text-sm font-medium">Nome da Empresa</label><input type="text" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="Elegance"></div>
+                                <div><label class="block mb-1 text-sm font-medium">E-mail de Contato</label><input type="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="contato@elegance.com"></div>
+                             </div>
+                         </div>
+                         <div>
+                            <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Segurança</h3>
+                            <form id="password-change-form" class="space-y-4 p-4">
+                                <div><label for="current-password" class="block mb-1 text-sm font-medium">Senha Atual</label><input type="password" id="current-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div><label for="new-password" class="block mb-1 text-sm font-medium">Nova Senha</label><input type="password" id="new-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div><label for="confirm-password" class="block mb-1 text-sm font-medium">Confirmar Nova Senha</label><input type="password" id="confirm-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div id="password-change-message" class="text-sm h-5"></div>
+                                <button type="submit" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[--color-primary] text-black text-sm font-bold leading-normal tracking-[-0.015em] hover:bg-[--color-primary-hover]">Salvar Alterações</button>
+                            </form>
+                         </div>
+                     </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const SUPABASE_URL = "https://zfblhljtfqnopwlffffq.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpmYmxobGp0ZnFub3B3bGZmZmZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0NjgxNDgsImV4cCI6MjA3MzA0NDE0OH0.m76j7L_49X_8tV0myINjEQIzizOUAa7SLCO1li3MKdg";
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            // Variáveis de estado
+            let currentClinicId = null, currentChats = [], currentChat = null, allAppointments = [];
+            let currentDate = new Date(); // Data usada para navegação
+            let currentCalendarView = 'weekly';
+            let consultasChartInstance, conversaoChartInstance;
+
+            // Seletores de DOM
+            const appDiv = document.getElementById('app');
+            const authSection = document.getElementById('auth-section');
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email-input');
+            const passwordInput = document.getElementById('password-input');
+            const loginError = document.getElementById('login-error');
+            const logoutButton = document.getElementById('logout-button');
+            const passwordToggle = document.getElementById('password-toggle');
+            const rememberMeCheckbox = document.getElementById('remember-me-checkbox');
+            const passwordChangeForm = document.getElementById('password-change-form');
+            const passwordChangeMessage = document.getElementById('password-change-message');
+            const pageSections = document.querySelectorAll('.page-section');
+            const navLinks = document.getElementById('nav-links');
+            const clientTableBody = document.getElementById('client-table-body');
+            const refreshButton = document.getElementById('refresh-chats-button');
+            const patientList = document.getElementById('patient-list');
+            const chatName = document.getElementById('chat-name');
+            const chatStatus = document.getElementById('chat-status');
+            const chatAvatar = document.getElementById('chat-avatar');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatPlaceholder = document.getElementById('chat-placeholder');
+            const chatView = document.getElementById('chat-view');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+            const listCol = document.getElementById('list-col');
+            const contentCol = document.getElementById('content-col');
+            const backToListBtn = document.getElementById('back-to-list-btn');
+            const userAvatarHeader = document.getElementById('user-avatar-header');
+            const userNameHeader = document.getElementById('user-name-header');
+            const userAvatarCalendar = document.getElementById('user-avatar-calendar');
+            const userNameCalendar = document.getElementById('user-name-calendar');
+            const consultasParaHojeStat = document.getElementById('consultas-para-hoje-stat');
+            const consultasMarcadasHojeStat = document.getElementById('consultas-marcadas-hoje-stat');
+            const consultasProximaSemanaStat = document.getElementById('consultas-proxima-semana-stat');
+            const taxaConversaoStat = document.getElementById('taxa-conversao-stat');
+            const consultasRealizadasMesStat = document.getElementById('consultas-realizadas-mes-stat');
+            const consultasRestantesMesStat = document.getElementById('consultas-restantes-mes-stat');
+            const taxaCanceladasStat = document.getElementById('taxa-canceladas-stat');
+            const taxaRemarcadasStat = document.getElementById('taxa-remarcadas-stat');
+            const chatClientInfo = document.getElementById('chat-client-info');
+            const chatMenuButton = document.getElementById('chat-menu-button');
+            const chatDropdownMenu = document.getElementById('chat-dropdown-menu');
+            
+            function htmlEncode(str) {
+                const el = document.createElement('textarea');
+                el.innerText = str;
+                return el.innerHTML;
+            }
+
+            // --- LÓGICA DE AUTENTICAÇÃO ---
+            const getInitials = (name) => {
+                if (!name) return '??';
+                const cleanName = name.split('@')[0].replace(/[^a-zA-Z\s]/g, '').trim();
+                if (!cleanName) return '??';
+                const parts = cleanName.split(/\s+/);
+                if (parts.length > 1) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                return parts[0].length > 1 ? parts[0].substring(0, 2).toUpperCase() : parts[0].toUpperCase();
+            };
+
+            const showApp = (clinicData, rememberMe) => {
+                currentClinicId = clinicData.clinic_id;
+                const storage = rememberMe ? localStorage : sessionStorage;
+                storage.setItem('clinicSession', JSON.stringify(clinicData));
+                
+                authSection.style.display = 'none';
+                appDiv.classList.remove('hidden');
+                appDiv.style.display = 'flex';
+                
+                const userName = clinicData.email.split('@')[0];
+                const userInitials = getInitials(userName);
+                userNameHeader.textContent = userName;
+                userAvatarHeader.src = `https://placehold.co/40x40/393428/FFFFFF?text=${userInitials}`;
+                userNameCalendar.textContent = userName;
+                userAvatarCalendar.src = `https://placehold.co/40x40/393428/FFFFFF?text=${userInitials}`;
+                
+                showSection(window.location.hash || '#agendamentos');
+            };
+
+            const showLogin = () => {
+                currentClinicId = null;
+                sessionStorage.removeItem('clinicSession');
+                localStorage.removeItem('clinicSession');
+                authSection.style.display = 'block';
+                appDiv.classList.add('hidden');
+                appDiv.style.display = 'none';
+            };
+
+            const handleLogin = async (event) => {
+                event.preventDefault();
+                loginError.textContent = '';
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const rememberMe = rememberMeCheckbox.checked;
+
+                const { data, error } = await supabase.from('usuarios_site').select('email, senha, clinic_id').eq('email', email).limit(1);
+                
+                if (error || !data || data.length === 0) {
+                    loginError.textContent = 'E-mail ou senha inválidos.';
+                    return;
+                }
+                
+                const user = data[0];
+                if (user.senha === password) {
+                    showApp(user, rememberMe);
+                } else {
+                    loginError.textContent = 'E-mail ou senha inválidos.';
+                }
+            };
+
+            const checkSession = () => {
+                let session = localStorage.getItem('clinicSession') || sessionStorage.getItem('clinicSession');
+                if (session) {
+                    showApp(JSON.parse(session), !!localStorage.getItem('clinicSession'));
+                } else {
+                    showLogin();
+                }
+            };
+
+            const handleChangePassword = async (event) => {
+                event.preventDefault();
+                passwordChangeMessage.textContent = '';
+                passwordChangeMessage.className = 'text-sm h-5';
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (newPassword !== confirmPassword) {
+                    passwordChangeMessage.textContent = 'As novas senhas não coincidem.';
+                    passwordChangeMessage.classList.add('text-red-500');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    passwordChangeMessage.textContent = 'A nova senha deve ter no mínimo 6 caracteres.';
+                    passwordChangeMessage.classList.add('text-red-500');
+                    return;
+                }
+
+                const sessionData = JSON.parse(localStorage.getItem('clinicSession') || sessionStorage.getItem('clinicSession'));
+                
+                if (sessionData.senha !== currentPassword) {
+                    passwordChangeMessage.textContent = 'A senha atual está incorreta.';
+                    passwordChangeMessage.classList.add('text-red-500');
+                    return;
+                }
+                
+                const { error } = await supabase.from('usuarios_site').update({ senha: newPassword }).eq('email', sessionData.email);
+
+                if (error) {
+                    passwordChangeMessage.textContent = 'Erro ao atualizar a senha. Tente novamente.';
+                    passwordChangeMessage.classList.add('text-red-500');
+                } else {
+                    passwordChangeMessage.textContent = 'Senha alterada com sucesso!';
+                    passwordChangeMessage.classList.add('text-green-500');
+                    sessionData.senha = newPassword;
+                    const storage = localStorage.getItem('clinicSession') ? localStorage : sessionStorage;
+                    storage.setItem('clinicSession', JSON.stringify(sessionData));
+                    passwordChangeForm.reset();
+                }
+            };
+
+            const togglePasswordVisibility = () => {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                passwordToggle.textContent = isPassword ? 'visibility' : 'visibility_off';
+            };
+
+            // --- LÓGICA DO APP ---
+            const calculateAge = (birthdate) => {
+                if (!birthdate) return null;
+                try {
+                    const birthDate = new Date(birthdate);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+                    return age;
+                } catch (e) { return null; }
+            };
+            
+            const formatTimestamp = (iso) => iso ? new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '...';
+
+            const showSection = async (hash) => {
+                const currentHash = hash || '#agendamentos';
+                const sectionId = currentHash.substring(1) + '-section';
+                const section = document.getElementById(sectionId) || document.getElementById('agendamentos-section');
+                
+                pageSections.forEach(s => s.classList.add('hidden'));
+                
+                if (section) {
+                    section.classList.remove('hidden');
+                    gsap.fromTo(section, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+                }
+
+                navLinks.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+                const activeLink = navLinks.querySelector(`a[href="${currentHash}"]`) || navLinks.querySelector(`a[href="#configuracoes"]`);
+                 if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+
+                if (!currentClinicId) return;
+
+                switch (currentHash) {
+                    case '#dashboard': await fetchDashboardData(); break;
+                    case '#clientes': await fetchClients(); break;
+                    case '#conversas': await fetchChats(); break;
+                    case '#agendamentos': await fetchAndRenderAgenda(); break;
+                }
+            };
+            
+            async function fetchClients() {
+                 const { data, error } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
+                 clientTableBody.innerHTML = '';
+                 if (error) { clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-red-400">Erro ao carregar clientes.</td></tr>`; return; }
+                 if (data.length === 0) { clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-[--color-text-secondary]">Nenhum cliente encontrado.</td></tr>`; return; }
+                 
+                 data.forEach(client => {
+                     const row = document.createElement('tr');
+                     row.className = 'cursor-pointer hover:bg-[--color-surface-light] transition-colors border-t border-t-[--color-border]';
+                     row.innerHTML = `<td class="h-[72px] px-4 py-2 text-white text-sm font-normal leading-normal">${client.nomewpp}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${client.telefone}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${new Date(client.created_at).toLocaleDateString('pt-BR')}</td>`;
+                     row.addEventListener('click', () => showClientDetailsView(client, '#clientes'));
+                     clientTableBody.appendChild(row);
+                 });
+            }
+
+            async function fetchDashboardData() {
+                if (!currentClinicId) return;
+                const now = new Date(), todayStart = new Date(), todayEnd = new Date(), nextWeekEnd = new Date(), monthStart = new Date(now.getFullYear(), now.getMonth(), 1), monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                todayStart.setHours(0, 0, 0, 0);
+                todayEnd.setHours(23, 59, 59, 999);
+                nextWeekEnd.setDate(nextWeekEnd.getDate() + 7);
+                monthEnd.setHours(23, 59, 59, 999);
+
+                const [
+                    { count: totalContacts }, { data: convertedClientsData }, { data: consultasThisMonth, count: countThisMonth },
+                    { count: consultasParaHoje }, { count: consultasMarcadasHoje }, { count: consultasProximaSemana }
+                ] = await Promise.all([
+                    supabase.from('dados_cliente').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId),
+                    supabase.from('consultas').select('telefone_cliente').eq('clinic_id', currentClinicId),
+                    supabase.from('consultas').select('data_inicio, status', { count: 'exact' }).eq('clinic_id', currentClinicId).gte('data_inicio', monthStart.toISOString()).lte('data_inicio', monthEnd.toISOString()),
+                    supabase.from('consultas').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('data_inicio', todayStart.toISOString()).lte('data_inicio', todayEnd.toISOString()),
+                    supabase.from('consultas').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('created_at', todayStart.toISOString()).lte('created_at', todayEnd.toISOString()),
+                    supabase.from('consultas').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('data_inicio', todayStart.toISOString()).lte('data_inicio', nextWeekEnd.toISOString()),
+                ]);
+
+                const convertedCount = convertedClientsData ? new Set(convertedClientsData.map(c => c.telefone_cliente)).size : 0;
+                const taxaConversao = totalContacts > 0 ? ((convertedCount / totalContacts) * 100).toFixed(0) : 0;
+                const consultasRealizadasMes = consultasThisMonth ? consultasThisMonth.filter(c => new Date(c.data_inicio) < now).length : 0;
+                const consultasRestantesMes = consultasThisMonth ? consultasThisMonth.filter(c => new Date(c.data_inicio) >= now).length : 0;
+                const consultasCanceladasMes = consultasThisMonth ? consultasThisMonth.filter(c => c.status === 'cancelada').length : 0;
+                const consultasRemarcadasMes = consultasThisMonth ? consultasThisMonth.filter(c => c.status === 'remarcada').length : 0;
+                const taxaCancelamento = countThisMonth > 0 ? ((consultasCanceladasMes / countThisMonth) * 100).toFixed(0) : 0;
+                const taxaRemarcacao = countThisMonth > 0 ? ((consultasRemarcadasMes / countThisMonth) * 100).toFixed(0) : 0;
+                
+                consultasParaHojeStat.textContent = consultasParaHoje || 0;
+                consultasMarcadasHojeStat.textContent = consultasMarcadasHoje || 0;
+                consultasProximaSemanaStat.textContent = consultasProximaSemana || 0;
+                taxaConversaoStat.textContent = `${taxaConversao}%`;
+                consultasRealizadasMesStat.textContent = consultasRealizadasMes;
+                consultasRestantesMesStat.textContent = consultasRestantesMes;
+                taxaCanceladasStat.textContent = `${taxaCancelamento}%`;
+                taxaRemarcadasStat.textContent = `${taxaRemarcacao}%`;
+
+                const monthlyConsultasPromises = Array.from({ length: 6 }, (_, i) => {
+                    const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - i);
+                    const firstDay = new Date(d.getFullYear(), d.getMonth(), 1).toISOString();
+                    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999).toISOString();
+                    return supabase.from('consultas').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('data_inicio', firstDay).lte('data_inicio', lastDay);
+                });
+                
+                const monthlyConsultasResults = await Promise.all(monthlyConsultasPromises.reverse());
+                const monthlyConsultasData = monthlyConsultasResults.map(res => res.count);
+                const monthLabels = Array.from({length: 6}, (v, i) => {
+                    const d = new Date(); d.setMonth(d.getMonth() - (5 - i));
+                    return d.toLocaleDateString('pt-BR', { month: 'short' });
+                });
+
+                if (consultasChartInstance) {
+                    consultasChartInstance.data.labels = monthLabels;
+                    consultasChartInstance.data.datasets[0].data = monthlyConsultasData;
+                    consultasChartInstance.update();
+                }
+
+                if (conversaoChartInstance) {
+                    const naoConvertidos = (totalContacts - convertedCount) > 0 ? (totalContacts - convertedCount) : 0;
+                    conversaoChartInstance.data.datasets[0].data = [convertedCount, naoConvertidos];
+                    conversaoChartInstance.update();
+                }
+            }
+
+            // --- NOVA LÓGICA DE AGENDAMENTOS ---
+
+            async function fetchAndRenderAgenda() {
+                if (!currentClinicId) return;
+                
+                const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+                const { data, error } = await supabase.from('consultas')
+                    .select('*')
+                    .eq('clinic_id', currentClinicId)
+                    .gte('data_inicio', firstDayOfMonth.toISOString())
+                    .lte('data_inicio', lastDayOfMonth.toISOString());
+
+                allAppointments = error ? [] : data;
+                
+                renderAgendaView();
+            }
+            
+            function renderAgendaView() {
+                renderMiniCalendar();
+                
+                const views = ['weekly', 'daily'];
+                views.forEach(view => {
+                    const viewEl = document.getElementById(`${view}-view`);
+                    if (viewEl) viewEl.classList.add('hidden');
+                });
+                
+                const currentViewEl = document.getElementById(`${currentCalendarView}-view`);
+                if(currentViewEl) currentViewEl.classList.remove('hidden');
+
+                // Ajusta a navegação baseada na view
+                const weeklyNav = document.getElementById('weekly-view-date-range').parentElement;
+                if (currentCalendarView === 'daily') {
+                    weeklyNav.querySelector('h3').textContent = currentDate.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                }
+
+                switch (currentCalendarView) {
+                    case 'weekly': renderWeeklyView(); break;
+                    case 'daily': renderDailyView(); break;
+                }
+            }
+
+            function renderMiniCalendar() {
+                const miniCalendarGrid = document.getElementById('mini-calendar-grid');
+                const miniCalendarMonthYear = document.getElementById('mini-calendar-month-year');
+                
+                miniCalendarGrid.innerHTML = '';
+                const year = currentDate.getFullYear(), month = currentDate.getMonth();
+                miniCalendarMonthYear.textContent = new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+                
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const today = new Date();
+                
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    miniCalendarGrid.innerHTML += `<div></div>`;
+                }
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayEl = document.createElement('div');
+                    dayEl.textContent = day;
+                    dayEl.className = 'p-1 cursor-pointer rounded-full hover:bg-[--color-surface-light] aspect-square flex items-center justify-center';
+                    
+                    const thisDate = new Date(year, month, day);
+                    if (thisDate.toDateString() === today.toDateString()) {
+                        dayEl.classList.add('border', 'border-[--color-primary]');
+                    }
+                    if(thisDate.toDateString() === currentDate.toDateString()){
+                         dayEl.classList.add('bg-[--color-primary]', 'text-black', 'font-bold');
+                    }
+                    
+                    dayEl.addEventListener('click', () => {
+                        currentDate = thisDate;
+                        renderAgendaView();
+                    });
+                    miniCalendarGrid.appendChild(dayEl);
+                }
+            }
+
+            function renderWeeklyView() {
+                const weeklyHeader = document.getElementById('weekly-header');
+                const weeklyBody = document.getElementById('weekly-body');
+                const weeklyDateRange = document.getElementById('weekly-view-date-range');
+                weeklyHeader.innerHTML = '';
+                weeklyBody.innerHTML = '';
+
+                const startOfWeek = new Date(currentDate);
+                startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+                
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(endOfWeek.getDate() + 6);
+
+                weeklyDateRange.textContent = `${startOfWeek.toLocaleDateString('pt-BR', {month: 'long', day: 'numeric'})} - ${endOfWeek.toLocaleDateString('pt-BR', {day: 'numeric', year: 'numeric'})}`;
+                
+                const weekDays = [];
+                for (let i = 0; i < 7; i++) {
+                    const day = new Date(startOfWeek);
+                    day.setDate(day.getDate() + i);
+                    weekDays.push(day);
+                }
+
+                weekDays.forEach(day => {
+                    const today = new Date();
+                    const isToday = day.toDateString() === today.toDateString();
+                    weeklyHeader.innerHTML += `
+                        <div class="text-center py-2 border-b border-[--color-border]">
+                            <p class="text-xs text-[--color-text-secondary]">${day.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0,3)}</p>
+                            <p class="text-lg font-bold ${isToday ? 'text-[--color-primary]' : ''}">${day.getDate()}</p>
+                        </div>
+                    `;
+                });
+                
+                let timelineHTML = '<div class="absolute inset-0 grid grid-cols-7">';
+                let hourLinesHTML = '';
+                const startHour = 8;
+                const endHour = 18;
+                const hourHeight = 60;
+
+                for(let i=0; i<7; i++){
+                    timelineHTML += `<div class="border-r border-[--color-border]"></div>`
+                }
+                timelineHTML += '</div>'
+
+                for (let hour = startHour; hour <= endHour; hour++) {
+                     const timeLabel = hour.toString().padStart(2, '0') + ':00';
+                     hourLinesHTML += `
+                        <div class="relative" style="height: ${hourHeight}px;">
+                            <div class="absolute left-0 -top-2.5 -ml-10 text-right w-8">
+                                <span class="text-xs text-[--color-text-secondary]">${timeLabel}</span>
+                            </div>
+                            <div class="h-full border-t border-[--color-border]"></div>
+                        </div>`;
+                }
+
+                let appointmentsHTML = '<div class="absolute inset-0 grid grid-cols-7 ml-10">';
+                weekDays.forEach((day, dayIndex) => {
+                    appointmentsHTML += `<div class="relative">`;
+                    const dayAppointments = allAppointments.filter(apt => {
+                        const aptDate = new Date(apt.data_inicio);
+                        return aptDate.toDateString() === day.toDateString();
+                    });
+
+                    dayAppointments.forEach((apt, aptIndex) => {
+                        const startDate = new Date(apt.data_inicio);
+                        const top = (startDate.getHours() + startDate.getMinutes() / 60 - startHour) * hourHeight;
+                        const duration = 60;
+                        const height = (duration / 60) * hourHeight - 2;
+                        const colors = ['bg-pink-800/50', 'bg-indigo-800/50', 'bg-teal-800/50'];
+                        
+                        appointmentsHTML += `
+                        <div class="absolute w-full px-2" style="top: ${top}px; height: ${height}px;">
+                            <div class="appointment-item h-full p-2 rounded-lg ${colors[aptIndex % colors.length]} text-white cursor-pointer hover:opacity-80" data-appointment='${htmlEncode(JSON.stringify(apt))}'>
+                                <p class="text-xs font-bold truncate">${apt.nome_cliente}</p>
+                                <p class="text-[10px]">${formatTimestamp(apt.data_inicio)}</p>
+                            </div>
+                        </div>`;
+                    });
+
+                    appointmentsHTML += `</div>`;
+                });
+                appointmentsHTML += '</div>';
+
+                weeklyBody.innerHTML = `
+                    <div class="relative">
+                        ${timelineHTML}
+                        <div class="ml-10"> ${hourLinesHTML} </div>
+                        ${appointmentsHTML}
+                    </div>
+                `;
+                
+                weeklyBody.querySelectorAll('.appointment-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                         if (item.dataset.appointment) {
+                            const apt = JSON.parse(item.dataset.appointment);
+                            showClientDetailsView(apt, '#agendamentos');
+                        }
+                    });
+                });
+            }
+
+            function renderDailyView() {
+                const dailyBody = document.getElementById('daily-body');
+                const weeklyDateRange = document.getElementById('weekly-view-date-range');
+                dailyBody.innerHTML = '';
+
+                weeklyDateRange.textContent = currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+                let timelineHTML = '<div class="absolute inset-0">';
+                let hourLinesHTML = '';
+                const startHour = 8;
+                const endHour = 18;
+                const hourHeight = 80; // Altura maior para a visualização diária
+
+                // Linha de fundo
+                timelineHTML += `<div class="border-r border-[--color-border]"></div>`
+                timelineHTML += '</div>'
+
+                // Linhas de hora
+                for (let hour = startHour; hour <= endHour; hour++) {
+                     const timeLabel = hour.toString().padStart(2, '0') + ':00';
+                     hourLinesHTML += `
+                        <div class="relative" style="height: ${hourHeight}px;">
+                            <div class="absolute left-0 -top-2.5 -ml-12 text-right w-8">
+                                <span class="text-xs text-[--color-text-secondary]">${timeLabel}</span>
+                            </div>
+                            <div class="h-full border-t border-[--color-border]"></div>
+                        </div>`;
+                }
+
+                // Agendamentos
+                let appointmentsHTML = '<div class="absolute inset-0 ml-10">';
+                 const dayAppointments = allAppointments.filter(apt => {
+                    const aptDate = new Date(apt.data_inicio);
+                    return aptDate.toDateString() === currentDate.toDateString();
+                });
+
+                dayAppointments.forEach((apt, aptIndex) => {
+                    const startDate = new Date(apt.data_inicio);
+                    const top = (startDate.getHours() + startDate.getMinutes() / 60 - startHour) * hourHeight;
+                    const duration = 60;
+                    const height = (duration / 60) * hourHeight - 4;
+                    const colors = ['bg-pink-800/50', 'bg-indigo-800/50', 'bg-teal-800/50', 'bg-green-800/50'];
+                    
+                    appointmentsHTML += `
+                    <div class="absolute w-[calc(100%-1rem)] px-2" style="top: ${top}px; height: ${height}px; left: 1rem;">
+                        <div class="appointment-item h-full p-3 rounded-lg ${colors[aptIndex % colors.length]} text-white cursor-pointer hover:opacity-80 flex flex-col justify-center" data-appointment='${htmlEncode(JSON.stringify(apt))}'>
+                            <p class="font-bold truncate">${apt.nome_cliente}</p>
+                            <p class="text-sm">${formatTimestamp(apt.data_inicio)}</p>
+                        </div>
+                    </div>`;
+                });
+                appointmentsHTML += '</div>';
+
+                dailyBody.innerHTML = `
+                    <div class="relative">
+                        ${timelineHTML}
+                        <div class="ml-10"> ${hourLinesHTML} </div>
+                        ${appointmentsHTML}
+                    </div>
+                `;
+
+                dailyBody.querySelectorAll('.appointment-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (item.dataset.appointment) {
+                            const apt = JSON.parse(item.dataset.appointment);
+                            showClientDetailsView(apt, '#agendamentos');
+                        }
+                    });
+                });
+            }
+
+
+            // --- LÓGICA DE CONVERSAS ---
+
+            async function fetchChats() {
+                if (!currentClinicId) return;
+                refreshButton.classList.add('loading');
+                
+                const { data: allMessages, error } = await supabase.from('n8n_chat_histories').select('session_id, created_at, content, patient_name').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
+
+                if (error) {
+                    patientList.innerHTML = `<div class="p-4 text-center text-red-400">Falha ao carregar.</div>`;
+                    refreshButton.classList.remove('loading');
+                    return;
+                }
+                
+                const latestChats = new Map();
+                allMessages.forEach(msg => {
+                    if (!latestChats.has(msg.session_id)) {
+                        latestChats.set(msg.session_id, {
+                            phone: `${msg.session_id}@c.us`, updated_at: msg.created_at,
+                            last_message: msg.content || '...', nomewpp: msg.patient_name || msg.session_id
+                        });
+                    }
+                });
+                
+                currentChats = Array.from(latestChats.values());
+                renderPatientList(currentChats);
+                refreshButton.classList.remove('loading');
+            };
+
+            const renderPatientList = (chats) => {
+                patientList.innerHTML = '';
+                if (chats.length === 0) {
+                    patientList.innerHTML = `<div class="p-8 text-center text-[--color-text-secondary]">Nenhuma conversa.</div>`;
+                    return;
+                }
+
+                chats.forEach(chat => {
+                    const chatDiv = document.createElement('div');
+                    chatDiv.className = 'patient-item flex items-center p-3 hover:bg-[--color-surface-light] cursor-pointer border-b border-[--color-border]';
+                    chatDiv.dataset.chatId = chat.phone;
+                    const initials = getInitials(chat.nomewpp || chat.phone);
+                    chatDiv.innerHTML = `
+                        <img src="https://placehold.co/48x48/393428/FFFFFF?text=${initials}" class="w-12 h-12 rounded-full mr-3 flex-shrink-0">
+                        <div class="flex-1 overflow-hidden">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-semibold truncate text-base">${chat.nomewpp || chat.phone}</h3>
+                                <p class="text-xs text-[--color-text-secondary] flex-shrink-0 ml-2">${formatTimestamp(chat.updated_at)}</p>
+                            </div>
+                            <div class="mt-1 flex justify-between items-center">
+                                <p class="text-sm text-[--color-text-secondary] truncate pr-2">${chat.last_message || '...'}</p>
+                            </div>
+                        </div>`;
+                    patientList.appendChild(chatDiv);
+                });
+
+                patientList.querySelectorAll('.patient-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        patientList.querySelectorAll('.patient-item').forEach(el => el.classList.remove('!bg-[--color-border]'));
+                        item.classList.add('!bg-[--color-border]');
+                        currentChat = currentChats.find(c => c.phone == item.dataset.chatId);
+                        fetchMessagesForChat(item.dataset.chatId);
+                        chatName.textContent = currentChat.nomewpp || currentChat.phone;
+                        const initials = getInitials(currentChat.nomewpp || currentChat.phone);
+                        chatAvatar.src = `https://placehold.co/48x48/393428/FFFFFF?text=${initials}`;
+                        chatStatus.textContent = "Online"; // Placeholder
+                        chatInput.disabled = false;
+                        chatPlaceholder.style.display = 'none';
+                        chatView.style.display = 'flex';
+                        if (window.innerWidth < 768) {
+                            contentCol.classList.remove('translate-x-full');
+                        }
+                    });
+                });
+            };
+
+            async function showClientDetailsView(item, backHash) {
+                if (!currentClinicId) return;
+                const clientPhoneNumber = (item.telefone || item.telefone_cliente || '').replace(/\D/g, '');
+                if (!clientPhoneNumber) {
+                    console.error("Item sem número de telefone válido.", item);
+                    return;
+                }
+                
+                pageSections.forEach(s => s.classList.add('hidden'));
+                const detailSection = document.getElementById('client-detail-section');
+                detailSection.classList.remove('hidden');
+                detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
+
+                // Busca os dados do cliente na tabela dados_cliente
+                const { data, error } = await supabase.from('dados_cliente')
+                    .select('*')
+                    .eq('telefone', clientPhoneNumber)
+                    .eq('clinic_id', currentClinicId)
+                    .limit(1);
+
+                let clientData;
+                if (error || !data || data.length === 0) {
+                    // Se não encontrar, usa os dados do agendamento como fallback
+                    clientData = {
+                        nomewpp: item.nome_cliente,
+                        telefone: item.telefone_cliente,
+                        data_nascimento: null,
+                        objetivo: null,
+                        comorbidades: null,
+                    };
+                } else {
+                    clientData = data[0];
+                }
+
+                const { data: allAppointments } = await supabase.from('consultas').select('*').eq('telefone_cliente', clientPhoneNumber).eq('clinic_id', currentClinicId).order('data_inicio', { ascending: false });
+
+                const clientInitials = getInitials(clientData.nomewpp || '??');
+                const age = calculateAge(clientData.data_nascimento);
+                const formattedBirthdate = clientData.data_nascimento ? new Date(clientData.data_nascimento).toLocaleDateString('pt-BR') : 'Não informado';
+                
+                detailSection.innerHTML = `
+                     <div class="flex items-center mb-8">
+                         <button id="back-to-previous-view-btn" class="p-2 mr-4 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined">arrow_back</span></button>
+                         <h2 class="text-3xl font-bold text-white">Detalhes do Cliente</h2>
+                     </div>
+                     <div class="flex items-center gap-4 bg-[--color-surface] p-4 rounded-lg">
+                         <img src="https://placehold.co/80x80/393428/FFFFFF?text=${clientInitials}" class="w-20 h-20 rounded-full"/>
+                         <div class="flex flex-col justify-center">
+                             <p class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">${clientData.nomewpp}</p>
+                             <p class="text-[--color-text-secondary] text-base font-normal leading-normal">${clientData.telefone}</p>
+                         </div>
+                     </div>
+                     <div class="py-5">
+                        <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] py-4 flex items-center justify-between">
+                            <span>Resumo do Cliente</span>
+                        </h3>
+                         <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 bg-[--color-surface] rounded-lg">
+                             <div><p class="text-[--color-text-secondary] text-sm">Data de Nascimento:</p><p>${formattedBirthdate}</p></div>
+                             <div><p class="text-[--color-text-secondary] text-sm">Idade:</p><p>${age ? `${age} anos` : 'Não informada'}</p></div>
+                             <div class="col-span-1 md:col-span-2"><p class="text-[--color-text-secondary] text-sm">Objetivo:</p><p>${clientData.objetivo || 'Não informado'}</p></div>
+                             <div class="col-span-1 md:col-span-2"><p class="text-[--color-text-secondary] text-sm">Anotações:</p><p>${clientData.comorbidades || 'Não informado'}</p></div>
+                         </div>
+                          <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] py-4">Histórico de Consultas</h3>
+                          <div class="overflow-hidden rounded-lg border border-[--color-border] bg-[--color-surface]">
+                             <table class="w-full text-left">
+                                 <thead class="bg-[--color-surface-light]"><tr>
+                                     <th class="px-4 py-3 text-white text-sm">Data</th>
+                                     <th class="px-4 py-3 text-white text-sm">Tipo</th>
+                                     <th class="px-4 py-3 text-white text-sm">Status</th>
+                                 </tr></thead>
+                                 <tbody>
+                                 ${allAppointments && allAppointments.length > 0 ? allAppointments.map(apt => `
+                                     <tr class="border-t border-t-[--color-border]">
+                                         <td class="px-4 py-3 text-[--color-text-secondary] text-sm">${new Date(apt.data_inicio).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'})}</td>
+                                         <td class="px-4 py-3 text-[--color-text-secondary] text-sm">${apt.tipo_consulta}</td>
+                                         <td class="px-4 py-3 text-[--color-text-secondary] text-sm">${apt.status}</td>
+                                     </tr>`).join('') : `<tr><td colspan="3" class="text-center p-4 text-[--color-text-secondary]">Nenhum histórico.</td></tr>`}
+                                 </tbody>
+                             </table>
+                          </div>
+                     </div>
+                 `;
+                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', () => {
+                    window.location.hash = backHash;
+                });
+            }
+
+            async function fetchMessagesForChat(chatId) {
+                if (!currentClinicId) return;
+                chatMessages.innerHTML = '';
+                const sessionId = chatId.split('@')[0];
+                const { data, error } = await supabase.from('n8n_chat_histories').select('created_at, content, role').eq('session_id', sessionId).eq('clinic_id', currentClinicId).order('created_at', { ascending: true });
+                if (error) { chatMessages.innerHTML = `<div class="text-center text-red-400">Erro.</div>`; return; }
+                if (data && data.length > 0) data.forEach(appendMessage);
+                else chatMessages.innerHTML = `<div class="text-center text-[--color-text-secondary]">Sem mensagens.</div>`;
+            }
+
+            const appendMessage = (message) => {
+                const isFromClient = (message.role && message.role.toLowerCase() === 'user');
+                if (!message.content) return;
+                
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `flex w-full mt-2 ${isFromClient ? 'justify-start' : 'justify-end'}`;
+
+                const bgColor = isFromClient ? 'bg-[--color-surface-light]' : 'bg-[#005C4B]';
+                const textColor = 'text-white';
+
+                messageWrapper.innerHTML = `
+                    <div class="max-w-xs md:max-w-md lg:max-w-lg">
+                        <div class="text-base font-normal leading-normal rounded-lg px-3 py-2 ${bgColor} ${textColor}" style="white-space: pre-wrap;">
+                            <span>${message.content}</span>
+                        </div>
+                        <div class="text-xs text-right text-[--color-text-secondary] mt-1 px-1">${formatTimestamp(message.created_at)}</div>
+                    </div>`;
+                
+                chatMessages.appendChild(messageWrapper);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            };
+
+            async function sendMessage() {
+                if (!currentClinicId || !currentChat) return;
+                const text = chatInput.value.trim();
+                if (text === '') return;
+                const { error } = await supabase.from('n8n_chat_histories').insert([{ session_id: currentChat.phone.split('@')[0], content: text, role: 'AI', patient_name: currentChat.nomewpp, created_at: new Date().toISOString(), clinic_id: currentClinicId }]);
+                if (!error) {
+                    appendMessage({ content: text, role: 'AI', created_at: new Date().toISOString() });
+                    chatInput.value = '';
+                }
+            }
+            
+            // --- INICIALIZAÇÃO E EVENT LISTENERS ---
+            loginForm.addEventListener('submit', handleLogin);
+            logoutButton.addEventListener('click', () => showLogin());
+            passwordToggle.addEventListener('click', togglePasswordVisibility);
+            if (passwordChangeForm) passwordChangeForm.addEventListener('submit', handleChangePassword);
+            
+            navLinks.addEventListener('click', (e) => { 
+                const link = e.target.closest('a'); 
+                if (link && link.hash) { 
+                    e.preventDefault(); 
+                    window.location.hash = link.hash; 
+                } 
+            });
+            document.getElementById('user-profile-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.hash = '#configuracoes';
+            });
+            window.addEventListener('hashchange', () => showSection(window.location.hash));
+
+            // Listeners da agenda
+            document.getElementById('mini-prev-month-btn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); fetchAndRenderAgenda(); });
+            document.getElementById('mini-next-month-btn').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); fetchAndRenderAgenda(); });
+            document.getElementById('prev-week-btn').addEventListener('click', () => { 
+                const newDate = new Date(currentDate);
+                const step = currentCalendarView === 'daily' ? 1 : 7;
+                newDate.setDate(newDate.getDate() - step);
+                currentDate = newDate;
+                fetchAndRenderAgenda(); 
+            });
+            document.getElementById('next-week-btn').addEventListener('click', () => { 
+                const newDate = new Date(currentDate);
+                const step = currentCalendarView === 'daily' ? 1 : 7;
+                newDate.setDate(newDate.getDate() + step);
+                currentDate = newDate;
+                fetchAndRenderAgenda();
+            });
+            document.getElementById('today-btn').addEventListener('click', () => { currentDate = new Date(); fetchAndRenderAgenda(); });
+            
+            document.getElementById('view-toggle-buttons').addEventListener('click', (e) => {
+                if (e.target.matches('.view-toggle-btn')) {
+                    const view = e.target.dataset.view;
+                    currentCalendarView = view;
+                    
+                    document.querySelectorAll('.view-toggle-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    renderAgendaView();
+                }
+            });
+
+
+            refreshButton.addEventListener('click', fetchChats);
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+            backToListBtn.addEventListener('click', () => { contentCol.classList.add('translate-x-full'); });
+            chatClientInfo.addEventListener('click', () => { if (currentChat) showClientDetailsView({ telefone: currentChat.phone }, '#conversas'); });
+            chatMenuButton.addEventListener('click', (e) => { e.stopPropagation(); chatDropdownMenu.classList.toggle('hidden'); });
+            window.addEventListener('click', () => { if (!chatDropdownMenu.classList.contains('hidden')) chatDropdownMenu.classList.add('hidden'); });
+
+            // Inicializa Charts
+            const chartOptions = {
+                responsive: true,
+                plugins: { legend: { labels: { color: '#999999' } }, title: { display: true, color: '#FFFFFF' } },
+                scales: { y: { beginAtZero: true, ticks: { color: '#999999' }, grid: { color: '#2D2D2D' } }, x: { ticks: { color: '#999999' }, grid: { color: '#2D2D2D' } } }
+            };
+            const consultasCtx = document.getElementById('consultasChart');
+            if(consultasCtx) {
+                consultasChartInstance = new Chart(consultasCtx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Consultas por Mês', data: [], backgroundColor: 'rgba(242, 173, 13, 0.6)', borderColor: '#F2AD0D', borderWidth: 1 }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Volume de Consultas nos Últimos 6 Meses' } } } });
+            }
+            const conversaoCtx = document.getElementById('conversaoChart');
+            if(conversaoCtx) {
+                conversaoChartInstance = new Chart(conversaoCtx, { type: 'doughnut', data: { labels: ['Convertidos', 'Não Convertidos'], datasets: [{ data: [0, 0], backgroundColor: ['#F2AD0D', '#2D2D2D'] }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Conversão de Contatos' } } } });
+            }
+            
+            checkSession();
+        });
+    </script>
+</body>
+
+</html>
+
