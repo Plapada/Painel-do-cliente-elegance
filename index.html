@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR" class="light">
 
 <head>
     <meta charset="UTF-8">
@@ -20,11 +20,21 @@
             --color-text-secondary: #999999;
             --color-border: #2D2D2D;
         }
+        
+        html.light {
+            --color-background: #F3F4F6;
+            --color-surface: #FFFFFF;
+            --color-surface-light: #F9FAFB;
+            --color-text: #1F2937;
+            --color-text-secondary: #6B7281;
+            --color-border: #E5E7EB;
+        }
 
         body {
             font-family: 'Manrope', sans-serif;
             background-color: var(--color-background);
             color: var(--color-text);
+            transition: background-color 0.3s, color 0.3s;
         }
         
         /* Estilos da Tela de Login */
@@ -75,6 +85,11 @@
         }
 
         /* Estilos do App Principal */
+        #app header, #app section {
+            background-color: var(--color-surface);
+            color: var(--color-text);
+            border-color: var(--color-border);
+        }
         .nav-link.active {
             color: var(--color-primary);
             font-weight: 700;
@@ -156,25 +171,29 @@
 
     <!-- App Principal (escondido por padrão) -->
     <div id="app" class="h-screen w-full flex-col hidden">
-       <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[--color-border] px-10 py-3">
+       <header class="flex items-center justify-between whitespace-nowrap border-b border-solid px-10 py-3">
             <div class="flex items-center gap-8">
-                <div class="flex items-center gap-4 text-white">
+                <div class="flex items-center gap-4 text-[--color-text]">
                      <span class="material-symbols-outlined text-[--color-primary]" style="font-size: 28px;">diamond</span>
-                    <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">CRM Elegance</h2>
+                    <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">CRM Elegance</h2>
                 </div>
                 <nav id="nav-links" class="flex items-center gap-9">
-                    <a href="#dashboard" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Dashboard</a>
-                    <a href="#conversas" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Conversas</a>
-                    <a href="#agendamentos" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Agendamentos</a>
-                    <a href="#clientes" class="nav-link text-white text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Clientes</a>
+                    <a href="#dashboard" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Dashboard</a>
+                    <a href="#conversas" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Conversas</a>
+                    <a href="#agendamentos" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Agendamentos</a>
+                    <a href="#clientes" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Clientes</a>
                 </nav>
             </div>
             <div class="flex flex-1 justify-end items-center gap-4">
+                <label for="theme-toggle-switch" class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="theme-toggle-switch" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-yellow-400"></div>
+                </label>
                  <a href="#configuracoes" id="user-profile-link" class="flex items-center gap-3 cursor-pointer">
                     <img id="user-avatar-header" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" />
                      <div class="text-sm">
-                        <p class="font-semibold text-white" id="user-name-header">Admin</p>
-                        <p class="text-text-secondary" id="user-role-header">Admin</p>
+                        <p class="font-semibold text-[--color-text]" id="user-name-header">Admin</p>
+                        <p class="text-[--color-text-secondary]" id="user-role-header">Admin</p>
                     </div>
                  </a>
                  <button id="logout-button" class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-red-800/50 hover:bg-red-800/80 text-white gap-2 text-sm font-bold leading-normal tracking-[-0.015em] min-w-0 px-2.5" title="Sair">
@@ -190,19 +209,19 @@
                 <section id="dashboard-section" class="page-section hidden">
                      <div class="flex flex-wrap justify-between gap-3 p-4">
                         <div class="flex min-w-72 flex-col gap-3">
-                            <h2 class="text-white tracking-light text-[32px] font-bold leading-tight">Dashboard</h2>
+                            <h2 class="text-[--color-text] tracking-light text-[32px] font-bold leading-tight">Dashboard</h2>
                             <p class="text-[--color-text-secondary] text-sm font-normal leading-normal">Visão geral do seu CRM</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Consultas Para Hoje</p><p id="consultas-para-hoje-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Consultas Marcadas Hoje</p><p id="consultas-marcadas-hoje-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Próxima Semana</p><p id="consultas-proxima-semana-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Conversão</p><p id="taxa-conversao-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Realizadas no Mês</p><p id="consultas-realizadas-mes-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Restantes no Mês</p><p id="consultas-restantes-mes-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Cancelamento</p><p id="taxa-canceladas-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
-                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-white text-base font-medium leading-normal">Taxa de Remarcação</p><p id="taxa-remarcadas-stat" class="text-white tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Consultas Para Hoje</p><p id="consultas-para-hoje-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Consultas Marcadas Hoje</p><p id="consultas-marcadas-hoje-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Próxima Semana</p><p id="consultas-proxima-semana-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Taxa de Conversão</p><p id="taxa-conversao-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Realizadas no Mês</p><p id="consultas-realizadas-mes-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Restantes no Mês</p><p id="consultas-restantes-mes-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Taxa de Cancelamento</p><p id="taxa-canceladas-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0%</p></div>
+                        <div class="flex flex-col gap-2 rounded-lg p-6 bg-[--color-surface-light]"><p class="text-[--color-text] text-base font-medium leading-normal">Taxa de Remarcação</p><p id="taxa-remarcadas-stat" class="text-[--color-text] tracking-light text-2xl font-bold leading-tight">0%</p></div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-4">
                         <div class="lg:col-span-2 flex flex-col gap-2 rounded-lg border border-[--color-border] p-6">
@@ -234,15 +253,15 @@
                                 <!-- A lista de pacientes será renderizada aqui -->
                             </div>
                         </main>
-                        <div id="content-col" class="flex-1 flex flex-col bg-[--color-surface] md:relative absolute inset-0 transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0">
+                        <div id="content-col" class="flex-1 flex flex-col bg-[--color-background] md:relative absolute inset-0 transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0">
                             <div id="chat-placeholder" class="flex flex-1 items-center justify-center text-center">
                                  <div class="p-8 rounded-lg">
-                                    <span class="material-symbols-outlined text-6xl text-white opacity-80">chat</span>
-                                    <p class="mt-4 text-lg text-white">Selecione uma conversa para começar</p>
+                                    <span class="material-symbols-outlined text-6xl opacity-80">chat</span>
+                                    <p class="mt-4 text-lg">Selecione uma conversa para começar</p>
                                 </div>
                             </div>
                             <div id="chat-view" class="hidden flex-col h-full">
-                                <div class="p-3 border-b border-white/10 flex justify-between items-center flex-shrink-0 bg-[--color-surface-light]/80">
+                                <div class="p-3 border-b border-[--color-border] flex justify-between items-center flex-shrink-0 bg-[--color-surface-light]">
                                     <div id="chat-header-normal" class="flex items-center gap-3 w-full">
                                         <button id="back-to-list-btn" class="p-2 mr-2 text-[--color-text-secondary] rounded-full md:hidden">
                                             <span class="material-symbols-outlined">arrow_back</span>
@@ -251,7 +270,7 @@
                                             <img id="chat-avatar" src="" class="w-10 h-10 rounded-full" />
                                             <div>
                                                 <h2 id="chat-name" class="font-bold text-base"></h2>
-                                                <p id="chat-status" class="text-xs text-gray-400"></p>
+                                                <p id="chat-status" class="text-xs text-[--color-text-secondary]"></p>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2 relative">
@@ -269,7 +288,7 @@
                                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2">
                                     <!-- Mensagens do Chat -->
                                 </div>
-                                <div class="p-3 flex items-center gap-3 bg-[--color-surface]/80">
+                                <div class="p-3 flex items-center gap-3 bg-[--color-surface]">
                                     <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">mood</span></button>
                                     <input id="chat-input" type="text" placeholder="Digite uma mensagem" class="w-full bg-[--color-surface-light] border-none rounded-lg py-3 px-4 focus:outline-none" disabled>
                                     <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">attach_file</span></button>
@@ -290,7 +309,7 @@
                         <div class="flex items-center gap-3 border-b border-[--color-border] pb-4">
                              <img id="user-avatar-calendar" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" />
                              <div>
-                                <p class="font-semibold text-white" id="user-name-calendar">Admin</p>
+                                <p class="font-semibold text-[--color-text]" id="user-name-calendar">Admin</p>
                                 <p class="text-xs text-[--color-text-secondary]">Consultor</p>
                             </div>
                         </div>
@@ -358,15 +377,15 @@
                 <!-- Seção Clientes -->
                 <section id="clientes-section" class="page-section hidden p-4">
                     <div class="flex flex-wrap justify-between gap-3 mb-4">
-                        <h2 class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Clientes</h2>
+                        <h2 class="text-[--color-text] tracking-light text-[32px] font-bold leading-tight min-w-72">Clientes</h2>
                     </div>
                     <div class="overflow-hidden rounded-lg border border-[--color-border] bg-[--color-surface]">
                         <table class="w-full text-left">
                             <thead class="bg-[--color-surface-light]">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-white w-[40%] text-sm font-medium leading-normal">Nome</th>
-                                    <th class="px-4 py-3 text-left text-white w-[30%] text-sm font-medium leading-normal">Telefone</th>
-                                    <th class="px-4 py-3 text-left text-white w-[30%] text-sm font-medium leading-normal">Data de Cadastro</th>
+                                    <th class="px-4 py-3 text-left text-[--color-text] w-[40%] text-sm font-medium leading-normal">Nome</th>
+                                    <th class="px-4 py-3 text-left text-[--color-text] w-[30%] text-sm font-medium leading-normal">Telefone</th>
+                                    <th class="px-4 py-3 text-left text-[--color-text] w-[30%] text-sm font-medium leading-normal">Data de Cadastro</th>
                                 </tr>
                             </thead>
                             <tbody id="client-table-body">
@@ -378,21 +397,21 @@
 
                 <!-- Seção Configurações/Perfil -->
                 <section id="configuracoes-section" class="page-section hidden p-4">
-                     <div class="flex flex-wrap justify-between gap-3 mb-4"><p class="text-white tracking-light text-[32px] font-bold leading-tight min-w-72">Meu Perfil</p></div>
+                     <div class="flex flex-wrap justify-between gap-3 mb-4"><p class="text-[--color-text] tracking-light text-[32px] font-bold leading-tight min-w-72">Meu Perfil</p></div>
                      <div class="max-w-2xl space-y-8">
                          <div>
-                             <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Informações da Empresa</h3>
+                             <h3 class="text-[--color-text] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Informações da Empresa</h3>
                              <div class="space-y-4 p-4">
-                                <div><label class="block mb-1 text-sm font-medium">Nome da Empresa</label><input type="text" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="Elegance"></div>
-                                <div><label class="block mb-1 text-sm font-medium">E-mail de Contato</label><input type="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="contato@elegance.com"></div>
+                                <div><label class="block mb-1 text-sm font-medium">Nome da Empresa</label><input type="text" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="Elegance"></div>
+                                <div><label class="block mb-1 text-sm font-medium">E-mail de Contato</label><input type="email" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal" value="contato@elegance.com"></div>
                              </div>
                          </div>
                          <div>
-                            <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Segurança</h3>
+                            <h3 class="text-[--color-text] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Segurança</h3>
                             <form id="password-change-form" class="space-y-4 p-4">
-                                <div><label for="current-password" class="block mb-1 text-sm font-medium">Senha Atual</label><input type="password" id="current-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
-                                <div><label for="new-password" class="block mb-1 text-sm font-medium">Nova Senha</label><input type="password" id="new-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
-                                <div><label for="confirm-password" class="block mb-1 text-sm font-medium">Confirmar Nova Senha</label><input type="password" id="confirm-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div><label for="current-password" class="block mb-1 text-sm font-medium">Senha Atual</label><input type="password" id="current-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div><label for="new-password" class="block mb-1 text-sm font-medium">Nova Senha</label><input type="password" id="new-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
+                                <div><label for="confirm-password" class="block mb-1 text-sm font-medium">Confirmar Nova Senha</label><input type="password" id="confirm-password" required class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface-light] focus:border-[--color-primary] h-12 placeholder:text-[--color-text-secondary] p-[15px] text-base font-normal leading-normal"></div>
                                 <div id="password-change-message" class="text-sm h-5"></div>
                                 <button type="submit" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[--color-primary] text-black text-sm font-bold leading-normal tracking-[-0.015em] hover:bg-[--color-primary-hover]">Salvar Alterações</button>
                             </form>
@@ -417,6 +436,7 @@
             let currentDate = new Date(); // Data usada para navegação
             let currentCalendarView = 'weekly';
             let consultasChartInstance, conversaoChartInstance;
+            let clientListSubscription = null;
 
             // Seletores de DOM
             const appDiv = document.getElementById('app');
@@ -461,11 +481,11 @@
             const chatClientInfo = document.getElementById('chat-client-info');
             const chatMenuButton = document.getElementById('chat-menu-button');
             const chatDropdownMenu = document.getElementById('chat-dropdown-menu');
+            const themeToggleButton = document.getElementById('theme-toggle-switch');
             
             function htmlEncode(str) {
-                const el = document.createElement('textarea');
-                el.innerText = str;
-                return el.innerHTML;
+                if(typeof str !== 'string') return '';
+                return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             }
 
             // --- LÓGICA DE AUTENTICAÇÃO ---
@@ -494,7 +514,7 @@
                 userNameCalendar.textContent = userName;
                 userAvatarCalendar.src = `https://placehold.co/40x40/393428/FFFFFF?text=${userInitials}`;
                 
-                showSection(window.location.hash || '#agendamentos');
+                showSection(window.location.hash || '#dashboard');
             };
 
             const showLogin = () => {
@@ -601,10 +621,18 @@
             
             const formatTimestamp = (iso) => iso ? new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '...';
 
+             function unsubscribeFromChannels() {
+                if (clientListSubscription) {
+                    supabase.removeChannel(clientListSubscription);
+                    clientListSubscription = null;
+                }
+            }
+
             const showSection = async (hash) => {
-                const currentHash = hash || '#agendamentos';
+                unsubscribeFromChannels();
+                const currentHash = hash || '#dashboard';
                 const sectionId = currentHash.substring(1) + '-section';
-                const section = document.getElementById(sectionId) || document.getElementById('agendamentos-section');
+                const section = document.getElementById(sectionId) || document.getElementById('dashboard-section');
                 
                 pageSections.forEach(s => s.classList.add('hidden'));
                 
@@ -614,7 +642,7 @@
                 }
 
                 navLinks.querySelectorAll('a').forEach(a => a.classList.remove('active'));
-                const activeLink = navLinks.querySelector(`a[href="${currentHash}"]`) || navLinks.querySelector(`a[href="#configuracoes"]`);
+                const activeLink = navLinks.querySelector(`a[href="${currentHash}"]`);
                  if (activeLink) {
                     activeLink.classList.add('active');
                 }
@@ -630,18 +658,45 @@
             };
             
             async function fetchClients() {
-                 const { data, error } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
-                 clientTableBody.innerHTML = '';
-                 if (error) { clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-red-400">Erro ao carregar clientes.</td></tr>`; return; }
-                 if (data.length === 0) { clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-[--color-text-secondary]">Nenhum cliente encontrado.</td></tr>`; return; }
-                 
-                 data.forEach(client => {
-                     const row = document.createElement('tr');
-                     row.className = 'cursor-pointer hover:bg-[--color-surface-light] transition-colors border-t border-t-[--color-border]';
-                     row.innerHTML = `<td class="h-[72px] px-4 py-2 text-white text-sm font-normal leading-normal">${client.nomewpp}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${client.telefone}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${new Date(client.created_at).toLocaleDateString('pt-BR')}</td>`;
-                     row.addEventListener('click', () => showClientDetailsView(client, '#clientes'));
-                     clientTableBody.appendChild(row);
-                 });
+                if (!currentClinicId) return;
+
+                const renderClients = (clients) => {
+                    clientTableBody.innerHTML = '';
+                    if (!clients || clients.length === 0) {
+                        clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-[--color-text-secondary]">Nenhum cliente encontrado.</td></tr>`;
+                        return;
+                    }
+
+                    clients.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                    clients.forEach(client => {
+                        const row = document.createElement('tr');
+                        row.className = 'cursor-pointer hover:bg-[--color-surface-light] transition-colors border-t border-t-[--color-border]';
+                        row.innerHTML = `<td class="h-[72px] px-4 py-2 text-[--color-text] text-sm font-normal leading-normal">${client.nomewpp}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${client.telefone}</td><td class="h-[72px] px-4 py-2 text-[--color-text-secondary] text-sm font-normal leading-normal">${new Date(client.created_at).toLocaleDateString('pt-BR')}</td>`;
+                        row.addEventListener('click', () => showClientDetailsView(client, '#clientes'));
+                        clientTableBody.appendChild(row);
+                    });
+                };
+                
+                const { data, error } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
+                
+                if (error) {
+                    clientTableBody.innerHTML = `<tr><td colspan="3" class="text-center p-8 text-red-400">Erro ao carregar clientes.</td></tr>`;
+                    return;
+                }
+                
+                if(data) {
+                    renderClients(data);
+                }
+
+                clientListSubscription = supabase.channel('public:dados_cliente')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'dados_cliente', filter: `clinic_id=eq.${currentClinicId}` }, async (payload) => {
+                         const { data: updatedData, error: updatedError } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
+                         if (!updatedError && updatedData) {
+                            renderClients(updatedData);
+                         }
+                    })
+                    .subscribe();
             }
 
             async function fetchDashboardData() {
@@ -695,6 +750,8 @@
                     const d = new Date(); d.setMonth(d.getMonth() - (5 - i));
                     return d.toLocaleDateString('pt-BR', { month: 'short' });
                 });
+                
+                updateChartTheme();
 
                 if (consultasChartInstance) {
                     consultasChartInstance.data.labels = monthLabels;
@@ -770,15 +827,25 @@
 
                 for (let day = 1; day <= daysInMonth; day++) {
                     const dayEl = document.createElement('div');
-                    dayEl.textContent = day;
-                    dayEl.className = 'p-1 cursor-pointer rounded-full hover:bg-[--color-surface-light] aspect-square flex items-center justify-center';
+                    dayEl.className = 'p-1 cursor-pointer rounded-full hover:bg-[--color-surface-light] aspect-square flex items-center justify-center relative';
+                    
+                    const dayNumber = document.createElement('span');
+                    dayNumber.textContent = day;
+                    dayEl.appendChild(dayNumber);
                     
                     const thisDate = new Date(year, month, day);
                     if (thisDate.toDateString() === today.toDateString()) {
-                        dayEl.classList.add('border', 'border-[--color-primary]');
+                        dayNumber.classList.add('border', 'border-[--color-primary]', 'rounded-full', 'w-full', 'h-full', 'flex', 'items-center', 'justify-center');
                     }
                     if(thisDate.toDateString() === currentDate.toDateString()){
-                         dayEl.classList.add('bg-[--color-primary]', 'text-black', 'font-bold');
+                         dayNumber.classList.add('bg-[--color-primary]', 'text-black', 'font-bold', 'rounded-full', 'w-full', 'h-full', 'flex', 'items-center', 'justify-center');
+                    }
+                    
+                    const hasAppointment = allAppointments.some(apt => new Date(apt.data_inicio).toDateString() === thisDate.toDateString());
+                    if (hasAppointment) {
+                        const dot = document.createElement('span');
+                        dot.className = 'w-1.5 h-1.5 bg-[--color-primary] rounded-full absolute bottom-1 left-1/2 -translate-x-1/2';
+                        dayEl.appendChild(dot);
                     }
                     
                     dayEl.addEventListener('click', () => {
@@ -901,13 +968,11 @@
                 let hourLinesHTML = '';
                 const startHour = 8;
                 const endHour = 18;
-                const hourHeight = 80; // Altura maior para a visualização diária
+                const hourHeight = 80;
 
-                // Linha de fundo
                 timelineHTML += `<div class="border-r border-[--color-border]"></div>`
                 timelineHTML += '</div>'
 
-                // Linhas de hora
                 for (let hour = startHour; hour <= endHour; hour++) {
                      const timeLabel = hour.toString().padStart(2, '0') + ':00';
                      hourLinesHTML += `
@@ -919,7 +984,6 @@
                         </div>`;
                 }
 
-                // Agendamentos
                 let appointmentsHTML = '<div class="absolute inset-0 ml-10">';
                  const dayAppointments = allAppointments.filter(apt => {
                     const aptDate = new Date(apt.data_inicio);
@@ -968,10 +1032,10 @@
                 if (!currentClinicId) return;
                 refreshButton.classList.add('loading');
                 
-                const { data: allMessages, error } = await supabase.from('n8n_chat_histories').select('session_id, created_at, content, patient_name').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
+                const { data: allMessages, error } = await supabase.from('n8n_chat_histories').select('session_id, created_at, content, patient_name, role').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
 
                 if (error) {
-                    patientList.innerHTML = `<div class="p-4 text-center text-red-400">Falha ao carregar.</div>`;
+                    patientList.innerHTML = `<div class="p-4 text-center text-red-400">Falha ao carregar conversas.</div>`;
                     refreshButton.classList.remove('loading');
                     return;
                 }
@@ -1050,7 +1114,6 @@
                 detailSection.classList.remove('hidden');
                 detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
 
-                // Busca os dados do cliente na tabela dados_cliente
                 const { data, error } = await supabase.from('dados_cliente')
                     .select('*')
                     .eq('telefone', clientPhoneNumber)
@@ -1059,13 +1122,12 @@
 
                 let clientData;
                 if (error || !data || data.length === 0) {
-                    // Se não encontrar, usa os dados do agendamento como fallback
-                    clientData = {
-                        nomewpp: item.nome_cliente,
+                     clientData = {
+                        nomewpp: item.nome_cliente || 'Cliente não encontrado',
                         telefone: item.telefone_cliente,
                         data_nascimento: null,
-                        objetivo: null,
-                        comorbidades: null,
+                        objetivo: 'Não informado',
+                        comorbidades: 'Não informado',
                     };
                 } else {
                     clientData = data[0];
@@ -1080,17 +1142,17 @@
                 detailSection.innerHTML = `
                      <div class="flex items-center mb-8">
                          <button id="back-to-previous-view-btn" class="p-2 mr-4 rounded-full hover:bg-[--color-border]"><span class="material-symbols-outlined">arrow_back</span></button>
-                         <h2 class="text-3xl font-bold text-white">Detalhes do Cliente</h2>
+                         <h2 class="text-3xl font-bold">Detalhes do Cliente</h2>
                      </div>
                      <div class="flex items-center gap-4 bg-[--color-surface] p-4 rounded-lg">
                          <img src="https://placehold.co/80x80/393428/FFFFFF?text=${clientInitials}" class="w-20 h-20 rounded-full"/>
                          <div class="flex flex-col justify-center">
-                             <p class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">${clientData.nomewpp}</p>
+                             <p class="text-[22px] font-bold leading-tight tracking-[-0.015em]">${clientData.nomewpp}</p>
                              <p class="text-[--color-text-secondary] text-base font-normal leading-normal">${clientData.telefone}</p>
                          </div>
                      </div>
                      <div class="py-5">
-                        <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] py-4 flex items-center justify-between">
+                        <h3 class="text-lg font-bold leading-tight tracking-[-0.015em] py-4 flex items-center justify-between">
                             <span>Resumo do Cliente</span>
                         </h3>
                          <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 bg-[--color-surface] rounded-lg">
@@ -1099,13 +1161,13 @@
                              <div class="col-span-1 md:col-span-2"><p class="text-[--color-text-secondary] text-sm">Objetivo:</p><p>${clientData.objetivo || 'Não informado'}</p></div>
                              <div class="col-span-1 md:col-span-2"><p class="text-[--color-text-secondary] text-sm">Anotações:</p><p>${clientData.comorbidades || 'Não informado'}</p></div>
                          </div>
-                          <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] py-4">Histórico de Consultas</h3>
+                          <h3 class="text-lg font-bold leading-tight tracking-[-0.015em] py-4">Histórico de Consultas</h3>
                           <div class="overflow-hidden rounded-lg border border-[--color-border] bg-[--color-surface]">
                              <table class="w-full text-left">
                                  <thead class="bg-[--color-surface-light]"><tr>
-                                     <th class="px-4 py-3 text-white text-sm">Data</th>
-                                     <th class="px-4 py-3 text-white text-sm">Tipo</th>
-                                     <th class="px-4 py-3 text-white text-sm">Status</th>
+                                     <th class="px-4 py-3 text-sm">Data</th>
+                                     <th class="px-4 py-3 text-sm">Tipo</th>
+                                     <th class="px-4 py-3 text-sm">Status</th>
                                  </tr></thead>
                                  <tbody>
                                  ${allAppointments && allAppointments.length > 0 ? allAppointments.map(apt => `
@@ -1129,9 +1191,16 @@
                 chatMessages.innerHTML = '';
                 const sessionId = chatId.split('@')[0];
                 const { data, error } = await supabase.from('n8n_chat_histories').select('created_at, content, role').eq('session_id', sessionId).eq('clinic_id', currentClinicId).order('created_at', { ascending: true });
-                if (error) { chatMessages.innerHTML = `<div class="text-center text-red-400">Erro.</div>`; return; }
-                if (data && data.length > 0) data.forEach(appendMessage);
-                else chatMessages.innerHTML = `<div class="text-center text-[--color-text-secondary]">Sem mensagens.</div>`;
+                if (error) { 
+                    console.error("Error fetching messages:", error);
+                    chatMessages.innerHTML = `<div class="text-center text-red-400">Erro ao carregar mensagens.</div>`; 
+                    return; 
+                }
+                if (data && data.length > 0) {
+                    data.forEach(appendMessage);
+                } else {
+                    chatMessages.innerHTML = `<div class="text-center text-[--color-text-secondary]">Sem mensagens.</div>`;
+                }
             }
 
             const appendMessage = (message) => {
@@ -1141,13 +1210,28 @@
                 const messageWrapper = document.createElement('div');
                 messageWrapper.className = `flex w-full mt-2 ${isFromClient ? 'justify-start' : 'justify-end'}`;
 
-                const bgColor = isFromClient ? 'bg-[--color-surface-light]' : 'bg-[#005C4B]';
-                const textColor = 'text-white';
+                const isLightMode = !document.documentElement.classList.contains('dark');
 
+                let bgColor;
+                let textColor;
+
+                if (isFromClient) { // Message from the patient (left side)
+                    bgColor = isLightMode ? 'bg-white' : 'bg-[--color-surface-light]';
+                    textColor = 'text-[--color-text]';
+                } else { // Message from the CRM user (right side)
+                    if(isLightMode) {
+                        bgColor = 'bg-emerald-100'; 
+                        textColor = 'text-emerald-900';
+                    } else {
+                        bgColor = 'bg-[#005C4B]';
+                        textColor = 'text-white';
+                    }
+                }
+                
                 messageWrapper.innerHTML = `
-                    <div class="max-w-xs md:max-w-md lg:max-w-lg">
-                        <div class="text-base font-normal leading-normal rounded-lg px-3 py-2 ${bgColor} ${textColor}" style="white-space: pre-wrap;">
-                            <span>${message.content}</span>
+                    <div class="max-w-[75%]">
+                        <div class="inline-block text-base font-normal leading-normal rounded-lg px-3 py-2 ${bgColor} ${isLightMode && isFromClient ? 'shadow-md' : ''}" style="white-space: pre-wrap;">
+                            <span class="${textColor}">${message.content}</span>
                         </div>
                         <div class="text-xs text-right text-[--color-text-secondary] mt-1 px-1">${formatTimestamp(message.created_at)}</div>
                     </div>`;
@@ -1167,9 +1251,66 @@
                 }
             }
             
+             // --- THEME TOGGLE ---
+            function applyInitialTheme() {
+                const savedTheme = localStorage.getItem('theme') || 'light';
+                const html = document.documentElement;
+
+                if (savedTheme === 'dark') {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    themeToggleButton.checked = true;
+                } else {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    themeToggleButton.checked = false;
+                }
+                updateChartTheme();
+            }
+
+            function toggleTheme() {
+                const html = document.documentElement;
+                
+                if (themeToggleButton.checked) {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateChartTheme();
+            }
+
+            function updateChartTheme() {
+                const isDark = document.documentElement.classList.contains('dark');
+                const textColor = isDark ? '#999999' : '#6B7281';
+                const gridColor = isDark ? '#2D2D2D' : '#E5E7EB';
+                const titleColor = isDark ? '#FFFFFF' : '#1F2937';
+
+                if (consultasChartInstance) {
+                    consultasChartInstance.options.plugins.legend.labels.color = textColor;
+                    consultasChartInstance.options.plugins.title.color = titleColor;
+                    consultasChartInstance.options.scales.y.ticks.color = textColor;
+                    consultasChartInstance.options.scales.y.grid.color = gridColor;
+                    consultasChartInstance.options.scales.x.ticks.color = textColor;
+                    consultasChartInstance.options.scales.x.grid.color = gridColor;
+                    consultasChartInstance.update();
+                }
+                if (conversaoChartInstance) {
+                    conversaoChartInstance.options.plugins.legend.labels.color = textColor;
+                    conversaoChartInstance.options.plugins.title.color = titleColor;
+                    conversaoChartInstance.update();
+                }
+            }
+            
             // --- INICIALIZAÇÃO E EVENT LISTENERS ---
             loginForm.addEventListener('submit', handleLogin);
-            logoutButton.addEventListener('click', () => showLogin());
+            logoutButton.addEventListener('click', () => {
+                unsubscribeFromChannels();
+                showLogin();
+            });
             passwordToggle.addEventListener('click', togglePasswordVisibility);
             if (passwordChangeForm) passwordChangeForm.addEventListener('submit', handleChangePassword);
             
@@ -1204,6 +1345,8 @@
                 fetchAndRenderAgenda();
             });
             document.getElementById('today-btn').addEventListener('click', () => { currentDate = new Date(); fetchAndRenderAgenda(); });
+            themeToggleButton.addEventListener('change', toggleTheme);
+
             
             document.getElementById('view-toggle-buttons').addEventListener('click', (e) => {
                 if (e.target.matches('.view-toggle-btn')) {
@@ -1227,20 +1370,36 @@
             window.addEventListener('click', () => { if (!chatDropdownMenu.classList.contains('hidden')) chatDropdownMenu.classList.add('hidden'); });
 
             // Inicializa Charts
-            const chartOptions = {
-                responsive: true,
-                plugins: { legend: { labels: { color: '#999999' } }, title: { display: true, color: '#FFFFFF' } },
-                scales: { y: { beginAtZero: true, ticks: { color: '#999999' }, grid: { color: '#2D2D2D' } }, x: { ticks: { color: '#999999' }, grid: { color: '#2D2D2D' } } }
-            };
-            const consultasCtx = document.getElementById('consultasChart');
-            if(consultasCtx) {
-                consultasChartInstance = new Chart(consultasCtx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Consultas por Mês', data: [], backgroundColor: 'rgba(242, 173, 13, 0.6)', borderColor: '#F2AD0D', borderWidth: 1 }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Volume de Consultas nos Últimos 6 Meses' } } } });
-            }
-            const conversaoCtx = document.getElementById('conversaoChart');
-            if(conversaoCtx) {
-                conversaoChartInstance = new Chart(conversaoCtx, { type: 'doughnut', data: { labels: ['Convertidos', 'Não Convertidos'], datasets: [{ data: [0, 0], backgroundColor: ['#F2AD0D', '#2D2D2D'] }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Conversão de Contatos' } } } });
+            function initializeCharts() {
+                const isDark = document.documentElement.classList.contains('dark');
+                const textColor = isDark ? '#999999' : '#6B7281';
+                const gridColor = isDark ? '#2D2D2D' : '#E5E7EB';
+                const titleColor = isDark ? '#FFFFFF' : '#1F2937';
+                
+                const chartOptions = {
+                    responsive: true,
+                    plugins: { 
+                        legend: { labels: { color: textColor } }, 
+                        title: { display: true, color: titleColor } 
+                    },
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, 
+                        x: { ticks: { color: textColor }, grid: { color: gridColor } } 
+                    }
+                };
+
+                const consultasCtx = document.getElementById('consultasChart');
+                if(consultasCtx) {
+                    consultasChartInstance = new Chart(consultasCtx, { type: 'bar', data: { labels: [], datasets: [{ label: 'Consultas por Mês', data: [], backgroundColor: 'rgba(242, 173, 13, 0.6)', borderColor: '#F2AD0D', borderWidth: 1 }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Volume de Consultas nos Últimos 6 Meses' } } } });
+                }
+                const conversaoCtx = document.getElementById('conversaoChart');
+                if(conversaoCtx) {
+                    conversaoChartInstance = new Chart(conversaoCtx, { type: 'doughnut', data: { labels: ['Convertidos', 'Não Convertidos'], datasets: [{ data: [0, 0], backgroundColor: ['#F2AD0D', '#2D2D2D'] }] }, options: { ...chartOptions, plugins: { ...chartOptions.plugins, title: { ...chartOptions.plugins.title, text: 'Conversão de Contatos' } } } });
+                }
             }
             
+            initializeCharts();
+            applyInitialTheme();
             checkSession();
         });
     </script>
