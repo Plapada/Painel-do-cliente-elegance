@@ -179,9 +179,11 @@
                 </div>
                 <nav id="nav-links" class="flex items-center gap-9">
                     <a href="#dashboard" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Dashboard</a>
+                    <a href="#funil" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Funil</a>
                     <a href="#conversas" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Conversas</a>
                     <a href="#agendamentos" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Agendamentos</a>
                     <a href="#clientes" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Clientes</a>
+                    <a href="#automacoes" class="nav-link text-sm font-medium leading-normal transition-colors hover:text-[--color-primary]">Automações</a>
                 </nav>
             </div>
             <div class="flex flex-1 justify-end items-center gap-4">
@@ -233,6 +235,49 @@
                     </div>
                 </section>
 
+                 <!-- Seção Funil -->
+                <section id="funil-section" class="page-section hidden h-full">
+                     <div class="flex flex-wrap justify-between gap-3 p-4">
+                        <div class="flex min-w-72 flex-col gap-3">
+                            <h2 class="text-[--color-text] tracking-light text-[32px] font-bold leading-tight">Funil de Vendas</h2>
+                            <p class="text-[--color-text-secondary] text-sm font-normal leading-normal">Gerencie o progresso dos seus clientes</p>
+                        </div>
+                    </div>
+                    <div class="flex-grow flex gap-4 p-4 overflow-x-auto">
+                        <!-- Coluna Lead -->
+                        <div class="w-72 flex-shrink-0 bg-[--color-surface-light] rounded-lg p-3">
+                            <h3 class="font-bold mb-4">Lead</h3>
+                            <div class="space-y-3">
+                                <!-- Card Exemplo -->
+                                <div class="bg-[--color-surface] p-3 rounded-md shadow-sm">
+                                    <p class="font-semibold">Maria Silva</p>
+                                    <p class="text-sm text-[--color-text-secondary] mt-1">Interessada em consulta de avaliação</p>
+                                    <div class="mt-2"><span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">Potencial</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Coluna Contato Inicial -->
+                        <div class="w-72 flex-shrink-0 bg-[--color-surface-light] rounded-lg p-3">
+                            <h3 class="font-bold mb-4">Contato Inicial</h3>
+                             <div class="space-y-3">
+                                <!-- Card Exemplo -->
+                                <div class="bg-[--color-surface] p-3 rounded-md shadow-sm">
+                                    <p class="font-semibold">João Pereira</p>
+                                    <p class="text-sm text-[--color-text-secondary] mt-1">Agendou primeira consulta</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Coluna Negociação -->
+                        <div class="w-72 flex-shrink-0 bg-[--color-surface-light] rounded-lg p-3">
+                            <h3 class="font-bold mb-4">Negociação</h3>
+                        </div>
+                        <!-- Coluna Fechado -->
+                        <div class="w-72 flex-shrink-0 bg-[--color-surface-light] rounded-lg p-3">
+                            <h3 class="font-bold mb-4">Fechado</h3>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Seção Conversas -->
                 <section id="conversas-section" class="page-section hidden h-full">
                     <div class="flex h-full border border-solid border-[--color-border] rounded-md overflow-hidden">
@@ -253,7 +298,7 @@
                                 <!-- A lista de pacientes será renderizada aqui -->
                             </div>
                         </main>
-                        <div id="content-col" class="flex-1 flex flex-col bg-[--color-background] md:relative absolute inset-0 transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0">
+                        <div id="content-col" class="flex-1 flex flex-col bg-[--color-surface] md:relative absolute inset-0 transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0">
                             <div id="chat-placeholder" class="flex flex-1 items-center justify-center text-center">
                                  <div class="p-8 rounded-lg">
                                     <span class="material-symbols-outlined text-6xl opacity-80">chat</span>
@@ -261,7 +306,7 @@
                                 </div>
                             </div>
                             <div id="chat-view" class="hidden flex-col h-full">
-                                <div class="p-3 border-b border-[--color-border] flex justify-between items-center flex-shrink-0 bg-[--color-surface-light]">
+                                <div class="p-3 border-b border-white/10 flex justify-between items-center flex-shrink-0 bg-[--color-surface-light]/80">
                                     <div id="chat-header-normal" class="flex items-center gap-3 w-full">
                                         <button id="back-to-list-btn" class="p-2 mr-2 text-[--color-text-secondary] rounded-full md:hidden">
                                             <span class="material-symbols-outlined">arrow_back</span>
@@ -270,7 +315,7 @@
                                             <img id="chat-avatar" src="" class="w-10 h-10 rounded-full" />
                                             <div>
                                                 <h2 id="chat-name" class="font-bold text-base"></h2>
-                                                <p id="chat-status" class="text-xs text-[--color-text-secondary]"></p>
+                                                <p id="chat-status" class="text-xs text-gray-400"></p>
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2 relative">
@@ -288,7 +333,7 @@
                                 <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-2">
                                     <!-- Mensagens do Chat -->
                                 </div>
-                                <div class="p-3 flex items-center gap-3 bg-[--color-surface]">
+                                <div class="p-3 flex items-center gap-3 bg-[--color-surface]/80">
                                     <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">mood</span></button>
                                     <input id="chat-input" type="text" placeholder="Digite uma mensagem" class="w-full bg-[--color-surface-light] border-none rounded-lg py-3 px-4 focus:outline-none" disabled>
                                     <button class="p-2 text-[--color-text-secondary] rounded-full hover:bg-[--color-surface-light]"><span class="material-symbols-outlined">attach_file</span></button>
@@ -393,6 +438,41 @@
                             </tbody>
                         </table>
                     </div>
+                </section>
+                
+                 <!-- Seção Automações -->
+                <section id="automacoes-section" class="page-section hidden p-4">
+                     <div class="flex flex-wrap justify-between gap-3 mb-4"><p class="text-[--color-text] tracking-light text-[32px] font-bold leading-tight min-w-72">Automações</p></div>
+                     <div class="max-w-4xl space-y-8">
+                         <div>
+                             <h3 class="text-[--color-text] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Envio de Mensagens em Massa</h3>
+                             <div class="space-y-4 p-4 bg-[--color-surface-light] rounded-lg">
+                                <div>
+                                    <label class="block mb-1 text-sm font-medium">Selecione os Clientes (Filtro por Tag)</label>
+                                    <p class="text-xs text-[--color-text-secondary] mb-2">Funcionalidade em desenvolvimento. A seleção de clientes será implementada.</p>
+                                    <div class="p-2 border border-dashed border-[--color-border] rounded-md text-center text-[--color-text-secondary]">
+                                        Área de seleção de clientes
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="bulk-message" class="block mb-1 text-sm font-medium">Mensagem</label>
+                                    <textarea id="bulk-message" rows="4" class="form-textarea w-full rounded-lg text-[--color-text] focus:outline-0 focus:ring-0 border border-[--color-border] bg-[--color-surface] focus:border-[--color-primary] placeholder:text-[--color-text-secondary]" placeholder="Escreva sua mensagem aqui..."></textarea>
+                                </div>
+                                <button class="btn-primary py-2 px-4 text-sm" disabled>Enviar para X clientes</button>
+                             </div>
+                         </div>
+                         <div>
+                            <h3 class="text-[--color-text] text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Chatbot / Secretária Virtual</h3>
+                            <div class="space-y-4 p-4 bg-[--color-surface-light] rounded-lg">
+                               <p class="text-sm text-[--color-text-secondary]">Configurações da secretária virtual para respostas automáticas. Requer implementação do "Agente".</p>
+                                <div class="flex items-center justify-between p-3 bg-[--color-surface] rounded-lg">
+                                    <label for="chatbot-toggle" class="font-medium">Ativar Respostas Automáticas</label>
+                                    <input type="checkbox" id="chatbot-toggle" class="sr-only peer" disabled>
+                                    <div class="relative w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-400"></div>
+                                </div>
+                            </div>
+                         </div>
+                     </div>
                 </section>
 
                 <!-- Seção Configurações/Perfil -->
@@ -1229,8 +1309,8 @@
                 }
                 
                 messageWrapper.innerHTML = `
-                    <div class="max-w-[75%]">
-                        <div class="inline-block text-base font-normal leading-normal rounded-lg px-3 py-2 ${bgColor} ${isLightMode && isFromClient ? 'shadow-md' : ''}" style="white-space: pre-wrap;">
+                    <div class="max-w-xs md:max-w-md lg:max-w-lg inline-block">
+                        <div class="text-base font-normal leading-normal rounded-lg px-3 py-2 ${bgColor} ${isLightMode && isFromClient ? 'shadow-md' : ''}" style="white-space: pre-wrap;">
                             <span class="${textColor}">${message.content}</span>
                         </div>
                         <div class="text-xs text-right text-[--color-text-secondary] mt-1 px-1">${formatTimestamp(message.created_at)}</div>
