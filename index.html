@@ -153,7 +153,7 @@
 
             .light .dashboard-card {
                 background-color: hsl(var(--secondary));
-                border: 1px solid hsl(var(--border));
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             }
 
              .material-symbols-outlined {
@@ -162,6 +162,13 @@
                 'wght' 400,
                 'GRAD' 0,
                 'opsz' 24
+            }
+            
+            #mobile-bottom-nav .nav-link.active {
+                color: hsl(var(--primary));
+            }
+            #mobile-bottom-nav .nav-link.active .material-symbols-outlined {
+                font-variation-settings: 'FILL' 1;
             }
 
         }
@@ -202,7 +209,7 @@
 
 <body class="antialiased">
 
-    <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden lg:hidden"></div>
+    <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden"></div>
 
     <!-- Seção de Login Aprimorada -->
     <section id="auth-section" class="min-h-screen w-full bg-background flex flex-col md:flex-row">
@@ -259,7 +266,7 @@
     <div id="app" class="h-screen w-full flex hidden">
         <!-- Sidebar -->
         <aside id="app-sidebar"
-            class="w-64 lg:w-20 border-r bg-card flex-col fixed inset-y-0 z-50 h-full hidden lg:flex transition-all duration-300 ease-in-out overflow-hidden">
+            class="w-64 lg:w-20 border-r bg-card flex-col fixed inset-y-0 z-50 h-full hidden md:flex transition-all duration-300 ease-in-out overflow-hidden">
             <div class="flex flex-col h-full">
                 <!-- Top Part: Logo & Nav -->
                 <div class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
@@ -327,18 +334,18 @@
         </aside>
 
         <!-- Main Content -->
-        <div id="main-content-wrapper" class="flex flex-col flex-1 lg:pl-20 transition-all duration-300 ease-in-out">
-            <main id="main-content" class="relative flex-1 bg-background overflow-y-auto pt-16">
+        <div id="main-content-wrapper" class="flex flex-col flex-1 md:pl-20 transition-all duration-300 ease-in-out">
+            <main id="main-content" class="relative flex-1 bg-background overflow-y-auto pb-16 md:pb-0">
                  <div class="absolute top-6 right-6 z-50 flex items-center gap-4">
                      <div id="theme-toggle-container"></div>
-                     <button id="mobile-menu-button" class="lg:hidden p-2 rounded-md hover:bg-muted text-foreground">
+                     <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-muted text-foreground">
                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                      </button>
                  </div>
 
                  <!-- Seção Dashboard -->
                  <section id="dashboard-section" class="page-section hidden p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8">Dashboard</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Dashboard</h1>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-8">
                             <!-- Stats -->
@@ -412,7 +419,7 @@
 
                 <!-- Seção Funil -->
                 <section id="funil-section" class="page-section hidden h-full p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8">Funil de Vendas</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Funil de Vendas</h1>
                     <div class="flex flex-col h-full">
                         <div class="flex-grow flex gap-4 overflow-x-auto pb-4">
                             <!-- Coluna -->
@@ -471,9 +478,9 @@
                 <section id="conversas-section" class="page-section hidden h-full">
                      <div class="flex h-full w-full">
                          <!-- Coluna da Lista de Conversas -->
-                        <aside class="w-full md:w-[360px] bg-card flex flex-col border-r">
+                        <aside id="chat-list-column" class="w-full md:w-[360px] bg-card flex flex-col border-r">
                             <div class="p-4">
-                                <h1 class="text-2xl font-bold text-foreground mb-4">Conversas</h1>
+                                <h1 class="text-2xl font-bold text-foreground mb-4 pt-12 md:pt-0">Conversas</h1>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
                                     <input id="chat-search-input" class="w-full bg-muted border-none rounded-lg h-12 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary" placeholder="Pesquisar por cliente..." type="text"/>
@@ -522,7 +529,7 @@
 
                 <!-- Seção Agendamentos -->
                 <section id="agendamentos-section" class="page-section hidden flex flex-col md:flex-row gap-6 h-full p-4 md:p-6 lg:p-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute">Agendamentos</h1>
+                        <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute pt-8 md:pt-0">Agendamentos</h1>
                          <div class="md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
                              <div id="full-calendar-container"></div>
                         </div>
@@ -580,7 +587,7 @@
 
                 <!-- Seção Clientes -->
                 <section id="clientes-section" class="page-section hidden p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8">Clientes</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Clientes</h1>
                     <div class="rounded-xl border bg-card text-card-foreground shadow">
                         <div class="p-4 border-b flex items-center justify-between">
                             <div class="relative w-full max-w-sm">
@@ -598,8 +605,10 @@
                                 class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 cursor-not-allowed">Adicionar
                                 Cliente</button>
                         </div>
-                        <div class="p-4">
-                            
+                        <div class="p-4 md:hidden" id="client-list-container">
+                             <!-- Client cards for mobile will be injected here -->
+                        </div>
+                        <div class="p-4 hidden md:block">
                             <div class="relative w-full overflow-auto">
                                 <table class="w-full caption-bottom text-sm">
                                     <thead class="[&_tr]:border-b">
@@ -626,7 +635,7 @@
 
                 <!-- Seção Automações -->
                 <section id="automacoes-section" class="page-section hidden max-w-4xl mx-auto space-y-8 p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8">Automações</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Automações</h1>
                     <div class="rounded-xl border bg-card text-card-foreground shadow">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-foreground">Envio de Mensagens em Massa</h3>
@@ -660,7 +669,7 @@
 
                 <!-- Seção Configurações/Perfil -->
                 <section id="configuracoes-section" class="page-section hidden max-w-2xl mx-auto space-y-8 p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8">Configurações</h1>
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Configurações</h1>
                     <div class="rounded-xl border bg-card text-card-foreground shadow">
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-foreground">Informações da Clínica</h3>
@@ -705,6 +714,30 @@
             </main>
         </div>
     </div>
+    
+     <!-- Bottom Nav for Mobile -->
+    <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 h-16 bg-card border-t flex md:hidden z-50">
+         <a href="#dashboard" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+             <span class="material-symbols-outlined">dashboard</span>
+             <span class="text-xs">Dashboard</span>
+         </a>
+         <a href="#clientes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+             <span class="material-symbols-outlined">group</span>
+             <span class="text-xs">Clientes</span>
+         </a>
+         <a href="#agendamentos" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+             <span class="material-symbols-outlined">calendar_month</span>
+             <span class="text-xs">Agenda</span>
+         </a>
+         <a href="#conversas" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+             <span class="material-symbols-outlined">chat</span>
+             <span class="text-xs">Conversas</span>
+         </a>
+         <a href="#configuracoes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+             <span class="material-symbols-outlined">settings</span>
+             <span class="text-xs">Ajustes</span>
+         </a>
+    </nav>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -734,7 +767,9 @@
             const passwordToggle = document.getElementById('password-toggle');
             const pageSections = document.querySelectorAll('.page-section');
             const navLinks = document.getElementById('nav-links');
+            const mobileNavLinks = document.getElementById('mobile-bottom-nav');
             const clientTableBody = document.getElementById('client-table-body');
+            const clientListContainer = document.getElementById('client-list-container');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const appSidebar = document.getElementById('app-sidebar');
             const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
@@ -776,7 +811,7 @@
                     indicator.style.transform = 'translateX(0px)';
                     indicator.classList.add('bg-zinc-800');
                     indicator.classList.remove('bg-gray-200');
-                    indicator.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+                    indicator.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
                     placeholder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
 
                 } else {
@@ -788,7 +823,7 @@
                     indicator.classList.remove('bg-zinc-800');
                     indicator.classList.add('bg-gray-200');
                     indicator.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
-                    placeholder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+                    placeholder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
                 }
                 updateChartTheme();
             };
@@ -891,13 +926,17 @@
                 } else {
                     document.getElementById('dashboard-section').classList.remove('hidden');
                 }
-
+                
                 appSidebar.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
+                mobileNavLinks.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
+                
                 const navHash = currentHash.split('-')[0];
                 const activeLink = appSidebar.querySelector(`a[href="${navHash}"]`);
-                if (activeLink) {
-                    activeLink.classList.add('active');
-                }
+                if (activeLink) activeLink.classList.add('active');
+
+                const activeMobileLink = mobileNavLinks.querySelector(`a[href="${navHash}"]`);
+                if(activeMobileLink) activeMobileLink.classList.add('active');
+
 
                 if (!currentClinicId) return;
 
@@ -908,6 +947,18 @@
                     case '#clientes': await fetchClients(); break;
                     case '#conversas': await fetchChats(); break;
                     case '#agendamentos': await fetchAndRenderAgenda(); break;
+                    case '#client': 
+                        const clientId = currentHash.split('-detail-')[1];
+                        if (!allClients || allClients.length === 0) await fetchClients(); // Fetch if not available
+                        const client = allClients.find(c => (c.telefone || c.telefone_cliente || '').replace(/\D/g, '') === clientId);
+                        if(client) await renderClientDetailsPage(client, '#clientes');
+                        break;
+                    case '#appointment': 
+                        const appointmentId = currentHash.split('-detail-')[1];
+                         if (!allAppointments || allAppointments.length === 0) await fetchAndRenderAgenda(); // Fetch if not available
+                        const appointment = allAppointments.find(a => a.id == appointmentId);
+                        if(appointment) await renderAppointmentDetailsPage(appointment, '#agendamentos');
+                        break;
                 }
             };
             
@@ -1209,14 +1260,33 @@
 
             const renderClientList = (clients) => {
                 clientTableBody.innerHTML = '';
+                clientListContainer.innerHTML = '';
+
                 if (!clients || clients.length === 0) {
-                    clientTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</td></tr>`;
+                     const noClientsHtml = `<tr><td colspan="3" class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</td></tr>`;
+                     clientTableBody.innerHTML = noClientsHtml;
+                     clientListContainer.innerHTML = `<div class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</div>`
                     return;
                 }
 
                 clients.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
+                
                 clients.forEach(client => {
+                    // Render for mobile (cards)
+                    const card = document.createElement('div');
+                    card.className = 'bg-card p-4 rounded-lg shadow mb-2 border flex items-center gap-4';
+                    card.innerHTML = `
+                         <img src="https://placehold.co/40x40/f59e0b/000000?text=${getInitials(client.nomewpp)}" class="w-10 h-10 rounded-full">
+                         <div class="flex-1">
+                            <p class="font-medium">${htmlEncode(client.nomewpp)}</p>
+                            <p class="text-sm text-muted-foreground">${htmlEncode(client.telefone)}</p>
+                         </div>
+                         <span class="text-xs text-muted-foreground">${new Date(client.created_at).toLocaleDateString('pt-BR')}</span>
+                    `;
+                    card.addEventListener('click', () => showClientDetailsView(client, '#clientes'));
+                    clientListContainer.appendChild(card);
+                    
+                    // Render for desktop (table)
                     const row = document.createElement('tr');
                     row.className = 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer';
                     row.innerHTML = `<td class="p-4 align-middle font-medium">${htmlEncode(client.nomewpp)}</td><td class="p-4 align-middle text-muted-foreground">${htmlEncode(client.telefone)}</td><td class="p-4 align-middle text-muted-foreground">${new Date(client.created_at).toLocaleDateString('pt-BR')}</td>`;
@@ -1232,17 +1302,27 @@
                 if (!clientPhoneNumber) return;
 
                 window.location.hash = `#client-detail-${clientPhoneNumber}`;
+            }
+            
+            async function showAppointmentDetailsView(appointment, backHash) {
+                if (!currentClinicId || !appointment) return;
+                window.location.hash = `#appointment-detail-${appointment.id}`;
+            }
+
+             async function renderClientDetailsPage(client, backHash) {
                 const detailSection = document.getElementById('client-detail-section');
                 detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
+
+                const clientPhoneNumber = (client.telefone || client.telefone_cliente || '').replace(/\D/g, '');
 
                 const [{ data: clientDetailsData }, { data: appointmentsData }] = await Promise.all([
                     supabase.from('dados_cliente').select('*').eq('telefone', clientPhoneNumber).eq('clinic_id', currentClinicId).limit(1),
                     supabase.from('consultas').select('*').eq('telefone_cliente', clientPhoneNumber).eq('clinic_id', currentClinicId).order('data_inicio', { ascending: false })
                 ]);
+                
+                const clientData = (clientDetailsData && clientDetailsData.length > 0) ? clientDetailsData[0] : client;
 
-                const clientData = (clientDetailsData && clientDetailsData.length > 0) ? clientDetailsData[0] : { nomewpp: client.nome_cliente || 'Cliente não encontrado', telefone: client.telefone_cliente, objetivo: 'Não informado', comorbidades: 'Não informado' };
-
-                const clientInitials = getInitials(clientData.nomewpp);
+                const clientInitials = getInitials(clientData.nomewpp || clientData.nome_cliente);
                 const age = calculateAge(clientData.data_nascimento);
                 const formattedBirthdate = clientData.data_nascimento ? new Date(clientData.data_nascimento).toLocaleDateString('pt-BR') : 'Não informado';
                 
@@ -1267,7 +1347,7 @@
                 `;
                 
                 detailSection.innerHTML = `
-                    <div class="max-w-6xl mx-auto space-y-8">
+                    <div class="max-w-6xl mx-auto space-y-8 pt-8 md:pt-0">
                         <div>
                             <button id="back-to-previous-view-btn" class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
@@ -1278,17 +1358,15 @@
 
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div class="lg:col-span-1 flex flex-col gap-8">
-                                <!-- Client Info Card -->
                                 <div class="bg-card p-6 rounded-xl border flex flex-col items-center text-center">
                                      <img class="h-24 w-24 rounded-full object-cover mb-4" src="https://placehold.co/96x96/f59e0b/000000?text=${clientInitials}" alt="Foto de perfil">
-                                     <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp)}</h3>
+                                     <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp || clientData.nome_cliente)}</h3>
                                      <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>
                                      <div class="text-sm text-muted-foreground mt-4 space-y-1">
                                          <p><strong>Nascimento:</strong> ${formattedBirthdate}</p>
                                          <p><strong>Idade:</strong> ${age ? `${age} anos` : 'Não informada'}</p>
                                      </div>
                                 </div>
-                                 <!-- Conversation Summary Card -->
                                 <div class="bg-card p-6 rounded-xl border">
                                     <div class="flex justify-between items-center mb-4">
                                         <h4 class="font-semibold text-foreground">Resumo da Conversa</h4>
@@ -1300,7 +1378,6 @@
                                 </div>
                             </div>
                             <div class="lg:col-span-2 space-y-8">
-                                 <!-- Appointments -->
                                 <div>
                                     <h4 class="font-semibold text-foreground mb-4">Consultas Futuras</h4>
                                     <div id="future-appointments" class="space-y-3">
@@ -1317,14 +1394,11 @@
                         </div>
                     </div>
                 `;
-                
-                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', () => window.location.hash = backHash );
+                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = backHash; });
             }
-            
-            async function showAppointmentDetailsView(appointment, backHash) {
-                if (!currentClinicId || !appointment) return;
-                window.location.hash = `#appointment-detail-${appointment.id}`;
-                const detailSection = document.getElementById('appointment-detail-section');
+
+            async function renderAppointmentDetailsPage(appointment, backHash){
+                 const detailSection = document.getElementById('appointment-detail-section');
                 detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
 
                 const { data: clientData, error } = await supabase.from('dados_cliente')
@@ -1340,7 +1414,7 @@
                         <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>`;
 
                 detailSection.innerHTML = `
-                    <div class="max-w-6xl mx-auto">
+                    <div class="max-w-6xl mx-auto pt-8 md:pt-0">
                         <div class="flex items-center mb-6">
                             <button id="back-to-previous-view-btn" class="p-2 mr-4 rounded-full hover:bg-muted text-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
                             <h1 class="text-3xl font-bold tracking-tight text-foreground">Detalhes da Consulta</h1>
@@ -1363,7 +1437,7 @@
                         </div>
                     </div>
                 `;
-                 detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', () => window.location.hash = backHash );
+                 detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = backHash; });
             }
 
 
@@ -1597,22 +1671,23 @@
                 const messagesContainer = document.getElementById('new-chat-messages');
                 const isFromClient = message.role?.toLowerCase() === 'user';
                 const messageWrapper = document.createElement('div');
-                messageWrapper.className = `flex items-start gap-4 max-w-lg ${isFromClient ? '' : 'ml-auto flex-row-reverse'}`;
+                messageWrapper.className = `flex items-end gap-3 max-w-lg ${isFromClient ? '' : 'ml-auto flex-row-reverse'}`;
                 
                 const initials = getInitials(isFromClient ? clientName : 'Admin');
-                 const avatarSrc = isFromClient ? `https://placehold.co/40x40/f59e0b/000000?text=${initials}` : document.getElementById('user-avatar-header').src;
+                const avatarSrc = isFromClient ? `https://placehold.co/40x40/f59e0b/000000?text=${initials}` : document.getElementById('user-avatar-header').src;
+                const timeAlignment = isFromClient ? 'text-left' : 'text-right';
+                const bubbleClasses = isFromClient ? 'bg-card rounded-tl-none' : 'bg-primary text-white rounded-tr-none';
 
                 messageWrapper.innerHTML = `
-                    <img class="h-10 w-10 rounded-full object-cover" src="${avatarSrc}" alt="Avatar">
-                    <div class="bg-card p-4 rounded-lg ${isFromClient ? 'rounded-tl-none' : 'rounded-tr-none'}">
-                        <p class="text-foreground">${htmlEncode(message.content)}</p>
-                        <span class="text-xs text-muted-foreground mt-1 block text-right">${formatTimestamp(message.created_at)}</span>
+                    <img class="h-10 w-10 rounded-full object-cover shrink-0" src="${avatarSrc}" alt="Avatar">
+                    <div class="flex flex-col">
+                        <div class="${bubbleClasses} p-4 rounded-lg">
+                            <p>${htmlEncode(message.content)}</p>
+                        </div>
+                        <span class="text-xs text-muted-foreground mt-1 px-2 ${timeAlignment}">${formatTimestamp(message.created_at)}</span>
                     </div>
                 `;
-                if (!isFromClient) {
-                     messageWrapper.querySelector('.bg-card').classList.add('bg-primary', 'text-white');
-                     messageWrapper.querySelector('span').classList.add('text-blue-200');
-                }
+
                 messagesContainer.appendChild(messageWrapper);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             };
@@ -2013,17 +2088,21 @@
             document.getElementById('password-change-form').addEventListener('submit', handleChangePassword);
 
             window.addEventListener('hashchange', () => showSection(window.location.hash));
-            navLinks.addEventListener('click', (e) => {
+            
+            const handleNavClick = (e) => {
                 const link = e.target.closest('a');
                 if (link && link.hash) {
                     e.preventDefault();
                     window.location.hash = link.hash;
-                    if (window.innerWidth < 1024) {
+                    if (window.innerWidth < 768) { // Only for mobile sidebar
                         appSidebar.classList.add('hidden');
                         mobileMenuOverlay.classList.add('hidden');
                     }
                 }
-            });
+            };
+            
+            navLinks.addEventListener('click', handleNavClick);
+            mobileNavLinks.addEventListener('click', handleNavClick);
 
             document.getElementById('user-profile-link-wrapper').addEventListener('click', (e) => {
                  const link = e.target.closest('a');
@@ -2047,24 +2126,26 @@
             
 
             const agendaSection = document.getElementById('agendamentos-section');
-            agendaSection.addEventListener('click', (e) => {
-                 if (e.target.closest('#today-btn')) {
-                    currentDate = new Date();
-                    fetchAndRenderAgenda();
-                 }
-                 if (e.target.closest('#prev-week-btn')) {
-                    currentDate.setDate(currentDate.getDate() - (currentCalendarView === 'daily' ? 1 : 7));
-                    fetchAndRenderAgenda();
-                 }
-                 if (e.target.closest('#next-week-btn')) {
-                    currentDate.setDate(currentDate.getDate() + (currentCalendarView === 'daily' ? 1 : 7));
-                    fetchAndRenderAgenda();
-                 }
-                 if(e.target.matches('.view-toggle-btn')) {
-                    currentCalendarView = e.target.dataset.view;
-                    renderAgendaView();
-                }
-            });
+            if(agendaSection) {
+                agendaSection.addEventListener('click', (e) => {
+                     if (e.target.closest('#today-btn')) {
+                        currentDate = new Date();
+                        fetchAndRenderAgenda();
+                     }
+                     if (e.target.closest('#prev-week-btn')) {
+                        currentDate.setDate(currentDate.getDate() - (currentCalendarView === 'daily' ? 1 : 7));
+                        fetchAndRenderAgenda();
+                     }
+                     if (e.target.closest('#next-week-btn')) {
+                        currentDate.setDate(currentDate.getDate() + (currentCalendarView === 'daily' ? 1 : 7));
+                        fetchAndRenderAgenda();
+                     }
+                     if(e.target.matches('.view-toggle-btn')) {
+                        currentCalendarView = e.target.dataset.view;
+                        renderAgendaView();
+                    }
+                });
+            }
 
 
             const newChatInput = document.getElementById('new-chat-input');
@@ -2103,3 +2184,4 @@
 </body>
 
 </html>
+
