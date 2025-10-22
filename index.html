@@ -61,6 +61,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <style>
         @layer base {
@@ -179,15 +180,55 @@
                     'GRAD' 0,
                     'opsz' 24
             }
+        }
 
-            #mobile-bottom-nav .nav-link.active {
-                color: hsl(var(--primary));
-            }
+        /* View Transition API styles */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+        ::view-transition-old(root) {
+            z-index: 1;
+        }
+        ::view-transition-new(root) {
+            z-index: 9999;
+        }
 
-            #mobile-bottom-nav .nav-link.active .material-symbols-outlined {
-                font-variation-settings: 'FILL' 1;
-            }
+        /* Estilos do Kanban */
+        .kanban-card {
+            @apply rounded-lg border bg-card text-card-foreground shadow-sm p-4 cursor-grab;
+        }
+        .kanban-card:active {
+            @apply cursor-grabbing shadow-lg scale-105;
+        }
+        .sortable-ghost {
+            @apply opacity-40 bg-muted rounded-lg;
+        }
+        .sortable-chosen {
+             @apply shadow-xl scale-105;
+        }
+        .kanban-badge {
+            @apply inline-flex items-center rounded-sm px-1.5 text-[11px] font-semibold;
+        }
+        .kanban-badge-destructive {
+            @apply bg-destructive/20 text-destructive dark:text-red-500;
+        }
+        .kanban-badge-primary {
+            @apply bg-primary/10 text-primary dark:text-amber-400;
+        }
+        .kanban-badge-warning {
+            @apply bg-yellow-400/20 text-yellow-600 dark:text-yellow-400;
+        }
 
+        /* Melhorias visuais para o modo claro do Kanban */
+        .light .kanban-cards-container {
+            background-color: hsl(var(--secondary));
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+        }
+        .light .kanban-card {
+            background-color: hsl(var(--card));
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
         }
 
         ::-webkit-scrollbar {
@@ -242,6 +283,9 @@
         }
         .animated-input:focus {
             background-color: var(--color-bg);
+        }
+        .dark #auth-section input {
+            color: hsl(var(--foreground));
         }
     </style>
 </head>
@@ -356,7 +400,7 @@
                         </a>
                         <a href="#funil" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
-                                <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4s1.8-1.7 1.8-3c0-1.5-1.1-2.8-2.6-3.2-.2-1.2-1.3-2.3-2.8-2.3z" />
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                             </svg>
                             <span class="nav-text whitespace-pre hidden">Funil</span>
                         </a>
@@ -528,54 +572,10 @@
                 </section>
 
                 <!-- Seção Funil -->
-                <section id="funil-section" class="page-section hidden h-full p-4 md:p-6 lg:p-8">
+                <section id="funil-section" class="page-section hidden h-full flex flex-col p-4 md:p-6 lg:p-8">
                     <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Funil de Vendas</h1>
-                    <div class="flex flex-col h-full">
-                        <div class="flex-grow flex gap-4 overflow-x-auto pb-4">
-                            <!-- Coluna -->
-                            <div class="w-72 md:w-80 flex-shrink-0">
-                                <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Lead <span class="text-sm font-normal text-muted-foreground">(Em
-                                            breve)</span></h3>
-                                </div>
-                                <div class="space-y-3 p-1 h-full bg-muted/50 rounded-lg">
-                                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
-                                        <p class="font-semibold text-sm">Maria Silva</p>
-                                        <p class="text-xs text-muted-foreground mt-1">Interessada em consulta de
-                                            avaliação</p>
-                                        <div class="mt-2"><span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground">Potencial</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Coluna -->
-                            <div class="w-72 md:w-80 flex-shrink-0">
-                                <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Contato Inicial <span class="text-sm font-normal text-muted-foreground">(Em
-                                            breve)</span></h3>
-                                </div>
-                                <div class="space-y-3 p-1 h-full bg-muted/50 rounded-lg">
-                                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
-                                        <p class="font-semibold text-sm">João Pereira</p>
-                                        <p class="text-xs text-muted-foreground mt-1">Agendou primeira consulta</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Coluna -->
-                            <div class="w-72 md:w-80 flex-shrink-0">
-                                <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Negociação</h3>
-                                </div>
-                                <div class="p-1 h-full bg-muted/50 rounded-lg"></div>
-                            </div>
-                            <!-- Coluna -->
-                            <div class="w-72 md:w-80 flex-shrink-0">
-                                <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Fechado</h3>
-                                </div>
-                                <div class="p-1 h-full bg-muted/50 rounded-lg"></div>
-                            </div>
-                        </div>
+                    <div id="kanban-board-container" class="flex-grow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Columns will be injected by JS -->
                     </div>
                 </section>
 
@@ -785,28 +785,27 @@
     </div>
 
     <!-- Bottom Nav for Mobile -->
-    <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 h-16 bg-card border-t flex md:hidden z-50">
-        <a href="#dashboard" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <span class="material-symbols-outlined">dashboard</span>
-            <span class="text-xs">Dashboard</span>
-        </a>
-        <a href="#clientes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <span class="material-symbols-outlined">group</span>
-            <span class="text-xs">Clientes</span>
-        </a>
-        <a href="#agendamentos" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <span class="material-symbols-outlined">calendar_month</span>
-            <span class="text-xs">Agenda</span>
-        </a>
-        <a href="#conversas" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <span class="material-symbols-outlined">chat</span>
-            <span class="text-xs">Conversas</span>
-        </a>
-        <a href="#configuracoes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-            <span class="material-symbols-outlined">settings</span>
-            <span class="text-xs">Ajustes</span>
-        </a>
+    <nav id="new-mobile-nav" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-[calc(100%-2rem)] sm:max-w-sm px-2 md:hidden">
+        <div id="mobile-nav-container" class="relative flex items-center justify-around bg-card shadow-xl rounded-full p-1 border border-border/80">
+            <div id="mobile-nav-indicator" class="absolute top-1 bottom-1 rounded-full bg-primary/20" style="transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);"></div>
+            <a href="#dashboard" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            <a href="#clientes" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </a>
+            <a href="#agendamentos" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+            </a>
+            <a href="#conversas" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+            </a>
+            <a href="#configuracoes" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+        </div>
     </nav>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -828,6 +827,8 @@
             let consultasChartInstance, conversionChartInstance;
             let clientListSubscription = null;
             let neuralNetworkAnimationScene = null;
+            let isThemeTransitioning = false;
+
 
             const appDiv = document.getElementById('app');
             const authSection = document.getElementById('auth-section');
@@ -836,7 +837,6 @@
             const passwordToggle = document.getElementById('password-toggle');
             const pageSections = document.querySelectorAll('.page-section');
             const navLinks = document.getElementById('nav-links');
-            const mobileNavLinks = document.getElementById('mobile-bottom-nav');
             const clientTableBody = document.getElementById('client-table-body');
             const clientListContainer = document.getElementById('client-list-container');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -850,100 +850,178 @@
 
             const renderThemeToggle = () => {
                 themeToggleContainer.innerHTML = `
-                    <div id="theme-toggle" class="flex w-14 h-7 p-1 rounded-full cursor-pointer transition-all duration-300">
-                        <div class="flex justify-between items-center w-full">
-                            <div id="theme-toggle-indicator" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
-                                <!-- Icons will be injected here -->
-                            </div>
-                            <div id="theme-toggle-placeholder" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
-                                <!-- Icons will be injected here -->
-                            </div>
-                        </div>
-                    </div>
+                    <button id="theme-toggle" type="button" aria-label="Switch theme" class="relative flex items-center justify-center p-2 rounded-full outline-none focus:outline-none active:outline-none focus:ring-0 cursor-pointer w-9 h-9 overflow-hidden bg-muted">
+                        <span class="sun-icon hidden text-foreground transition-all duration-300">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                        </span>
+                        <span class="moon-icon hidden text-foreground transition-all duration-300">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                        </span>
+                    </button>
                 `;
                 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
                 applyInitialTheme();
             };
 
-            const syncThemeUI = (isDark) => {
-                const toggle = document.getElementById('theme-toggle');
-                const indicator = document.getElementById('theme-toggle-indicator');
-                const placeholder = document.getElementById('theme-toggle-placeholder');
+            const toggleTheme = async () => {
+                const buttonRef = document.getElementById('theme-toggle');
+                if (!buttonRef || isThemeTransitioning) return;
 
-                if (!toggle || !indicator || !placeholder) return;
+                if (!document.startViewTransition) {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+                    syncThemeUI(!isDark);
+                    return;
+                }
 
+                isThemeTransitioning = true;
+                const isDark = document.documentElement.classList.contains('dark');
+                const { left, top, width, height } = buttonRef.getBoundingClientRect();
+                const centerX = left + width / 2;
+                const centerY = top + height / 2;
+                const maxDistance = Math.hypot(
+                    Math.max(centerX, window.innerWidth - centerX),
+                    Math.max(centerY, window.innerHeight - centerY)
+                );
+
+                const transition = document.startViewTransition(() => {
+                    syncThemeUI(!isDark, true); // Update class, skip icon animation
+                });
+
+                await transition.ready;
+                
+                document.documentElement.animate({
+                    clipPath: [
+                        `circle(0px at ${centerX}px ${centerY}px)`,
+                        `circle(${maxDistance}px at ${centerX}px ${centerY}px)`,
+                    ],
+                }, {
+                    duration: 500,
+                    easing: 'ease-in-out',
+                    pseudoElement: '::view-transition-new(root)',
+                });
+
+                transition.finished.then(() => {
+                    localStorage.setItem('theme', !isDark ? 'dark' : 'light');
+                    animateThemeIcon(!isDark);
+                    isThemeTransitioning = false;
+                });
+            };
+
+            const animateThemeIcon = (isDark) => {
+                 const buttonRef = document.getElementById('theme-toggle');
+                 if(!buttonRef) return;
+                 const sunIcon = buttonRef.querySelector('.sun-icon');
+                 const moonIcon = buttonRef.querySelector('.moon-icon');
+                 const iconToShow = isDark ? sunIcon : moonIcon;
+                 const iconToHide = isDark ? moonIcon : sunIcon;
+                 
+                 gsap.to(iconToHide, { opacity: 0, scale: 0.5, rotate: isDark ? 25 : -25, duration: 0.2, onComplete: () => {
+                    iconToHide.classList.add('hidden');
+                    iconToShow.classList.remove('hidden');
+                    gsap.fromTo(iconToShow, { opacity: 0, scale: 0.5, rotate: isDark ? -25 : 25 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.3 });
+                }});
+            }
+
+            const syncThemeUI = (isDark, skipAnimation = false) => {
                 if (isDark) {
                     document.documentElement.classList.add('dark');
                     document.documentElement.classList.remove('light');
-                    toggle.classList.add('bg-zinc-950', 'border', 'border-zinc-800');
-                    toggle.classList.remove('bg-white', 'border', 'border-zinc-200');
-                    indicator.style.transform = 'translateX(0px)';
-                    indicator.classList.add('bg-zinc-800');
-                    indicator.classList.remove('bg-gray-200');
-                    indicator.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
-                    placeholder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
-
                 } else {
                     document.documentElement.classList.remove('dark');
                     document.documentElement.classList.add('light');
-                    toggle.classList.remove('bg-zinc-950', 'border', 'border-zinc-800');
-                    toggle.classList.add('bg-white', 'border', 'border-zinc-200');
-                    indicator.style.transform = 'translateX(24px)';
-                    indicator.classList.remove('bg-zinc-800');
-                    indicator.classList.add('bg-gray-200');
-                    indicator.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4b5563" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`;
-                    placeholder.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+                }
+                if (!skipAnimation) {
+                     const buttonRef = document.getElementById('theme-toggle');
+                     if(!buttonRef) return;
+                     const sunIcon = buttonRef.querySelector('.sun-icon');
+                     const moonIcon = buttonRef.querySelector('.moon-icon');
+                     if(isDark) {
+                         moonIcon.classList.add('hidden');
+                         sunIcon.classList.remove('hidden');
+                         gsap.fromTo(sunIcon, { opacity: 0, scale: 0.5, rotate: -25 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.3 });
+                     } else {
+                         sunIcon.classList.add('hidden');
+                         moonIcon.classList.remove('hidden');
+                         gsap.fromTo(moonIcon, { opacity: 0, scale: 0.5, rotate: 25 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.3 });
+                     }
                 }
                 updateChartTheme();
             };
-
+            
             const applyInitialTheme = () => {
-                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const session = localStorage.getItem('clinicSession') || sessionStorage.getItem('clinicSession');
+                const savedTheme = session ? (localStorage.getItem('theme') || 'light') : 'dark';
                 syncThemeUI(savedTheme === 'dark');
             };
-
-            const toggleTheme = () => {
-                const isDark = document.documentElement.classList.contains('dark');
-                localStorage.setItem('theme', isDark ? 'light' : 'dark');
-                syncThemeUI(!isDark);
-            };
-
 
             // -----------------------------------------------------------------------------
             // 3. LÓGICA PRINCIPAL DA APLICAÇÃO (AUTENTICAÇÃO E NAVEGAÇÃO)
             // -----------------------------------------------------------------------------
 
-            const showApp = (clinicData, rememberMe) => {
-                // MODIFICAÇÃO: Força o light mode ao entrar no app
-                localStorage.setItem('theme', 'light');
-                syncThemeUI(false); 
-                // FIM DA MODIFICAÇÃO
+            const showApp = async (clinicData, rememberMe) => {
+                const performTransition = () => {
+                    localStorage.setItem('theme', 'light');
+                    syncThemeUI(false, true);
 
-                currentClinicId = clinicData.clinic_id;
-                const storage = rememberMe ? localStorage : sessionStorage;
-                storage.setItem('clinicSession', JSON.stringify(clinicData));
+                    currentClinicId = clinicData.clinic_id;
+                    const storage = rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('clinicSession', JSON.stringify(clinicData));
 
-                if (neuralNetworkAnimationScene && neuralNetworkAnimationScene.animationId) {
-                  cancelAnimationFrame(neuralNetworkAnimationScene.animationId);
+                    if (neuralNetworkAnimationScene && neuralNetworkAnimationScene.animationId) {
+                        cancelAnimationFrame(neuralNetworkAnimationScene.animationId);
+                    }
+
+                    authSection.style.display = 'none';
+                    appDiv.classList.remove('hidden');
+                    appDiv.style.display = 'flex';
+
+                    const userName = clinicData.email.split('@')[0];
+                    const userInitials = getInitials(userName);
+                    document.getElementById('user-name-header').textContent = userName;
+                    document.getElementById('user-avatar-header').src = `https://placehold.co/40x40/f59e0b/000000?text=${userInitials}`;
+
+                    showSection(window.location.hash || '#dashboard');
+                };
+
+                if (!document.startViewTransition) {
+                    performTransition();
+                    syncThemeUI(false); 
+                    return;
                 }
 
-                authSection.style.display = 'none';
-                appDiv.classList.remove('hidden');
-                appDiv.style.display = 'flex';
+                isThemeTransitioning = true;
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const maxDistance = Math.hypot(
+                    Math.max(centerX, window.innerWidth - centerX),
+                    Math.max(centerY, window.innerHeight - centerY)
+                );
 
-                const userName = clinicData.email.split('@')[0];
-                const userInitials = getInitials(userName);
-                document.getElementById('user-name-header').textContent = userName;
-                document.getElementById('user-avatar-header').src = `https://placehold.co/40x40/f59e0b/000000?text=${userInitials}`;
+                const transition = document.startViewTransition(performTransition);
 
-                showSection(window.location.hash || '#dashboard');
+                await transition.ready;
+
+                document.documentElement.animate({
+                    clipPath: [
+                        `circle(0px at ${centerX}px ${centerY}px)`,
+                        `circle(${maxDistance}px at ${centerX}px ${centerY}px)`,
+                    ],
+                }, {
+                    duration: 600,
+                    easing: 'ease-in-out',
+                    pseudoElement: '::view-transition-new(root)',
+                });
+
+                transition.finished.then(() => {
+                    isThemeTransitioning = false;
+                    syncThemeUI(false); 
+                });
               };
 
              const showLogin = () => {
-                 // MODIFICAÇÃO: Força o dark mode ao mostrar a tela de login
                 localStorage.setItem('theme', 'dark');
                 syncThemeUI(true);
-                 // FIM DA MODIFICAÇÃO
 
                  currentClinicId = null;
                 sessionStorage.removeItem('clinicSession');
@@ -984,7 +1062,27 @@
             const checkSession = () => {
                 let session = localStorage.getItem('clinicSession') || sessionStorage.getItem('clinicSession');
                 if (session) {
-                    showApp(JSON.parse(session), !!localStorage.getItem('clinicSession'));
+                    // Call a simplified version of showApp without animation for session resume
+                    const clinicData = JSON.parse(session);
+                    const rememberMe = !!localStorage.getItem('clinicSession');
+                    
+                    localStorage.setItem('theme', localStorage.getItem('theme') || 'light');
+                    applyInitialTheme();
+
+                    currentClinicId = clinicData.clinic_id;
+                    const storage = rememberMe ? localStorage : sessionStorage;
+                    storage.setItem('clinicSession', JSON.stringify(clinicData));
+
+                    authSection.style.display = 'none';
+                    appDiv.classList.remove('hidden');
+                    appDiv.style.display = 'flex';
+
+                    const userName = clinicData.email.split('@')[0];
+                    const userInitials = getInitials(userName);
+                    document.getElementById('user-name-header').textContent = userName;
+                    document.getElementById('user-avatar-header').src = `https://placehold.co/40x40/f59e0b/000000?text=${userInitials}`;
+
+                    showSection(window.location.hash || '#dashboard');
                 } else {
                     showLogin();
                 }
@@ -1017,14 +1115,13 @@
                 }
 
                 appSidebar.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
-                mobileNavLinks.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
-
+                
                 const navHash = currentHash.split('-')[0];
                 const activeLink = appSidebar.querySelector(`a[href="${navHash}"]`);
                 if (activeLink) activeLink.classList.add('active');
 
-                const activeMobileLink = mobileNavLinks.querySelector(`a[href="${navHash}"]`);
-                if (activeMobileLink) activeMobileLink.classList.add('active');
+                // Update mobile nav as well
+                updateFloatingNavIndicator();
 
 
                 if (!currentClinicId) return;
@@ -1037,6 +1134,9 @@
                         break;
                     case '#clientes':
                         await fetchClients();
+                        break;
+                    case '#funil':
+                        initializeKanban();
                         break;
                     case '#conversas':
                         await fetchChats();
@@ -1468,7 +1568,6 @@
                 }, 100);
             }
 
-
             // -----------------------------------------------------------------------------
             // 5. FUNCIONALIDADE: CLIENTES
             // -----------------------------------------------------------------------------
@@ -1701,7 +1800,6 @@
                     window.location.hash = backHash;
                 });
             }
-
 
             // -----------------------------------------------------------------------------
             // 6. FUNCIONALIDADE: CONVERSAS
@@ -1959,7 +2057,8 @@
                 const initials = getInitials(isFromClient ? clientName : 'Admin');
                 const avatarSrc = isFromClient ? `https://placehold.co/40x40/f59e0b/000000?text=${initials}` : document.getElementById('user-avatar-header').src;
                 const timeAlignment = isFromClient ? 'text-left' : 'text-right';
-                const bubbleClasses = isFromClient ? 'bg-card rounded-tl-none' : 'bg-primary text-white rounded-tr-none';
+                const bubbleClasses = isFromClient ? 'bg-card text-card-foreground rounded-tl-none' : 'bg-primary text-primary-foreground rounded-tr-none';
+
 
                 messageWrapper.innerHTML = `
                     <img class="h-10 w-10 rounded-full object-cover shrink-0" src="${avatarSrc}" alt="Avatar">
@@ -1976,7 +2075,91 @@
             };
 
             // -----------------------------------------------------------------------------
-            // 7. FUNCIONALIDADE: AGENDAMENTOS
+            // 7. FUNCIONALIDADE: FUNIL (KANBAN)
+            // -----------------------------------------------------------------------------
+             function initializeKanban() {
+                const container = document.getElementById('kanban-board-container');
+                if (!container || container.dataset.initialized) return;
+                container.dataset.initialized = 'true';
+
+                const kanbanData = {
+                    lead: [
+                         { id: '1', title: 'Maria Silva', priority: 'medium', assignee: 'Marketing', description: 'Interessada em consulta de avaliação.' },
+                         { id: '2', title: 'Carlos Andrade', priority: 'low', assignee: 'Marketing', description: 'Pediu informações via Instagram.' },
+                    ],
+                    contact: [
+                        { id: '3', title: 'João Pereira', priority: 'high', assignee: 'Secretária', description: 'Agendou primeira consulta para amanhã.' },
+                    ],
+                    negotiation: [],
+                    closed: [
+                        { id: '4', title: 'Ana Costa', priority: 'high', assignee: 'Dr. Ricardo', description: 'Fechou pacote de 3 sessões.' },
+                    ]
+                };
+
+                const columnTitles = {
+                    lead: 'Lead',
+                    contact: 'Contato Inicial',
+                    negotiation: 'Negociação',
+                    closed: 'Fechado'
+                };
+                
+                container.innerHTML = ''; // Clear previous static content
+
+                Object.keys(columnTitles).forEach(columnId => {
+                    const columnEl = document.createElement('div');
+                    columnEl.className = 'flex flex-col';
+                    const tasks = kanbanData[columnId] || [];
+                    
+                    columnEl.innerHTML = `
+                        <div class="flex items-center justify-between p-2 mb-2">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-semibold text-foreground">${columnTitles[columnId]}</h3>
+                                <span class="text-sm px-2 py-0.5 bg-muted rounded-full text-muted-foreground">${tasks.length}</span>
+                            </div>
+                            <button class="kanban-column-handle p-2 text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M12 5v14"/><path d="M8 5v14"/><path d="M16 5v14"/></svg>
+                            </button>
+                        </div>
+                        <div class="kanban-cards-container flex-grow space-y-3 p-1 min-h-[200px] bg-muted/50 rounded-lg" data-column-id="${columnId}">
+                            ${tasks.map(task => `
+                                <div class="kanban-card" data-task-id="${task.id}">
+                                    <div class="flex flex-col gap-2.5">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="font-medium text-sm text-foreground">${htmlEncode(task.title)}</span>
+                                            <span class="kanban-badge ${task.priority === 'high' ? 'kanban-badge-destructive' : task.priority === 'medium' ? 'kanban-badge-primary' : 'kanban-badge-warning'}">${htmlEncode(task.priority)}</span>
+                                        </div>
+                                        <p class="text-xs text-muted-foreground">${htmlEncode(task.description)}</p>
+                                        <div class="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                                            <img src="https://placehold.co/20x20/64748b/FFFFFF?text=${getInitials(task.assignee)}" class="w-5 h-5 rounded-full">
+                                            <span>${htmlEncode(task.assignee)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.appendChild(columnEl);
+                });
+
+                const cardContainers = container.querySelectorAll('.kanban-cards-container');
+                cardContainers.forEach(el => {
+                    new Sortable(el, {
+                        group: 'kanban-tasks',
+                        animation: 150,
+                        ghostClass: 'sortable-ghost'
+                    });
+                });
+                
+                new Sortable(container, {
+                    handle: '.kanban-column-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost'
+                });
+            }
+
+
+            // -----------------------------------------------------------------------------
+            // 8. FUNCIONALIDADE: AGENDAMENTOS
             // -----------------------------------------------------------------------------
 
             async function fetchAndRenderAgenda() {
@@ -2186,7 +2369,7 @@
             }
 
             // -----------------------------------------------------------------------------
-            // 8. SHADER/LOGIN ANIMATION
+            // 9. SHADER/LOGIN ANIMATION
             // -----------------------------------------------------------------------------
             function initNeuralNetworkAnimation() {
                 const container = document.getElementById('neural-network-canvas-container');
@@ -2314,7 +2497,7 @@
             }
 
             // -----------------------------------------------------------------------------
-            // 9. FUNCIONALIDADE: CONFIGURAÇÕES
+            // 10. FUNCIONALIDADE: CONFIGURAÇÕES
             // -----------------------------------------------------------------------------
 
             const handleChangePassword = async (event) => {
@@ -2366,7 +2549,7 @@
 
 
             // -----------------------------------------------------------------------------
-            // 10. UTILITÁRIOS E FUNÇÕES AUXILIARES
+            // 11. UTILITÁRIOS E FUNÇÕES AUXILIARES
             // -----------------------------------------------------------------------------
             const timeAgo = (date) => {
                 const seconds = Math.floor((new Date() - date) / 1000);
@@ -2415,7 +2598,7 @@
             };
 
             // -----------------------------------------------------------------------------
-            // 11. EVENT LISTENERS & SIDEBAR LOGIC
+            // 12. EVENT LISTENERS & UI LOGIC
             // -----------------------------------------------------------------------------
 
             const mainContentWrapper = document.getElementById('main-content-wrapper');
@@ -2438,6 +2621,36 @@
                 mainContentWrapper.classList.add('lg:pl-20');
                 navTexts.forEach(text => text.classList.add('hidden'));
             };
+            
+            const updateFloatingNavIndicator = () => {
+                const container = document.getElementById('mobile-nav-container');
+                const indicator = document.getElementById('mobile-nav-indicator');
+                if (!container || !indicator) return;
+
+                const currentHash = (window.location.hash || '#dashboard').split('-')[0];
+                const activeItem = container.querySelector(`a[href="${currentHash}"]`);
+                
+                document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                    item.classList.remove('text-primary');
+                    item.classList.add('text-muted-foreground');
+                });
+
+                if (activeItem) {
+                    const containerRect = container.getBoundingClientRect();
+                    const itemRect = activeItem.getBoundingClientRect();
+                    indicator.style.width = `${itemRect.width}px`;
+                    indicator.style.left = `${itemRect.left - containerRect.left}px`;
+                    activeItem.classList.add('text-primary');
+                    activeItem.classList.remove('text-muted-foreground');
+                }
+            };
+            
+            const initializeFloatingNav = () => {
+                 window.addEventListener('resize', updateFloatingNavIndicator);
+                 window.addEventListener('hashchange', updateFloatingNavIndicator);
+                 updateFloatingNavIndicator(); // Initial call
+            };
+
 
             appSidebar.addEventListener('mouseenter', expandSidebar);
             appSidebar.addEventListener('mouseleave', collapseSidebar);
@@ -2461,7 +2674,7 @@
                 if (link && link.hash) {
                     e.preventDefault();
                     window.location.hash = link.hash;
-                    if (window.innerWidth < 768) { // Only for mobile sidebar
+                    if (window.innerWidth < 768) { 
                         appSidebar.classList.add('hidden');
                         mobileMenuOverlay.classList.add('hidden');
                     }
@@ -2469,7 +2682,15 @@
             };
 
             navLinks.addEventListener('click', handleNavClick);
-            mobileNavLinks.addEventListener('click', handleNavClick);
+            
+            document.getElementById('new-mobile-nav').addEventListener('click', (e) => {
+                 const link = e.target.closest('a');
+                 if (link && link.hash) {
+                    e.preventDefault();
+                    window.location.hash = link.hash;
+                 }
+            });
+
 
             document.getElementById('user-profile-link-wrapper').addEventListener('click', (e) => {
                 const link = e.target.closest('a');
@@ -2580,15 +2801,15 @@
 
 
             // -----------------------------------------------------------------------------
-            // 12. INICIALIZAÇÃO DA APLICAÇÃO
+            // 13. INICIALIZAÇÃO DA APLICAÇÃO
             // -----------------------------------------------------------------------------
 
             initializeCharts();
             renderThemeToggle();
+            initializeFloatingNav();
             checkSession();
         });
     </script>
 </body>
 
 </html>
-
