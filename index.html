@@ -325,6 +325,10 @@
             #agendamentos-section > .flex-grow {
                 @apply mt-0;
             }
+            /* Esconde o mini-calendário no mobile */
+            #agendamentos-section > div:first-child {
+                display: none;
+            }
             #agenda-views-container, 
             #weekly-view-date-range,
             #view-toggle-buttons {
@@ -629,7 +633,7 @@
 
                 <!-- Seção Conversas -->
                 <section id="conversas-section" class="page-section hidden h-full">
-                    <div class="flex h-full w-full">
+                    <div class="relative overflow-hidden flex h-full w-full">
                         <!-- Coluna da Lista de Conversas -->
                         <aside id="chat-list-column" class="w-full md:w-[360px] bg-card flex flex-col border-r">
                             <div class="p-4">
@@ -683,9 +687,9 @@
                 </section>
 
                 <!-- Seção Agendamentos -->
-                <section id="agendamentos-section" class="page-section hidden flex flex-col gap-6 h-full p-4 md:p-6 lg:p-8">
-                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute pt-8 md:pt-0">Agendamentos</h1>
-                    <div class="md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
+                <section id="agendamentos-section" class="page-section hidden flex flex-col md:flex-row gap-6 h-full p-4 md:p-6 lg:p-8">
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0 md:absolute">Agendamentos</h1>
+                    <div class="hidden md:flex md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
                         <div id="full-calendar-container"></div>
                     </div>
                     <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16 md:mt-16">
