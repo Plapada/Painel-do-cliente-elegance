@@ -56,7 +56,7 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -64,7 +64,7 @@
 
     <style>
         @layer base {
-             :root {
+            :root {
                 --background: 0 0% 100%;
                 --foreground: 0 0% 15%;
                 --card: 0 0% 100%;
@@ -109,6 +109,18 @@
                 --ring: 39 92% 51%;
             }
         }
+        
+        /* Mapeamento das variáveis de cor para o novo componente */
+        :root {
+            --color-bg: hsl(var(--background));
+            --color-surface: hsl(var(--card));
+            --color-muted-surface: hsl(var(--muted));
+            --color-border: hsl(var(--border));
+            --color-text-secondary: hsl(var(--muted-foreground));
+            --color-text-primary: hsl(var(--foreground));
+            --color-heading: hsl(var(--foreground));
+            --color-bg-2: hsl(var(--secondary));
+        }
 
         @layer base {
             * {
@@ -119,8 +131,8 @@
                 @apply bg-background text-foreground;
                 font-family: 'Manrope', sans-serif;
             }
-            
-             .active-chat-indicator::before {
+
+            .active-chat-indicator::before {
                 content: '';
                 position: absolute;
                 left: 0;
@@ -131,24 +143,28 @@
                 background-color: hsl(var(--primary));
                 border-radius: 0 4px 4px 0;
             }
-             .nav-link.active {
+
+            .nav-link.active {
                 background-color: hsl(var(--primary) / 0.1);
                 color: hsl(var(--primary));
                 font-weight: 600;
             }
-             .nav-link.active svg {
-                 color: hsl(var(--primary));
-             }
+
+            .nav-link.active svg {
+                color: hsl(var(--primary));
+            }
 
             .dark .nav-link:not(.active) span {
                 color: hsl(0 0% 90%);
             }
-             .dark .nav-link:not(.active) svg {
+
+            .dark .nav-link:not(.active) svg {
                 color: hsl(0 0% 90%);
             }
+
             .dark .nav-link:not(.active):hover span,
             .dark .nav-link:not(.active):hover svg {
-                 color: hsl(var(--primary));
+                color: hsl(var(--primary));
             }
 
             .light .dashboard-card {
@@ -156,17 +172,18 @@
                 box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             }
 
-             .material-symbols-outlined {
+            .material-symbols-outlined {
                 font-variation-settings:
-                'FILL' 0,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 24
+                    'FILL' 0,
+                    'wght' 400,
+                    'GRAD' 0,
+                    'opsz' 24
             }
-            
+
             #mobile-bottom-nav .nav-link.active {
                 color: hsl(var(--primary));
             }
+
             #mobile-bottom-nav .nav-link.active .material-symbols-outlined {
                 font-variation-settings: 'FILL' 1;
             }
@@ -189,7 +206,7 @@
         ::-webkit-scrollbar-thumb:hover {
             background-color: hsl(var(--primary) / 0.8);
         }
-        
+
         #new-chat-input:focus {
             outline: none;
             box-shadow: none;
@@ -204,6 +221,28 @@
                 transform: rotate(360deg);
             }
         }
+        
+        /* Estilos para o novo container de login */
+        #auth-section {
+            background-color: var(--color-bg);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #login-card {
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        .animated-input {
+            border: 2px solid var(--color-border);
+            background-color: var(--color-surface);
+        }
+        .animated-input:focus {
+            background-color: var(--color-bg);
+        }
     </style>
 </head>
 
@@ -212,98 +251,158 @@
     <div id="mobile-menu-overlay" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden"></div>
 
     <!-- Seção de Login Aprimorada -->
-    <section id="auth-section" class="min-h-screen w-full bg-background flex flex-col md:flex-row">
-        <!-- Coluna da Esquerda (Formulário) -->
-        <div class="flex-1 flex items-center justify-center p-8">
-            <div class="w-full max-w-md">
-                <div class="flex flex-col gap-6">
-                    <h1 class="text-4xl md:text-5xl font-semibold leading-tight tracking-tighter">Bem-vindo(a)</h1>
-                    <p class="text-muted-foreground">Acesse sua conta para continuar.</p>
+    <section id="auth-section" class="min-h-screen w-full flex items-center justify-center p-4">
+        
+        <!-- Animação de gradiente no fundo -->
+        <div class="absolute -bottom-1/2 left-1/2 w-[150%] pointer-events-none z-0 -translate-x-1/2 opacity-30 dark:opacity-50" aria-hidden="true">
+            <img src="https://i.postimg.cc/Ss6yShGy/glows.png" alt="background glow" class="w-full h-auto">
+        </div>
+        
+        <div id="login-card" class="w-[90%] md:w-[80%] lg:w-[70%] max-w-5xl flex h-[650px] relative z-10">
+            <!-- Coluna da Esquerda (Formulário) -->
+            <div id="login-form-container" class="w-full lg:w-1/2 px-4 sm:px-8 md:px-16 left h-full relative overflow-hidden flex items-center justify-center">
+                <!-- Efeito de hover com gradiente -->
+                <div id="gradient-blob" class="absolute pointer-events-none w-[500px] h-[500px] bg-gradient-to-r from-yellow-300/20 via-orange-300/20 to-amber-300/20 rounded-full blur-3xl transition-opacity duration-200 opacity-0"></div>
+                
+                <form id="login-form" class="text-center grid gap-4 h-full py-10 w-full max-w-sm">
+                    <div class="grid gap-4 md:gap-6 mb-2">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-[var(--color-heading)]">Bem-vindo(a)!</h1>
+                        <span class="text-sm text-[var(--color-text-secondary)]">ou use sua conta para entrar</span>
+                    </div>
 
-                    <form class="space-y-5" id="login-form">
-                        <div>
-                            <label class="text-sm font-medium text-muted-foreground">Endereço de E-mail</label>
-                            <div class="rounded-2xl border bg-foreground/5 backdrop-blur-sm transition-colors focus-within:border-primary/70 focus-within:bg-primary/10">
-                                <input id="email-input" name="email" type="email" placeholder="Digite seu e-mail" class="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none" />
+                    <div class="grid gap-5 items-center">
+                        <!-- Input animado para E-mail -->
+                        <div class="w-full min-w-[200px] relative">
+                             <div class="relative w-full animated-input-wrapper">
+                                <input type="email" id="email-input" name="email" class="peer relative z-10 border-2 border-[var(--color-border)] h-12 w-full rounded-md bg-[var(--color-surface)] px-4 font-normal outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-[var(--color-bg)] placeholder:font-medium" placeholder="E-mail" required/>
+                                <div class="absolute pointer-events-none top-0 left-0 right-0 h-[2px] z-20 rounded-t-md overflow-hidden input-glow-top"></div>
+                                <div class="absolute pointer-events-none bottom-0 left-0 right-0 h-[2px] z-20 rounded-b-md overflow-hidden input-glow-bottom"></div>
                             </div>
                         </div>
-
-                        <div>
-                            <label class="text-sm font-medium text-muted-foreground">Senha</label>
-                             <div class="rounded-2xl border bg-foreground/5 backdrop-blur-sm transition-colors focus-within:border-primary/70 focus-within:bg-primary/10">
-                                <div class="relative">
-                                    <input id="password-input" name="password" type="password" placeholder="Digite sua senha" class="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none" />
-                                    <button type="button" id="password-toggle" class="absolute inset-y-0 right-3 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors eye hidden"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    </button>
-                                </div>
+                        <!-- Input animado para Senha -->
+                         <div class="w-full min-w-[200px] relative">
+                             <div class="relative w-full animated-input-wrapper">
+                                <input type="password" id="password-input" name="password" class="peer relative z-10 border-2 border-[var(--color-border)] h-12 w-full rounded-md bg-[var(--color-surface)] px-4 font-normal outline-none drop-shadow-sm transition-all duration-200 ease-in-out focus:bg-[var(--color-bg)] placeholder:font-medium" placeholder="Senha" required/>
+                                <div class="absolute pointer-events-none top-0 left-0 right-0 h-[2px] z-20 rounded-t-md overflow-hidden input-glow-top"></div>
+                                <div class="absolute pointer-events-none bottom-0 left-0 right-0 h-[2px] z-20 rounded-b-md overflow-hidden input-glow-bottom"></div>
+                                 <button type="button" id="password-toggle" class="absolute inset-y-0 right-3 z-20 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors eye hidden"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
                             </div>
                         </div>
-
-                        <div class="flex items-center justify-between text-sm">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="remember-me-checkbox" name="rememberMe" class="h-4 w-4 rounded border-border text-primary focus:ring-primary" />
-                                <span class="text-foreground/90">Manter conectado</span>
-                            </label>
-                            <a href="#" class="hover:underline text-primary/90 transition-colors">Esqueceu a senha?</a>
-                        </div>
-                         <div id="login-error" class="text-red-500 text-sm text-center h-5"></div>
-                        <button type="submit" class="w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
-                            Entrar
+                    </div>
+                     <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="remember-me-checkbox" name="rememberMe" class="h-4 w-4 rounded border-border text-primary focus:ring-primary" />
+                            <span class="text-foreground/90">Manter conectado</span>
+                        </label>
+                        <a href="#" class="font-light text-sm md:text-md text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">Esqueceu a senha?</a>
+                     </div>
+                    <div id="login-error" class="text-red-500 text-sm text-center h-5"></div>
+                    <div class="flex gap-4 justify-center items-center">
+                        <button type="submit" class="group/button relative inline-flex justify-center items-center overflow-hidden rounded-md bg-primary px-8 py-3 text-sm font-normal text-primary-foreground transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-primary/50 cursor-pointer">
+                            <span class="text-md font-semibold">Entrar</span>
+                            <div class="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
+                                <div class="relative h-full w-8 bg-white/20"></div>
+                            </div>
                         </button>
-                    </form>
+                    </div>
+                </form>
+            </div>
+            <!-- Coluna da Direita (Animação) -->
+            <div class="hidden lg:flex w-1/2 right h-full overflow-hidden bg-black relative">
+                <div id="neural-network-canvas-container" class="absolute inset-0 w-full h-full"></div>
+                <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center p-8 gap-4 z-10 bg-black/30">
+                     <a class="flex flex-col items-center gap-2 font-semibold text-white text-center" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="hsl(var(--primary))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-12 w-12 shrink-0">
+                            <path d="M12.4 2.7c.9-1.4 2.3-1.4 3.2 0l6.4 10.5c.9 1.4.2 3.3-1.6 3.3H3.6c-1.8 0-2.5-1.9-1.6-3.3l6.4-10.5Z"></path>
+                        </svg>
+                        <div>
+                            <span class="text-5xl font-bold tracking-wider">Elegance</span>
+                            <p class="text-sm text-muted-foreground tracking-widest">Marketing Médico</p>
+                        </div>
+                    </a>
+                    <p class="text-center text-muted-foreground text-sm mt-4">Onde algoritmos se tornam arte.</p>
                 </div>
             </div>
         </div>
-        <!-- Coluna da Direita (Animação) -->
-        <div class="hidden md:block flex-1 relative">
-             <div id="shader-container" class="absolute inset-0"></div>
-        </div>
     </section>
 
-    <!-- App Principal -->
+    <!-- App Principal (Inalterado) -->
     <div id="app" class="h-screen w-full flex hidden">
         <!-- Sidebar -->
-        <aside id="app-sidebar"
-            class="w-64 lg:w-20 border-r bg-card flex-col fixed inset-y-0 z-50 h-full hidden md:flex transition-all duration-300 ease-in-out overflow-hidden">
+        <aside id="app-sidebar" class="w-64 lg:w-20 border-r bg-card flex-col fixed inset-y-0 z-50 h-full hidden md:flex transition-all duration-300 ease-in-out overflow-hidden">
             <div class="flex flex-col h-full">
                 <!-- Top Part: Logo & Nav -->
                 <div class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
                     <div class="flex h-16 items-center px-6 shrink-0 border-b">
-                         <a class="flex items-center gap-2 font-semibold text-foreground" href="#dashboard">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="h-6 w-6 text-primary shrink-0">
-                                <path
-                                    d="M12.4 2.7c.9-1.4 2.3-1.4 3.2 0l6.4 10.5c.9 1.4.2 3.3-1.6 3.3H3.6c-1.8 0-2.5-1.9-1.6-3.3l6.4-10.5Z" />
+                        <a class="flex items-center gap-2 font-semibold text-foreground" href="#dashboard">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary shrink-0">
+                                <path d="M12.4 2.7c.9-1.4 2.3-1.4 3.2 0l6.4 10.5c.9 1.4.2 3.3-1.6 3.3H3.6c-1.8 0-2.5-1.9-1.6-3.3l6.4-10.5Z" />
                             </svg>
                             <span class="nav-text font-semibold whitespace-pre hidden">CRM Elegance</span>
                         </a>
                     </div>
                     <nav id="nav-links" class="flex-1 px-4 py-4 space-y-2">
                         <a href="#dashboard" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <rect width="7" height="9" x="3" y="3" rx="1" />
+                                <rect width="7" height="5" x="14" y="3" rx="1" />
+                                <rect width="7" height="9" x="14" y="12" rx="1" />
+                                <rect width="7" height="5" x="3" y="16" rx="1" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Dashboard</span>
                         </a>
                         <a href="#funil" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4s1.8-1.7 1.8-3c0-1.5-1.1-2.8-2.6-3.2-.2-1.2-1.3-2.3-2.8-2.3z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4s1.8-1.7 1.8-3c0-1.5-1.1-2.8-2.6-3.2-.2-1.2-1.3-2.3-2.8-2.3z" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Funil</span>
                         </a>
                         <a href="#conversas" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M17 6.1H3" /><path d="M21 12.1H3" /><path d="M15.1 18H3" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M17 6.1H3" />
+                                <path d="M21 12.1H3" />
+                                <path d="M15.1 18H3" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Conversas</span>
                         </a>
                         <a href="#agendamentos" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                <line x1="16" x2="16" y1="2" y2="6" />
+                                <line x1="8" x2="8" y1="2" y2="6" />
+                                <line x1="3" x2="21" y1="10" y2="10" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Agendamentos</span>
                         </a>
                         <a href="#clientes" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Clientes</span>
                         </a>
                         <a href="#automacoes" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" /><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" /><path d="M12 2v2" /><path d="M12 22v-2" /><path d="m17 20.66-1-1.73" /><path d="M11 10.27 7 3.34" /><path d="m20.66 17-1.73-1" /><path d="m3.34 7 1.73 1" /><path d="M14 12h8" /><path d="M2 12h2" /><path d="m20.66 7-1.73 1" /><path d="m3.34 17 1.73-1" /><path d="m17 3.34-1 1.73" /><path d="m11 13.73-4 6.93" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                                <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                                <path d="M12 2v2" />
+                                <path d="M12 22v-2" />
+                                <path d="m17 20.66-1-1.73" />
+                                <path d="M11 10.27 7 3.34" />
+                                <path d="m20.66 17-1.73-1" />
+                                <path d="m3.34 7 1.73 1" />
+                                <path d="M14 12h8" />
+                                <path d="M2 12h2" />
+                                <path d="m20.66 7-1.73 1" />
+                                <path d="m3.34 17 1.73-1" />
+                                <path d="m17 3.34-1 1.73" />
+                                <path d="m11 13.73-4 6.93" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Automações</span>
                         </a>
                     </nav>
@@ -312,17 +411,24 @@
                 <div class="p-4 border-t">
                     <nav class="space-y-2">
                         <a href="#configuracoes" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Configurações</span>
                         </a>
                         <a id="logout-link" href="#" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-destructive/10 hover:text-destructive">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" x2="9" y1="12" y2="12" />
+                            </svg>
                             <span class="nav-text whitespace-pre hidden">Sair</span>
                         </a>
                     </nav>
                     <div class="mt-4 pt-4 border-t">
                         <a href="#configuracoes" id="user-profile-link-wrapper" class="flex items-center gap-3 rounded-lg p-2 -ml-2 hover:bg-muted">
-                            <img id="user-avatar-header" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border shrink-0"/>
+                            <img id="user-avatar-header" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border shrink-0" />
                             <div class="text-sm text-left overflow-hidden">
                                 <p class="nav-text font-semibold whitespace-pre hidden" id="user-name-header">Admin</p>
                                 <p class="nav-text text-muted-foreground text-xs whitespace-pre hidden" id="user-role-header">Admin</p>
@@ -336,15 +442,19 @@
         <!-- Main Content -->
         <div id="main-content-wrapper" class="flex flex-col flex-1 md:pl-20 transition-all duration-300 ease-in-out">
             <main id="main-content" class="relative flex-1 bg-background overflow-y-auto pb-16 md:pb-0">
-                 <div class="absolute top-6 right-6 z-50 flex items-center gap-4">
-                     <div id="theme-toggle-container"></div>
-                     <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-muted text-foreground">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-                     </button>
-                 </div>
+                <div class="absolute top-6 right-6 z-50 flex items-center gap-4">
+                    <div id="theme-toggle-container"></div>
+                    <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-muted text-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                            <line x1="4" x2="20" y1="6" y2="6" />
+                            <line x1="4" x2="20" y1="12" y2="12" />
+                            <line x1="4" x2="20" y1="18" y2="18" />
+                        </svg>
+                    </button>
+                </div>
 
-                 <!-- Seção Dashboard -->
-                 <section id="dashboard-section" class="page-section hidden p-4 md:p-6 lg:p-8">
+                <!-- Seção Dashboard -->
+                <section id="dashboard-section" class="page-section hidden p-4 md:p-6 lg:p-8">
                     <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0">Dashboard</h1>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-2 space-y-8">
@@ -410,7 +520,7 @@
                             <div class="dashboard-card bg-card rounded-xl p-6">
                                 <h3 class="text-foreground text-base font-medium mb-4">Atividades Recentes</h3>
                                 <div id="recent-activities-list" class="space-y-4">
-                                     <!-- Atividades serão inseridas aqui -->
+                                    <!-- Atividades serão inseridas aqui -->
                                 </div>
                             </div>
                         </div>
@@ -425,18 +535,15 @@
                             <!-- Coluna -->
                             <div class="w-72 md:w-80 flex-shrink-0">
                                 <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Lead <span
-                                            class="text-sm font-normal text-muted-foreground">(Em
+                                    <h3 class="font-semibold">Lead <span class="text-sm font-normal text-muted-foreground">(Em
                                             breve)</span></h3>
                                 </div>
                                 <div class="space-y-3 p-1 h-full bg-muted/50 rounded-lg">
-                                    <div
-                                        class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
+                                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
                                         <p class="font-semibold text-sm">Maria Silva</p>
                                         <p class="text-xs text-muted-foreground mt-1">Interessada em consulta de
                                             avaliação</p>
-                                        <div class="mt-2"><span
-                                                class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground">Potencial</span>
+                                        <div class="mt-2"><span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground">Potencial</span>
                                         </div>
                                     </div>
                                 </div>
@@ -444,13 +551,11 @@
                             <!-- Coluna -->
                             <div class="w-72 md:w-80 flex-shrink-0">
                                 <div class="flex justify-between items-center p-2 mb-2">
-                                    <h3 class="font-semibold">Contato Inicial <span
-                                            class="text-sm font-normal text-muted-foreground">(Em
+                                    <h3 class="font-semibold">Contato Inicial <span class="text-sm font-normal text-muted-foreground">(Em
                                             breve)</span></h3>
                                 </div>
                                 <div class="space-y-3 p-1 h-full bg-muted/50 rounded-lg">
-                                    <div
-                                        class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
+                                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-3 cursor-grab active:cursor-grabbing">
                                         <p class="font-semibold text-sm">João Pereira</p>
                                         <p class="text-xs text-muted-foreground mt-1">Agendou primeira consulta</p>
                                     </div>
@@ -476,31 +581,33 @@
 
                 <!-- Seção Conversas -->
                 <section id="conversas-section" class="page-section hidden h-full">
-                     <div class="flex h-full w-full">
-                         <!-- Coluna da Lista de Conversas -->
+                    <div class="flex h-full w-full">
+                        <!-- Coluna da Lista de Conversas -->
                         <aside id="chat-list-column" class="w-full md:w-[360px] bg-card flex flex-col border-r">
                             <div class="p-4">
                                 <h1 class="text-2xl font-bold text-foreground mb-4 pt-12 md:pt-0">Conversas</h1>
                                 <div class="relative">
                                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">search</span>
-                                    <input id="chat-search-input" class="w-full bg-muted border-none rounded-lg h-12 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary" placeholder="Pesquisar por cliente..." type="text"/>
+                                    <input id="chat-search-input" class="w-full bg-muted border-none rounded-lg h-12 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-primary" placeholder="Pesquisar por cliente..." type="text" />
                                 </div>
                             </div>
                             <nav class="flex-1 overflow-y-auto">
                                 <ul id="chat-list-container" class="p-2 space-y-1">
-                                   <!-- Chat items will be injected here -->
+                                    <!-- Chat items will be injected here -->
                                 </ul>
                             </nav>
                         </aside>
                         <!-- Coluna do Chat Ativo -->
                         <main id="chat-view-column" class="flex-1 bg-background flex-col hidden md:flex">
                             <div id="new-chat-placeholder" class="flex flex-1 items-center justify-center text-center">
-                                 <div class="p-8 rounded-lg flex flex-col items-center text-muted-foreground">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 opacity-50"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/></svg>
+                                <div class="p-8 rounded-lg flex flex-col items-center text-muted-foreground">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 opacity-50">
+                                        <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z" />
+                                    </svg>
                                     <p class="mt-4 text-lg">Selecione uma conversa para começar</p>
                                 </div>
                             </div>
-                             <div id="new-chat-view" class="hidden h-full flex-col">
+                            <div id="new-chat-view" class="hidden h-full flex-col">
                                 <header id="chat-active-header" class="flex items-center p-4 gap-4 bg-card shadow-sm">
                                     <!-- Active chat header rendered by JS -->
                                 </header>
@@ -512,7 +619,7 @@
                                         <button class="text-muted-foreground hover:text-primary transition-colors p-2">
                                             <span class="material-symbols-outlined">add_circle</span>
                                         </button>
-                                        <input id="new-chat-input" class="flex-1 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:ring-0" placeholder="Digite sua mensagem..." type="text"/>
+                                        <input id="new-chat-input" class="flex-1 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:ring-0" placeholder="Digite sua mensagem..." type="text" />
                                         <button id="new-send-button" class="p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
                                             <span class="material-symbols-outlined">send</span>
                                         </button>
@@ -529,42 +636,28 @@
 
                 <!-- Seção Agendamentos -->
                 <section id="agendamentos-section" class="page-section hidden flex flex-col md:flex-row gap-6 h-full p-4 md:p-6 lg:p-8">
-                        <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute pt-8 md:pt-0">Agendamentos</h1>
-                         <div class="md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
-                             <div id="full-calendar-container"></div>
-                        </div>
-                        <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16">
-                        <div
-                            class="flex flex-wrap justify-between items-center border-b pb-4 mb-4 gap-4">
+                    <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute pt-8 md:pt-0">Agendamentos</h1>
+                    <div class="md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
+                        <div id="full-calendar-container"></div>
+                    </div>
+                    <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16">
+                        <div class="flex flex-wrap justify-between items-center border-b pb-4 mb-4 gap-4">
                             <div class="flex items-center gap-2">
-                                <button id="today-btn"
-                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">Hoje</button>
+                                <button id="today-btn" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">Hoje</button>
                                 <div class="flex items-center gap-1">
-                                    <button id="prev-week-btn" class="p-2 rounded-md hover:bg-muted text-muted-foreground"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="h-5 w-5">
+                                    <button id="prev-week-btn" class="p-2 rounded-md hover:bg-muted text-muted-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                                             <path d="m15 18-6-6 6-6" />
                                         </svg></button>
-                                    <button id="next-week-btn" class="p-2 rounded-md hover:bg-muted text-muted-foreground"><svg
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="h-5 w-5">
+                                    <button id="next-week-btn" class="p-2 rounded-md hover:bg-muted text-muted-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                                             <path d="m9 18 6-6-6-6" />
                                         </svg></button>
                                 </div>
-                                <h3 id="weekly-view-date-range"
-                                    class="text-lg font-semibold whitespace-nowrap text-foreground">
+                                <h3 id="weekly-view-date-range" class="text-lg font-semibold whitespace-nowrap text-foreground">
                                 </h3>
                             </div>
-                            <div id="view-toggle-buttons"
-                                class="flex items-center gap-1 bg-muted p-1 rounded-lg text-sm">
-                                <button class="view-toggle-btn px-3 py-1 rounded-md"
-                                    data-view="weekly">Semanal</button>
-                                <button class="view-toggle-btn px-3 py-1 rounded-md"
-                                    data-view="daily">Diário</button>
+                            <div id="view-toggle-buttons" class="flex items-center gap-1 bg-muted p-1 rounded-lg text-sm">
+                                <button class="view-toggle-btn px-3 py-1 rounded-md" data-view="weekly">Semanal</button>
+                                <button class="view-toggle-btn px-3 py-1 rounded-md" data-view="daily">Diário</button>
                             </div>
                         </div>
                         <div id="agenda-views-container" class="flex-grow h-full relative overflow-hidden">
@@ -581,7 +674,7 @@
 
                 <!-- Seção Detalhes do Cliente -->
                 <section id="client-detail-section" class="page-section hidden p-4 md:p-6 lg:p-8"></section>
-                
+
                 <!-- Seção Detalhes do Agendamento -->
                 <section id="appointment-detail-section" class="page-section hidden p-4 md:p-6 lg:p-8"></section>
 
@@ -591,37 +684,28 @@
                     <div class="rounded-xl border bg-card text-card-foreground shadow">
                         <div class="p-4 border-b flex items-center justify-between">
                             <div class="relative w-full max-w-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">
                                     <circle cx="11" cy="11" r="8" />
                                     <path d="m21 21-4.3-4.3" />
                                 </svg>
-                                <input id="client-search-input" placeholder="Filtrar clientes..."
-                                    class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10">
+                                <input id="client-search-input" placeholder="Filtrar clientes..." class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-10">
                             </div>
-                             <button
-                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 cursor-not-allowed">Adicionar
+                            <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 opacity-50 cursor-not-allowed">Adicionar
                                 Cliente</button>
                         </div>
                         <div class="p-4 md:hidden" id="client-list-container">
-                             <!-- Client cards for mobile will be injected here -->
+                            <!-- Client cards for mobile will be injected here -->
                         </div>
                         <div class="p-4 hidden md:block">
                             <div class="relative w-full overflow-auto">
                                 <table class="w-full caption-bottom text-sm">
                                     <thead class="[&_tr]:border-b">
-                                        <tr
-                                            class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                            <th
-                                                class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[40%]">
+                                        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[40%]">
                                                 Nome</th>
-                                            <th
-                                                class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[30%]">
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[30%]">
                                                 Telefone</th>
-                                            <th
-                                                class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[30%]">
+                                            <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 w-[30%]">
                                                 Data de Cadastro</th>
                                         </tr>
                                     </thead>
@@ -643,9 +727,7 @@
                                 só vez. (Em breve)</p>
                         </div>
                         <div class="p-6 pt-0 space-y-4">
-                            <button
-                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-                                disabled>Enviar para X clientes</button>
+                            <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" disabled>Enviar para X clientes</button>
                         </div>
                     </div>
                     <div class="rounded-xl border bg-card text-card-foreground shadow">
@@ -658,10 +740,7 @@
                             <div class="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                                 <label for="chatbot-toggle" class="font-medium text-sm">Ativar Respostas
                                     Automáticas</label>
-                                <button type="button" id="chatbot-toggle" role="switch"
-                                    class="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input"
-                                    disabled><span
-                                        class="pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"></span></button>
+                                <button type="button" id="chatbot-toggle" role="switch" class="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input" disabled><span class="pointer-events-none block h-5 w-5 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0"></span></button>
                             </div>
                         </div>
                     </div>
@@ -675,13 +754,9 @@
                             <h3 class="text-lg font-semibold text-foreground">Informações da Clínica</h3>
                         </div>
                         <div class="p-6 pt-0 space-y-4">
-                            <div><label class="block mb-2 text-sm font-medium">Nome</label><input type="text"
-                                    value="Elegance" disabled
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <div><label class="block mb-2 text-sm font-medium">Nome</label><input type="text" value="Elegance" disabled class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             </div>
-                            <div><label class="block mb-2 text-sm font-medium">E-mail de Contato</label><input
-                                    type="email" value="contato@elegance.com" disabled
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <div><label class="block mb-2 text-sm font-medium">E-mail de Contato</label><input type="email" value="contato@elegance.com" disabled class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             </div>
                         </div>
                     </div>
@@ -690,23 +765,17 @@
                             <h3 class="text-lg font-semibold text-foreground">Segurança</h3>
                         </div>
                         <form id="password-change-form" class="p-6 pt-0 space-y-4">
-                            <div><label for="current-password"
-                                    class="block mb-2 text-sm font-medium">Senha
-                                    Atual</label><input type="password" id="current-password" required
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <div><label for="current-password" class="block mb-2 text-sm font-medium">Senha
+                                    Atual</label><input type="password" id="current-password" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             </div>
                             <div><label for="new-password" class="block mb-2 text-sm font-medium">Nova
-                                    Senha</label><input type="password" id="new-password" required
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                    Senha</label><input type="password" id="new-password" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             </div>
-                            <div><label for="confirm-password"
-                                    class="block mb-2 text-sm font-medium">Confirmar
-                                    Nova Senha</label><input type="password" id="confirm-password" required
-                                    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                            <div><label for="confirm-password" class="block mb-2 text-sm font-medium">Confirmar
+                                    Nova Senha</label><input type="password" id="confirm-password" required class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
                             </div>
                             <div id="password-change-message" class="text-sm h-5"></div>
-                            <button type="submit"
-                                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Salvar
+                            <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">Salvar
                                 Alterações</button>
                         </form>
                     </div>
@@ -714,29 +783,29 @@
             </main>
         </div>
     </div>
-    
-     <!-- Bottom Nav for Mobile -->
+
+    <!-- Bottom Nav for Mobile -->
     <nav id="mobile-bottom-nav" class="fixed bottom-0 left-0 right-0 h-16 bg-card border-t flex md:hidden z-50">
-         <a href="#dashboard" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-             <span class="material-symbols-outlined">dashboard</span>
-             <span class="text-xs">Dashboard</span>
-         </a>
-         <a href="#clientes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-             <span class="material-symbols-outlined">group</span>
-             <span class="text-xs">Clientes</span>
-         </a>
-         <a href="#agendamentos" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-             <span class="material-symbols-outlined">calendar_month</span>
-             <span class="text-xs">Agenda</span>
-         </a>
-         <a href="#conversas" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-             <span class="material-symbols-outlined">chat</span>
-             <span class="text-xs">Conversas</span>
-         </a>
-         <a href="#configuracoes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
-             <span class="material-symbols-outlined">settings</span>
-             <span class="text-xs">Ajustes</span>
-         </a>
+        <a href="#dashboard" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="text-xs">Dashboard</span>
+        </a>
+        <a href="#clientes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <span class="material-symbols-outlined">group</span>
+            <span class="text-xs">Clientes</span>
+        </a>
+        <a href="#agendamentos" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <span class="text-xs">Agenda</span>
+        </a>
+        <a href="#conversas" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <span class="material-symbols-outlined">chat</span>
+            <span class="text-xs">Conversas</span>
+        </a>
+        <a href="#configuracoes" class="nav-link flex-1 flex flex-col items-center justify-center text-muted-foreground">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="text-xs">Ajustes</span>
+        </a>
     </nav>
 
     <script>
@@ -758,7 +827,7 @@
             let currentCalendarView = 'weekly';
             let consultasChartInstance, conversionChartInstance;
             let clientListSubscription = null;
-            let shaderAnimationScene = null;
+            let neuralNetworkAnimationScene = null;
 
             const appDiv = document.getElementById('app');
             const authSection = document.getElementById('auth-section');
@@ -779,23 +848,23 @@
             // 2. LÓGICA DE UI E TEMA
             // -----------------------------------------------------------------------------
 
-             const renderThemeToggle = () => {
-                 themeToggleContainer.innerHTML = `
-                     <div id="theme-toggle" class="flex w-14 h-7 p-1 rounded-full cursor-pointer transition-all duration-300">
-                         <div class="flex justify-between items-center w-full">
-                             <div id="theme-toggle-indicator" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
-                                 <!-- Icons will be injected here -->
-                             </div>
-                             <div id="theme-toggle-placeholder" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
-                                 <!-- Icons will be injected here -->
-                             </div>
-                         </div>
-                     </div>
-                 `;
-                 document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-                 applyInitialTheme();
+            const renderThemeToggle = () => {
+                themeToggleContainer.innerHTML = `
+                    <div id="theme-toggle" class="flex w-14 h-7 p-1 rounded-full cursor-pointer transition-all duration-300">
+                        <div class="flex justify-between items-center w-full">
+                            <div id="theme-toggle-indicator" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
+                                <!-- Icons will be injected here -->
+                            </div>
+                            <div id="theme-toggle-placeholder" class="flex justify-center items-center w-5 h-5 rounded-full transition-transform duration-300">
+                                <!-- Icons will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+                applyInitialTheme();
             };
-            
+
             const syncThemeUI = (isDark) => {
                 const toggle = document.getElementById('theme-toggle');
                 const indicator = document.getElementById('theme-toggle-indicator');
@@ -845,12 +914,17 @@
             // -----------------------------------------------------------------------------
 
             const showApp = (clinicData, rememberMe) => {
+                // MODIFICAÇÃO: Força o light mode ao entrar no app
+                localStorage.setItem('theme', 'light');
+                syncThemeUI(false); 
+                // FIM DA MODIFICAÇÃO
+
                 currentClinicId = clinicData.clinic_id;
                 const storage = rememberMe ? localStorage : sessionStorage;
                 storage.setItem('clinicSession', JSON.stringify(clinicData));
 
-                if (shaderAnimationScene && shaderAnimationScene.animationId) {
-                    cancelAnimationFrame(shaderAnimationScene.animationId);
+                if (neuralNetworkAnimationScene && neuralNetworkAnimationScene.animationId) {
+                  cancelAnimationFrame(neuralNetworkAnimationScene.animationId);
                 }
 
                 authSection.style.display = 'none';
@@ -863,19 +937,24 @@
                 document.getElementById('user-avatar-header').src = `https://placehold.co/40x40/f59e0b/000000?text=${userInitials}`;
 
                 showSection(window.location.hash || '#dashboard');
-            };
+              };
 
-            const showLogin = () => {
-                currentClinicId = null;
+             const showLogin = () => {
+                 // MODIFICAÇÃO: Força o dark mode ao mostrar a tela de login
+                localStorage.setItem('theme', 'dark');
+                syncThemeUI(true);
+                 // FIM DA MODIFICAÇÃO
+
+                 currentClinicId = null;
                 sessionStorage.removeItem('clinicSession');
                 localStorage.removeItem('clinicSession');
-                unsubscribeFromChannels(); 
+                unsubscribeFromChannels();
 
                 authSection.style.display = 'flex';
                 appDiv.classList.add('hidden');
                 appDiv.style.display = 'none';
-                initShaderAnimation();
-            };
+                initNeuralNetworkAnimation();
+                };
 
             const handleLogin = async (event) => {
                 event.preventDefault();
@@ -884,7 +963,10 @@
                 const password = document.getElementById('password-input').value;
                 const rememberMe = document.getElementById('remember-me-checkbox').checked;
 
-                const { data, error } = await supabase.from('usuarios_site').select('email, senha, clinic_id').eq('email', email).limit(1);
+                const {
+                    data,
+                    error
+                } = await supabase.from('usuarios_site').select('email, senha, clinic_id').eq('email', email).limit(1);
 
                 if (error || !data || data.length === 0) {
                     loginError.textContent = 'E-mail ou senha inválidos.';
@@ -907,7 +989,7 @@
                     showLogin();
                 }
             };
-            
+
             const showSection = async (hash) => {
                 unsubscribeFromChannels();
                 const currentHash = hash || '#dashboard';
@@ -922,20 +1004,27 @@
                 pageSections.forEach(s => s.classList.add('hidden'));
                 if (section) {
                     section.classList.remove('hidden');
-                    gsap.fromTo(section, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3 });
+                    gsap.fromTo(section, {
+                        opacity: 0,
+                        y: 10
+                    }, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.3
+                    });
                 } else {
                     document.getElementById('dashboard-section').classList.remove('hidden');
                 }
-                
+
                 appSidebar.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
                 mobileNavLinks.querySelectorAll('a.nav-link').forEach(a => a.classList.remove('active'));
-                
+
                 const navHash = currentHash.split('-')[0];
                 const activeLink = appSidebar.querySelector(`a[href="${navHash}"]`);
                 if (activeLink) activeLink.classList.add('active');
 
                 const activeMobileLink = mobileNavLinks.querySelector(`a[href="${navHash}"]`);
-                if(activeMobileLink) activeMobileLink.classList.add('active');
+                if (activeMobileLink) activeMobileLink.classList.add('active');
 
 
                 if (!currentClinicId) return;
@@ -943,25 +1032,33 @@
                 const sectionBaseName = baseHash.split('-')[0];
 
                 switch (sectionBaseName) {
-                    case '#dashboard': await fetchDashboardData(); break;
-                    case '#clientes': await fetchClients(); break;
-                    case '#conversas': await fetchChats(); break;
-                    case '#agendamentos': await fetchAndRenderAgenda(); break;
-                    case '#client': 
+                    case '#dashboard':
+                        await fetchDashboardData();
+                        break;
+                    case '#clientes':
+                        await fetchClients();
+                        break;
+                    case '#conversas':
+                        await fetchChats();
+                        break;
+                    case '#agendamentos':
+                        await fetchAndRenderAgenda();
+                        break;
+                    case '#client':
                         const clientId = currentHash.split('-detail-')[1];
                         if (!allClients || allClients.length === 0) await fetchClients(); // Fetch if not available
                         const client = allClients.find(c => (c.telefone || c.telefone_cliente || '').replace(/\D/g, '') === clientId);
-                        if(client) await renderClientDetailsPage(client, '#clientes');
+                        if (client) await renderClientDetailsPage(client, '#clientes');
                         break;
-                    case '#appointment': 
+                    case '#appointment':
                         const appointmentId = currentHash.split('-detail-')[1];
-                         if (!allAppointments || allAppointments.length === 0) await fetchAndRenderAgenda(); // Fetch if not available
+                        if (!allAppointments || allAppointments.length === 0) await fetchAndRenderAgenda(); // Fetch if not available
                         const appointment = allAppointments.find(a => a.id == appointmentId);
-                        if(appointment) await renderAppointmentDetailsPage(appointment, '#agendamentos');
+                        if (appointment) await renderAppointmentDetailsPage(appointment, '#agendamentos');
                         break;
                 }
             };
-            
+
             function unsubscribeFromChannels() {
                 if (clientListSubscription) {
                     supabase.removeChannel(clientListSubscription);
@@ -976,43 +1073,63 @@
 
             async function fetchDashboardData(period = 'all') {
                 if (!currentClinicId) return;
-                
+
                 try {
-                    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-                    const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
-                    
+                    const todayStart = new Date();
+                    todayStart.setHours(0, 0, 0, 0);
+                    const todayEnd = new Date();
+                    todayEnd.setHours(23, 59, 59, 999);
+
                     let startDate = new Date();
                     if (period === '7') {
                         startDate.setDate(startDate.getDate() - 7);
                     } else if (period === '30') {
                         startDate.setDate(startDate.getDate() - 30);
                     } else {
-                         startDate = new Date(0); // 'all'
+                        startDate = new Date(0); // 'all'
                     }
 
-                    const [
-                        { count: totalContacts }, 
-                        { data: appointmentsData }, 
-                        { count: consultasParaHoje }, 
-                        { data: recentAppointmentsData },
-                        { data: revenueData },
-                        { count: newPatientsCount },
-                        { data: clientOriginsData },
-                        { data: servicesData }
-                    ] = await Promise.all([
-                        supabase.from('dados_cliente').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
+                    const [{
+                        count: totalContacts
+                    }, {
+                        data: appointmentsData
+                    }, {
+                        count: consultasParaHoje
+                    }, {
+                        data: recentAppointmentsData
+                    }, {
+                        data: revenueData
+                    }, {
+                        count: newPatientsCount
+                    }, {
+                        data: clientOriginsData
+                    }, {
+                        data: servicesData
+                    }] = await Promise.all([
+                        supabase.from('dados_cliente').select('*', {
+                            count: 'exact',
+                            head: true
+                        }).eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
                         supabase.from('consultas').select('telefone_cliente, status').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
-                        supabase.from('consultas').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('data_inicio', todayStart.toISOString()).lte('data_inicio', todayEnd.toISOString()),
-                        supabase.from('consultas').select('nome_cliente, data_inicio').eq('clinic_id', currentClinicId).order('data_inicio', { ascending: true }).gte('data_inicio', new Date().toISOString()).limit(3),
+                        supabase.from('consultas').select('*', {
+                            count: 'exact',
+                            head: true
+                        }).eq('clinic_id', currentClinicId).gte('data_inicio', todayStart.toISOString()).lte('data_inicio', todayEnd.toISOString()),
+                        supabase.from('consultas').select('nome_cliente, data_inicio').eq('clinic_id', currentClinicId).order('data_inicio', {
+                            ascending: true
+                        }).gte('data_inicio', new Date().toISOString()).limit(3),
                         supabase.from('consultas').select('valor').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
-                        supabase.from('dados_cliente').select('*', { count: 'exact', head: true }).eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
+                        supabase.from('dados_cliente').select('*', {
+                            count: 'exact',
+                            head: true
+                        }).eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
                         supabase.from('dados_cliente').select('origem').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString()),
                         supabase.from('consultas').select('tipo_consulta').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString())
                     ]);
-                    
+
                     const convertedCount = appointmentsData ? new Set(appointmentsData.map(c => c.telefone_cliente)).size : 0;
                     const taxaConversao = totalContacts > 0 ? ((convertedCount / totalContacts) * 100).toFixed(0) : 0;
-                    
+
                     const faturamentoTotal = revenueData ? revenueData.reduce((acc, curr) => acc + (curr.valor || 150), 0) : 0;
                     document.getElementById('faturamento-mensal-stat').textContent = `R$ ${(faturamentoTotal / 1000).toFixed(1)}k`;
                     document.getElementById('vendas-geral-stat').textContent = `R$ ${(faturamentoTotal / 1000).toFixed(1)}k`;
@@ -1042,7 +1159,7 @@
                     } else {
                         recentAppointmentsList.innerHTML = '<p class="text-sm text-muted-foreground">Nenhum agendamento próximo.</p>';
                     }
-                    
+
                     const monthlyConsultasData = await getChartDataForPeriod(period);
                     const monthLabels = getChartLabelsForPeriod(period);
 
@@ -1051,12 +1168,17 @@
                         consultasChartInstance.data.datasets[0].data = monthlyConsultasData;
                         consultasChartInstance.update();
                     }
-                    
+
                     const originCounts = (clientOriginsData || []).reduce((acc, client) => {
                         const origin = client.origem || 'Outros';
                         acc[origin] = (acc[origin] || 0) + 1;
                         return acc;
-                    }, { 'Instagram': 0, 'Facebook': 0, 'Indicação': 0, 'Outros': 0 });
+                    }, {
+                        'Instagram': 0,
+                        'Facebook': 0,
+                        'Indicação': 0,
+                        'Outros': 0
+                    });
 
                     if (conversionChartInstance) {
                         conversionChartInstance.data.labels = Object.keys(originCounts);
@@ -1080,19 +1202,19 @@
             function renderServicosMaisProcurados(serviceCounts, total) {
                 const container = document.getElementById('servicos-procurados-container');
                 if (!container) return;
-                
+
                 const title = container.querySelector('p');
                 container.innerHTML = '';
-                if(title) container.appendChild(title);
+                if (title) container.appendChild(title);
 
                 const sortedServices = Object.entries(serviceCounts)
                     .sort(([, a], [, b]) => b - a)
-                    .slice(0, 4); 
+                    .slice(0, 4);
 
                 const progressContainer = document.createElement('div');
                 progressContainer.className = 'grid min-h-[180px] gap-y-4 items-center py-3';
 
-                if(sortedServices.length > 0) {
+                if (sortedServices.length > 0) {
                     sortedServices.forEach(([name, count]) => {
                         const percentage = total > 0 ? (count / total) * 100 : 0;
                         progressContainer.innerHTML += `
@@ -1111,22 +1233,38 @@
                 const container = document.getElementById('recent-activities-list');
                 container.innerHTML = '';
 
-                const [ {data: newAppointments}, {data: newClients} ] = await Promise.all([
-                    supabase.from('consultas').select('nome_cliente, created_at').eq('clinic_id', currentClinicId).order('created_at', { ascending: false }).limit(2),
-                    supabase.from('dados_cliente').select('nomewpp, created_at').eq('clinic_id', currentClinicId).order('created_at', { ascending: false }).limit(2)
+                const [{
+                    data: newAppointments
+                }, {
+                    data: newClients
+                }] = await Promise.all([
+                    supabase.from('consultas').select('nome_cliente, created_at').eq('clinic_id', currentClinicId).order('created_at', {
+                        ascending: false
+                    }).limit(2),
+                    supabase.from('dados_cliente').select('nomewpp, created_at').eq('clinic_id', currentClinicId).order('created_at', {
+                        ascending: false
+                    }).limit(2)
                 ]);
 
                 const activities = [];
                 if (newAppointments) {
-                    newAppointments.forEach(apt => activities.push({ type: 'agendamento', data: apt, time: new Date(apt.created_at) }));
+                    newAppointments.forEach(apt => activities.push({
+                        type: 'agendamento',
+                        data: apt,
+                        time: new Date(apt.created_at)
+                    }));
                 }
                 if (newClients) {
-                    newClients.forEach(client => activities.push({ type: 'cliente', data: client, time: new Date(client.created_at) }));
+                    newClients.forEach(client => activities.push({
+                        type: 'cliente',
+                        data: client,
+                        time: new Date(client.created_at)
+                    }));
                 }
 
                 activities.sort((a, b) => b.time - a.time);
 
-                if(activities.length > 0) {
+                if (activities.length > 0) {
                     activities.slice(0, 3).forEach(activity => {
                         const item = document.createElement('div');
                         item.className = 'flex gap-4';
@@ -1146,63 +1284,162 @@
                     container.innerHTML = '<p class="text-sm text-muted-foreground">Nenhuma atividade recente.</p>';
                 }
             }
-            
-            async function getChartDataForPeriod(period){
-                 let startDate = new Date(0);
-                 let labels;
-                 if (period === '7') {
-                     startDate = new Date(); startDate.setDate(startDate.getDate() - 7);
-                     labels = Array.from({length: 7}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (6-i)); return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'}); });
-                 } else if (period === '30') {
-                     startDate = new Date(); startDate.setDate(startDate.getDate() - 30);
-                      labels = Array.from({length: 30}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (29-i)); return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'}); });
-                 } else { // all
-                    labels = Array.from({length: 6}, (v, i) => { const d = new Date(); d.setMonth(d.getMonth() - (5 - i)); return d.toLocaleDateString('pt-BR', { month: 'short' }); });
-                 }
-                
-                const { data, error } = await supabase.from('consultas').select('created_at').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString());
-                if(error) return [];
-                
+
+            async function getChartDataForPeriod(period) {
+                let startDate = new Date(0);
+                let labels;
+                if (period === '7') {
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 7);
+                    labels = Array.from({
+                        length: 7
+                    }, (_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (6 - i));
+                        return d.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit'
+                        });
+                    });
+                } else if (period === '30') {
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 30);
+                    labels = Array.from({
+                        length: 30
+                    }, (_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (29 - i));
+                        return d.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit'
+                        });
+                    });
+                } else { // all
+                    labels = Array.from({
+                        length: 6
+                    }, (v, i) => {
+                        const d = new Date();
+                        d.setMonth(d.getMonth() - (5 - i));
+                        return d.toLocaleDateString('pt-BR', {
+                            month: 'short'
+                        });
+                    });
+                }
+
+                const {
+                    data,
+                    error
+                } = await supabase.from('consultas').select('created_at').eq('clinic_id', currentClinicId).gte('created_at', startDate.toISOString());
+                if (error) return [];
+
                 if (period === 'all') {
-                    const counts = labels.reduce((acc, label) => ({...acc, [label]: 0}), {});
+                    const counts = labels.reduce((acc, label) => ({ ...acc,
+                        [label]: 0
+                    }), {});
                     data.forEach(d => {
-                        const month = new Date(d.created_at).toLocaleDateString('pt-BR', { month: 'short' });
-                        if(counts[month] !== undefined) counts[month]++;
+                        const month = new Date(d.created_at).toLocaleDateString('pt-BR', {
+                            month: 'short'
+                        });
+                        if (counts[month] !== undefined) counts[month]++;
                     });
                     return Object.values(counts);
                 } else {
-                    const counts = labels.reduce((acc, label) => ({...acc, [label]: 0}), {});
-                     data.forEach(d => {
-                          const day = new Date(d.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-                          if(counts[day] !== undefined) counts[day]++;
-                     });
-                     return Object.values(counts);
+                    const counts = labels.reduce((acc, label) => ({ ...acc,
+                        [label]: 0
+                    }), {});
+                    data.forEach(d => {
+                        const day = new Date(d.created_at).toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit'
+                        });
+                        if (counts[day] !== undefined) counts[day]++;
+                    });
+                    return Object.values(counts);
                 }
             }
-            
-              function getChartLabelsForPeriod(period) {
-                  if (period === 'all') {
-                      return Array.from({length: 6}, (v, i) => { const d = new Date(); d.setMonth(d.getMonth() - (5 - i)); return d.toLocaleDateString('pt-BR', { month: 'short' }); });
-                  } else {
-                      const days = period === '7' ? 7 : 30;
-                      return Array.from({length: days}, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (days - 1 - i)); return d.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});});
-                  }
+
+            function getChartLabelsForPeriod(period) {
+                if (period === 'all') {
+                    return Array.from({
+                        length: 6
+                    }, (v, i) => {
+                        const d = new Date();
+                        d.setMonth(d.getMonth() - (5 - i));
+                        return d.toLocaleDateString('pt-BR', {
+                            month: 'short'
+                        });
+                    });
+                } else {
+                    const days = period === '7' ? 7 : 30;
+                    return Array.from({
+                        length: days
+                    }, (_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (days - 1 - i));
+                        return d.toLocaleDateString('pt-BR', {
+                            day: '2-digit',
+                            month: '2-digit'
+                        });
+                    });
+                }
             }
 
             function initializeCharts() {
                 const chartBaseOptions = {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                 };
-                
+
                 const consultasCtx = document.getElementById('consultasChart')?.getContext('2d');
-                if(consultasCtx) {
-                    consultasChartInstance = new Chart(consultasCtx, { type: 'bar', data: { labels: [], datasets: [{ data: [], borderRadius: 4 }] }, options: { ...chartBaseOptions, scales: { y: { beginAtZero: true }, x: {} } } });
+                if (consultasCtx) {
+                    consultasChartInstance = new Chart(consultasCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: [],
+                            datasets: [{
+                                data: [],
+                                borderRadius: 4
+                            }]
+                        },
+                        options: { ...chartBaseOptions,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                },
+                                x: {}
+                            }
+                        }
+                    });
                 }
-                
+
                 const conversionCtx = document.getElementById('conversionChart')?.getContext('2d');
-                if(conversionCtx) {
-                    conversionChartInstance = new Chart(conversionCtx, { type: 'doughnut', data: { labels: ['Instagram', 'Facebook', 'Indicação', 'Outros'], datasets: [{ data: [], borderWidth: 0 }] }, options: { ...chartBaseOptions, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } } });
+                if (conversionCtx) {
+                    conversionChartInstance = new Chart(conversionCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Instagram', 'Facebook', 'Indicação', 'Outros'],
+                            datasets: [{
+                                data: [],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: { ...chartBaseOptions,
+                            cutout: '70%',
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        boxWidth: 12
+                                    }
+                                }
+                            }
+                        }
+                    });
                 }
 
                 updateChartTheme();
@@ -1214,7 +1451,7 @@
                     const textColor = `hsl(${style.getPropertyValue('--muted-foreground').trim()})`;
                     const gridColor = `hsl(${style.getPropertyValue('--border').trim()})`;
                     const primaryColor = `hsl(${style.getPropertyValue('--primary').trim()})`;
-                    
+
                     if (consultasChartInstance) {
                         consultasChartInstance.options.scales.y.ticks.color = textColor;
                         consultasChartInstance.options.scales.x.ticks.color = textColor;
@@ -1235,23 +1472,33 @@
             // -----------------------------------------------------------------------------
             // 5. FUNCIONALIDADE: CLIENTES
             // -----------------------------------------------------------------------------
-            
+
             async function fetchClients() {
                 if (!currentClinicId) return;
 
-                const { data, error } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
+                const {
+                    data,
+                    error
+                } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
 
                 if (error) {
                     clientTableBody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-red-500">Erro ao carregar clientes.</td></tr>`;
                     return;
                 }
-                
+
                 allClients = data || [];
                 renderClientList(allClients);
 
                 clientListSubscription = supabase.channel('public:dados_cliente')
-                    .on('postgres_changes', { event: '*', schema: 'public', table: 'dados_cliente', filter: `clinic_id=eq.${currentClinicId}` }, async () => {
-                        const { data: updatedData } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'dados_cliente',
+                        filter: `clinic_id=eq.${currentClinicId}`
+                    }, async () => {
+                        const {
+                            data: updatedData
+                        } = await supabase.from('dados_cliente').select('*').eq('clinic_id', currentClinicId);
                         allClients = updatedData || [];
                         renderClientList(allClients);
                     })
@@ -1263,29 +1510,29 @@
                 clientListContainer.innerHTML = '';
 
                 if (!clients || clients.length === 0) {
-                     const noClientsHtml = `<tr><td colspan="3" class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</td></tr>`;
-                     clientTableBody.innerHTML = noClientsHtml;
-                     clientListContainer.innerHTML = `<div class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</div>`
+                    const noClientsHtml = `<tr><td colspan="3" class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</td></tr>`;
+                    clientTableBody.innerHTML = noClientsHtml;
+                    clientListContainer.innerHTML = `<div class="p-4 text-center text-muted-foreground">Nenhum cliente encontrado.</div>`
                     return;
                 }
 
                 clients.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                
+
                 clients.forEach(client => {
                     // Render for mobile (cards)
                     const card = document.createElement('div');
                     card.className = 'bg-card p-4 rounded-lg shadow mb-2 border flex items-center gap-4';
                     card.innerHTML = `
-                         <img src="https://placehold.co/40x40/f59e0b/000000?text=${getInitials(client.nomewpp)}" class="w-10 h-10 rounded-full">
-                         <div class="flex-1">
+                        <img src="https://placehold.co/40x40/f59e0b/000000?text=${getInitials(client.nomewpp)}" class="w-10 h-10 rounded-full">
+                        <div class="flex-1">
                             <p class="font-medium">${htmlEncode(client.nomewpp)}</p>
                             <p class="text-sm text-muted-foreground">${htmlEncode(client.telefone)}</p>
-                         </div>
-                         <span class="text-xs text-muted-foreground">${new Date(client.created_at).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <span class="text-xs text-muted-foreground">${new Date(client.created_at).toLocaleDateString('pt-BR')}</span>
                     `;
                     card.addEventListener('click', () => showClientDetailsView(client, '#clientes'));
                     clientListContainer.appendChild(card);
-                    
+
                     // Render for desktop (table)
                     const row = document.createElement('tr');
                     row.className = 'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer';
@@ -1297,35 +1544,41 @@
 
             async function showClientDetailsView(client, backHash) {
                 if (!currentClinicId) return;
-                
+
                 const clientPhoneNumber = (client.telefone || client.telefone_cliente || '').replace(/\D/g, '');
                 if (!clientPhoneNumber) return;
 
                 window.location.hash = `#client-detail-${clientPhoneNumber}`;
             }
-            
+
             async function showAppointmentDetailsView(appointment, backHash) {
                 if (!currentClinicId || !appointment) return;
                 window.location.hash = `#appointment-detail-${appointment.id}`;
             }
 
-             async function renderClientDetailsPage(client, backHash) {
+            async function renderClientDetailsPage(client, backHash) {
                 const detailSection = document.getElementById('client-detail-section');
                 detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
 
                 const clientPhoneNumber = (client.telefone || client.telefone_cliente || '').replace(/\D/g, '');
 
-                const [{ data: clientDetailsData }, { data: appointmentsData }] = await Promise.all([
+                const [{
+                    data: clientDetailsData
+                }, {
+                    data: appointmentsData
+                }] = await Promise.all([
                     supabase.from('dados_cliente').select('*').eq('telefone', clientPhoneNumber).eq('clinic_id', currentClinicId).limit(1),
-                    supabase.from('consultas').select('*').eq('telefone_cliente', clientPhoneNumber).eq('clinic_id', currentClinicId).order('data_inicio', { ascending: false })
+                    supabase.from('consultas').select('*').eq('telefone_cliente', clientPhoneNumber).eq('clinic_id', currentClinicId).order('data_inicio', {
+                        ascending: false
+                    })
                 ]);
-                
+
                 const clientData = (clientDetailsData && clientDetailsData.length > 0) ? clientDetailsData[0] : client;
 
                 const clientInitials = getInitials(clientData.nomewpp || clientData.nome_cliente);
                 const age = calculateAge(clientData.data_nascimento);
                 const formattedBirthdate = clientData.data_nascimento ? new Date(clientData.data_nascimento).toLocaleDateString('pt-BR') : 'Não informado';
-                
+
                 const futureAppointments = appointmentsData ? appointmentsData.filter(a => new Date(a.data_inicio) > new Date()) : [];
                 const pastAppointments = appointmentsData ? appointmentsData.filter(a => new Date(a.data_inicio) <= new Date()) : [];
 
@@ -1340,12 +1593,12 @@
                         </summary>
                         <div class="p-4 border-t border-border text-sm text-muted-foreground space-y-2">
                             <p><strong>Status:</strong> ${htmlEncode(apt.status)}</p>
-                             <p><strong>Valor:</strong> R$ ${apt.valor || 'Não definido'}</p>
+                            <p><strong>Valor:</strong> R$ ${apt.valor || 'Não definido'}</p>
                             <p><strong>Observações:</strong> ${htmlEncode(apt.observacoes) || 'Nenhuma.'}</p>
                         </div>
                     </details>
                 `;
-                
+
                 detailSection.innerHTML = `
                     <div class="max-w-6xl mx-auto space-y-8 pt-8 md:pt-0">
                         <div>
@@ -1359,19 +1612,19 @@
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             <div class="lg:col-span-1 flex flex-col gap-8">
                                 <div class="bg-card p-6 rounded-xl border flex flex-col items-center text-center">
-                                     <img class="h-24 w-24 rounded-full object-cover mb-4" src="https://placehold.co/96x96/f59e0b/000000?text=${clientInitials}" alt="Foto de perfil">
-                                     <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp || clientData.nome_cliente)}</h3>
-                                     <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>
-                                     <div class="text-sm text-muted-foreground mt-4 space-y-1">
-                                         <p><strong>Nascimento:</strong> ${formattedBirthdate}</p>
-                                         <p><strong>Idade:</strong> ${age ? `${age} anos` : 'Não informada'}</p>
-                                     </div>
+                                    <img class="h-24 w-24 rounded-full object-cover mb-4" src="https://placehold.co/96x96/f59e0b/000000?text=${clientInitials}" alt="Foto de perfil">
+                                    <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp || clientData.nome_cliente)}</h3>
+                                    <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>
+                                    <div class="text-sm text-muted-foreground mt-4 space-y-1">
+                                        <p><strong>Nascimento:</strong> ${formattedBirthdate}</p>
+                                        <p><strong>Idade:</strong> ${age ? `${age} anos` : 'Não informada'}</p>
+                                    </div>
                                 </div>
                                 <div class="bg-card p-6 rounded-xl border">
                                     <div class="flex justify-between items-center mb-4">
                                         <h4 class="font-semibold text-foreground">Resumo da Conversa</h4>
                                         <button title="Atualizar resumo da conversa" class="text-muted-foreground hover:text-primary transition-colors">
-                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
                                         </button>
                                     </div>
                                     <p class="text-sm text-muted-foreground">O resumo da conversa com o cliente aparecerá aqui. Esta funcionalidade está em desenvolvimento.</p>
@@ -1384,34 +1637,40 @@
                                         ${futureAppointments.length > 0 ? futureAppointments.map(renderAppointment).join('') : '<p class="text-sm text-muted-foreground">Nenhuma consulta futura.</p>'}
                                     </div>
                                 </div>
-                                 <div>
+                                <div>
                                     <h4 class="font-semibold text-foreground mb-4">Consultas Prévias</h4>
                                     <div id="past-appointments" class="space-y-3">
-                                         ${pastAppointments.length > 0 ? pastAppointments.map(renderAppointment).join('') : '<p class="text-sm text-muted-foreground">Nenhuma consulta prévia.</p>'}
+                                        ${pastAppointments.length > 0 ? pastAppointments.map(renderAppointment).join('') : '<p class="text-sm text-muted-foreground">Nenhuma consulta prévia.</p>'}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `;
-                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = backHash; });
+                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.hash = backHash;
+                });
             }
 
-            async function renderAppointmentDetailsPage(appointment, backHash){
-                 const detailSection = document.getElementById('appointment-detail-section');
+            async function renderAppointmentDetailsPage(appointment, backHash) {
+                const detailSection = document.getElementById('appointment-detail-section');
                 detailSection.innerHTML = `<div class="text-center p-8">Carregando detalhes...</div>`;
 
-                const { data: clientData, error } = await supabase.from('dados_cliente')
+                const {
+                    data: clientData,
+                    error
+                } = await supabase.from('dados_cliente')
                     .select('*')
                     .eq('telefone', appointment.telefone_cliente)
                     .eq('clinic_id', currentClinicId)
                     .single();
 
-                const clientInfoHtml = error || !clientData
-                    ? '<p>Detalhes do cliente não encontrados.</p>'
-                    : ` <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp)}</h3>
-                        <p class="text-sm text-muted-foreground">${htmlEncode(clientData.email) || ''}</p>
-                        <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>`;
+                const clientInfoHtml = error || !clientData ?
+                    '<p>Detalhes do cliente não encontrados.</p>' :
+                    ` <h3 class="text-lg font-semibold text-foreground">${htmlEncode(clientData.nomewpp)}</h3>
+                            <p class="text-sm text-muted-foreground">${htmlEncode(clientData.email) || ''}</p>
+                            <p class="text-sm text-muted-foreground">${htmlEncode(clientData.telefone)}</p>`;
 
                 detailSection.innerHTML = `
                     <div class="max-w-6xl mx-auto pt-8 md:pt-0">
@@ -1430,25 +1689,33 @@
                                 </div>
                             </div>
                             <div class="lg:col-span-1 bg-card p-6 rounded-xl border flex flex-col items-center text-center">
-                                 <img class="h-24 w-24 rounded-full object-cover mb-4" src="https://placehold.co/96x96/f59e0b/000000?text=${getInitials(appointment.nome_cliente)}" alt="Foto de perfil">
+                                <img class="h-24 w-24 rounded-full object-cover mb-4" src="https://placehold.co/96x96/f59e0b/000000?text=${getInitials(appointment.nome_cliente)}" alt="Foto de perfil">
                                 ${clientInfoHtml}
                                 <a href="#client-detail-${appointment.telefone_cliente}" class="mt-4 text-sm text-primary hover:underline">Ver perfil completo</a>
                             </div>
                         </div>
                     </div>
                 `;
-                 detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = backHash; });
+                detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.location.hash = backHash;
+                });
             }
 
 
             // -----------------------------------------------------------------------------
             // 6. FUNCIONALIDADE: CONVERSAS
             // -----------------------------------------------------------------------------
-            
+
             async function fetchChats() {
                 if (!currentClinicId) return;
-                
-                const { data: allMessages, error } = await supabase.from('n8n_chat_histories').select('session_id, created_at, content, patient_name, role').eq('clinic_id', currentClinicId).order('created_at', { ascending: false });
+
+                const {
+                    data: allMessages,
+                    error
+                } = await supabase.from('n8n_chat_histories').select('session_id, created_at, content, patient_name, role').eq('clinic_id', currentClinicId).order('created_at', {
+                    ascending: false
+                });
 
                 if (error) {
                     document.getElementById('chat-list-container').innerHTML = `<div class="p-4 text-center text-red-400">Falha ao carregar conversas.</div>`;
@@ -1506,37 +1773,40 @@
                         e.preventDefault();
                         chatListContainer.querySelectorAll('a').forEach(el => el.classList.remove('bg-primary/20'));
                         item.classList.add('bg-primary/20');
-                        
+
                         currentChat = currentChats.find(c => c.phone == item.dataset.chatId);
                         if (!currentChat) return;
-                        
+
                         document.getElementById('new-chat-placeholder').style.display = 'none';
                         document.getElementById('new-chat-view').classList.remove('hidden');
                         document.getElementById('new-chat-view').classList.add('flex');
-                        
+
                         fetchMessagesForChat(currentChat.phone);
                         renderChatDetails(currentChat);
 
-                         if (window.innerWidth < 768) {
-                             document.getElementById('chat-list-column').classList.add('hidden');
-                             document.getElementById('chat-view-column').classList.remove('hidden');
-                         }
+                        if (window.innerWidth < 768) {
+                            document.getElementById('chat-list-column').classList.add('hidden');
+                            document.getElementById('chat-view-column').classList.remove('hidden');
+                        }
 
                     });
                 });
             };
-            
+
             async function renderChatDetails(chat) {
                 const detailsContainer = document.getElementById('chat-details-panel');
                 detailsContainer.innerHTML = '<p class="text-center text-muted-foreground">Carregando...</p>';
 
                 const phone = chat.phone.split('@')[0];
-                const { data: clientData, error } = await supabase.from('dados_cliente')
+                const {
+                    data: clientData,
+                    error
+                } = await supabase.from('dados_cliente')
                     .select('*')
                     .eq('telefone', phone)
                     .eq('clinic_id', currentClinicId)
                     .single();
-                
+
                 if (error || !clientData) {
                     detailsContainer.innerHTML = '<p class="text-center text-muted-foreground">Detalhes do cliente não encontrados.</p>';
                     return;
@@ -1563,13 +1833,17 @@
                         </ul>
                     </div>`;
 
-                const { data: appointments } = await supabase.from('consultas').select('*').eq('telefone_cliente', phone).eq('clinic_id', currentClinicId).order('data_inicio', { ascending: true });
-                
+                const {
+                    data: appointments
+                } = await supabase.from('consultas').select('*').eq('telefone_cliente', phone).eq('clinic_id', currentClinicId).order('data_inicio', {
+                    ascending: true
+                });
+
                 const upcomingAppointmentsContainer = document.getElementById('client-upcoming-appointments');
                 upcomingAppointmentsContainer.innerHTML = '';
                 const upcoming = appointments.filter(a => new Date(a.data_inicio) > new Date());
-                if(upcoming.length > 0){
-                    upcoming.slice(0,1).forEach(apt => {
+                if (upcoming.length > 0) {
+                    upcoming.slice(0, 1).forEach(apt => {
                         upcomingAppointmentsContainer.innerHTML += `
                         <div class="bg-muted p-4 rounded-lg flex items-center justify-between">
                             <div>
@@ -1585,8 +1859,8 @@
                 const historyContainer = document.getElementById('client-history');
                 historyContainer.innerHTML = '';
                 const pastAppointments = appointments.filter(a => new Date(a.data_inicio) <= new Date());
-                 if(pastAppointments.length > 0){
-                    pastAppointments.slice(0,2).forEach(apt => {
+                if (pastAppointments.length > 0) {
+                    pastAppointments.slice(0, 2).forEach(apt => {
                         historyContainer.innerHTML += `
                         <li class="flex items-start gap-4">
                             <div class="bg-primary/20 rounded-full p-2">
@@ -1610,13 +1884,13 @@
                 const messagesContainer = document.getElementById('new-chat-messages');
                 const chatHeader = document.getElementById('chat-active-header');
                 messagesContainer.innerHTML = '';
-                
+
                 const client = currentChats.find(c => c.phone === chatId);
                 const initials = getInitials(client.nomewpp);
 
                 chatHeader.innerHTML = `
                     <button id="back-to-chat-list" class="p-2 -ml-2 rounded-md hover:bg-muted text-foreground md:hidden">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="m15 18-6-6 6-6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="m15 18-6-6 6-6"/></svg>
                     </button>
                     <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/48x48/f59e0b/000000?text=${initials}" alt="Foto de ${htmlEncode(client.nomewpp)}">
                     <div>
@@ -1624,7 +1898,7 @@
                         <p class="text-sm text-green-500">Online</p>
                     </div>
                 `;
-                
+
                 chatHeader.querySelector('#back-to-chat-list')?.addEventListener('click', () => {
                     document.getElementById('chat-list-column').classList.remove('hidden');
                     document.getElementById('chat-view-column').classList.add('hidden');
@@ -1632,8 +1906,13 @@
 
 
                 const sessionId = chatId.split('@')[0];
-                const { data, error } = await supabase.from('n8n_chat_histories').select('created_at, content, role').eq('session_id', sessionId).eq('clinic_id', currentClinicId).order('created_at', { ascending: true });
-                
+                const {
+                    data,
+                    error
+                } = await supabase.from('n8n_chat_histories').select('created_at, content, role').eq('session_id', sessionId).eq('clinic_id', currentClinicId).order('created_at', {
+                    ascending: true
+                });
+
                 if (error) {
                     messagesContainer.innerHTML = `<div class="text-center text-red-400">Erro ao carregar mensagens.</div>`;
                 } else if (data && data.length > 0) {
@@ -1646,20 +1925,24 @@
             async function sendMessage() {
                 const chatInput = document.getElementById('new-chat-input');
                 if (!currentClinicId || !currentChat || chatInput.value.trim() === '') return;
-                
+
                 const text = chatInput.value.trim();
-                const newMessage = { 
-                    session_id: currentChat.phone.split('@')[0], 
-                    content: text, 
+                const newMessage = {
+                    session_id: currentChat.phone.split('@')[0],
+                    content: text,
                     role: 'AI',
-                    patient_name: currentChat.nomewpp, 
-                    clinic_id: currentClinicId 
+                    patient_name: currentChat.nomewpp,
+                    clinic_id: currentClinicId
                 };
 
-                const { error } = await supabase.from('n8n_chat_histories').insert([newMessage]);
+                const {
+                    error
+                } = await supabase.from('n8n_chat_histories').insert([newMessage]);
 
                 if (!error) {
-                    appendMessageToNewChat({ ...newMessage, created_at: new Date().toISOString() });
+                    appendMessageToNewChat({ ...newMessage,
+                        created_at: new Date().toISOString()
+                    });
                     chatInput.value = '';
                 } else {
                     console.error("Erro ao enviar mensagem:", error);
@@ -1672,7 +1955,7 @@
                 const isFromClient = message.role?.toLowerCase() === 'user';
                 const messageWrapper = document.createElement('div');
                 messageWrapper.className = `flex items-end gap-3 max-w-lg ${isFromClient ? '' : 'ml-auto flex-row-reverse'}`;
-                
+
                 const initials = getInitials(isFromClient ? clientName : 'Admin');
                 const avatarSrc = isFromClient ? `https://placehold.co/40x40/f59e0b/000000?text=${initials}` : document.getElementById('user-avatar-header').src;
                 const timeAlignment = isFromClient ? 'text-left' : 'text-right';
@@ -1695,27 +1978,30 @@
             // -----------------------------------------------------------------------------
             // 7. FUNCIONALIDADE: AGENDAMENTOS
             // -----------------------------------------------------------------------------
-            
+
             async function fetchAndRenderAgenda() {
                 if (!currentClinicId) return;
 
-                const { data, error } = await supabase.from('consultas')
+                const {
+                    data,
+                    error
+                } = await supabase.from('consultas')
                     .select('*')
                     .eq('clinic_id', currentClinicId)
                     .gte('data_inicio', new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString())
                     .lte('data_inicio', new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59).toISOString());
-                
+
                 allAppointments = error ? [] : data;
                 renderAgendaView();
             }
-            
+
             function renderAgendaView() {
                 renderFullCalendar();
-                
+
                 const dateRange = document.getElementById('weekly-view-date-range');
                 const dailyBtn = document.querySelector('.view-toggle-btn[data-view="daily"]');
                 const weeklyBtn = document.querySelector('.view-toggle-btn[data-view="weekly"]');
-                
+
                 document.getElementById('weekly-view').classList.toggle('hidden', currentCalendarView !== 'weekly');
                 document.getElementById('daily-view').classList.toggle('hidden', currentCalendarView !== 'daily');
                 weeklyBtn.classList.toggle('bg-background', currentCalendarView === 'weekly');
@@ -1737,10 +2023,10 @@
                     dateRange.textContent = `${currentDate.toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric', month: 'long'})}`;
                 }
             }
-            
+
             function renderFullCalendar() {
                 const container = document.getElementById('full-calendar-container');
-                container.innerHTML = ''; 
+                container.innerHTML = '';
 
                 const year = currentDate.getFullYear();
                 const month = currentDate.getMonth();
@@ -1749,19 +2035,25 @@
                 header.className = 'relative mb-1 flex h-9 items-center justify-center z-20';
                 header.innerHTML = `
                     <div class="absolute top-0 inset-x-0 flex h-9 items-center justify-between z-10 px-1">
-                         <button id="calendar-prev-month" class="size-9 p-0 inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground text-muted-foreground/80">
+                        <button id="calendar-prev-month" class="size-9 p-0 inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground text-muted-foreground/80">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                         </button>
-                         <button id="calendar-next-month" class="size-9 p-0 inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground text-muted-foreground/80">
+                        </button>
+                        <button id="calendar-next-month" class="size-9 p-0 inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground text-muted-foreground/80">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                         </button>
+                        </button>
                     </div>
                     <span class="text-sm font-medium text-foreground">${new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</span>
                 `;
                 container.appendChild(header);
 
-                header.querySelector('#calendar-prev-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); fetchAndRenderAgenda(); });
-                header.querySelector('#calendar-next-month').addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); fetchAndRenderAgenda(); });
+                header.querySelector('#calendar-prev-month').addEventListener('click', () => {
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                    fetchAndRenderAgenda();
+                });
+                header.querySelector('#calendar-next-month').addEventListener('click', () => {
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                    fetchAndRenderAgenda();
+                });
 
                 const weekdays = document.createElement('div');
                 weekdays.className = 'grid grid-cols-7';
@@ -1773,7 +2065,7 @@
 
                 const daysGrid = document.createElement('div');
                 daysGrid.className = 'grid grid-cols-7';
-                
+
                 const firstDayOfMonth = new Date(year, month, 1).getDay();
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const today = new Date();
@@ -1784,29 +2076,29 @@
                     const thisDate = new Date(year, month, day);
                     const dayGroup = document.createElement('div');
                     dayGroup.className = 'group size-9 px-0 text-sm flex items-center justify-center';
-                    
+
                     const dayButton = document.createElement('button');
                     dayButton.className = "relative flex size-9 items-center justify-center whitespace-nowrap rounded-lg p-0 text-foreground outline-offset-2 hover:bg-accent focus:outline-none focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70";
-                    
-                    if(thisDate.toDateString() === currentDate.toDateString()) {
-                          dayButton.classList.add('bg-primary', 'text-primary-foreground', 'font-bold');
+
+                    if (thisDate.toDateString() === currentDate.toDateString()) {
+                        dayButton.classList.add('bg-primary', 'text-primary-foreground', 'font-bold');
                     }
-                    
+
                     dayButton.innerHTML = `<span>${day}</span>`;
 
                     if (allAppointments.some(apt => new Date(apt.data_inicio).toDateString() === thisDate.toDateString())) {
-                          const dot = document.createElement('span');
-                          dot.className = "pointer-events-none absolute bottom-1 start-1/2 z-10 size-[3px] -translate-x-1/2 rounded-full";
-                          dot.classList.add(thisDate.toDateString() === currentDate.toDateString() ? 'bg-background' : 'bg-primary');
-                          dayButton.appendChild(dot);
+                        const dot = document.createElement('span');
+                        dot.className = "pointer-events-none absolute bottom-1 start-1/2 z-10 size-[3px] -translate-x-1/2 rounded-full";
+                        dot.classList.add(thisDate.toDateString() === currentDate.toDateString() ? 'bg-background' : 'bg-primary');
+                        dayButton.appendChild(dot);
                     }
-                     if (thisDate.toDateString() === today.toDateString()) {
-                          dayButton.classList.add('border', 'border-primary');
+                    if (thisDate.toDateString() === today.toDateString()) {
+                        dayButton.classList.add('border', 'border-primary');
                     }
 
 
-                    dayButton.addEventListener('click', () => { 
-                        currentDate = thisDate; 
+                    dayButton.addEventListener('click', () => {
+                        currentDate = thisDate;
                         renderAgendaView();
                     });
                     dayGroup.appendChild(dayButton);
@@ -1814,23 +2106,32 @@
                 }
                 container.appendChild(daysGrid);
             }
-            
+
             function renderWeeklyView() {
                 const header = document.getElementById('weekly-header');
                 const body = document.getElementById('weekly-body');
-                header.innerHTML = ''; body.innerHTML = '';
+                header.innerHTML = '';
+                body.innerHTML = '';
 
-                const startOfWeek = new Date(currentDate); 
+                const startOfWeek = new Date(currentDate);
                 startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-                
-                const weekDays = Array.from({length: 7}, (_, i) => { const d = new Date(startOfWeek); d.setDate(d.getDate() + i); return d; });
-                
+
+                const weekDays = Array.from({
+                    length: 7
+                }, (_, i) => {
+                    const d = new Date(startOfWeek);
+                    d.setDate(d.getDate() + i);
+                    return d;
+                });
+
                 weekDays.forEach(day => {
                     const isToday = day.toDateString() === new Date().toDateString();
                     header.innerHTML += `<div class="text-center py-2 border-b"><p class="text-xs text-muted-foreground">${day.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0,1).toUpperCase()}</p><p class="text-lg font-bold mt-1 ${isToday ? 'bg-primary text-primary-foreground rounded-full w-8 h-8 mx-auto flex items-center justify-center' : ''}">${day.getDate()}</p></div>`;
                 });
 
-                const startHour = 8, endHour = 18, hourHeight = 80;
+                const startHour = 8,
+                    endHour = 18,
+                    hourHeight = 80;
                 let hourLinesHTML = '';
                 for (let hour = startHour; hour <= endHour; hour++) {
                     hourLinesHTML += `<div class="relative" style="height: ${hourHeight}px;"><div class="absolute left-0 -top-2.5 -ml-12 text-right w-10"><span class="text-xs text-muted-foreground">${hour}:00</span></div><div class="h-full border-t"></div></div>`;
@@ -1851,14 +2152,18 @@
                 appointmentsHTML += '</div>';
 
                 body.innerHTML = `<div class="relative" style="height: ${(endHour - startHour + 1) * hourHeight}px"><div class="ml-12">${hourLinesHTML}</div>${appointmentsHTML}</div>`;
-                body.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => { if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos'); }));
+                body.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => {
+                    if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos');
+                }));
             }
 
             function renderDailyView() {
                 const body = document.getElementById('daily-body');
                 body.innerHTML = '';
-                
-                const startHour = 8, endHour = 18, hourHeight = 80;
+
+                const startHour = 8,
+                    endHour = 18,
+                    hourHeight = 80;
                 let hourLinesHTML = '';
                 for (let hour = startHour; hour <= endHour; hour++) {
                     hourLinesHTML += `<div class="relative" style="height: ${hourHeight}px;"><div class="absolute left-0 -top-2.5 -ml-12 text-right w-10"><span class="text-xs text-muted-foreground">${hour}:00</span></div><div class="h-full border-t"></div></div>`;
@@ -1875,129 +2180,183 @@
                 appointmentsHTML += '</div>';
 
                 body.innerHTML = `<div class="relative" style="height: ${(endHour - startHour + 1) * hourHeight}px"><div class="ml-12">${hourLinesHTML}</div>${appointmentsHTML}</div>`;
-                body.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => { if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos'); }));
+                body.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => {
+                    if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos');
+                }));
             }
-            
+
             // -----------------------------------------------------------------------------
-            // 8. SHADER ANIMATION
+            // 8. SHADER/LOGIN ANIMATION
             // -----------------------------------------------------------------------------
-            function initShaderAnimation() {
-                const container = document.getElementById('shader-container');
-                if (!container || !window.THREE) return;
-                
-                if (shaderAnimationScene && shaderAnimationScene.renderer) {
-                    if(container.contains(shaderAnimationScene.renderer.domElement)) {
-                       container.removeChild(shaderAnimationScene.renderer.domElement);
-                    }
-                    shaderAnimationScene.renderer.dispose();
+            function initNeuralNetworkAnimation() {
+                const container = document.getElementById('neural-network-canvas-container');
+                 if (!container || !window.THREE) {
+                    console.log("Container or Three.js not found for neural network animation.");
+                    return;
                 }
 
-                const vertexShader = `void main() { gl_Position = vec4( position, 1.0 ); }`;
-                const fragmentShader = `
-                    precision highp float;
-                    uniform vec2 resolution;
-                    uniform float time;
-                    uniform vec3 eleganceColor;
+                if (neuralNetworkAnimationScene && neuralNetworkAnimationScene.renderer) {
+                    if (container.contains(neuralNetworkAnimationScene.renderer.domElement)) {
+                        container.removeChild(neuralNetworkAnimationScene.renderer.domElement);
+                    }
+                    neuralNetworkAnimationScene.renderer.dispose();
+                }
 
-                    void main(void) {
-                        vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
-                        float t = time * 0.05;
-                        float lineWidth = 0.002;
 
-                        vec3 color = vec3(0.0);
-                        for(int j = 0; j < 3; j++){
-                            for(int i=0; i < 5; i++){
-                                color[j] += lineWidth * float(i*i) / abs(fract(t - 0.01 * float(j) + float(i) * 0.01) * 5.0 - length(uv) + mod(uv.x + uv.y, 0.2));
-                            }
-                        }
-                        
-                        vec3 finalColor = mix(color, eleganceColor, 0.7);
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+                camera.position.z = 1;
 
-                        gl_FragColor = vec4(finalColor, 1.0);
+                const renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    alpha: false
+                });
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                container.appendChild(renderer.domElement);
+
+                const vertexShader = `
+                    varying vec2 vUv;
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                     }
                 `;
 
-                const camera = new THREE.Camera();
-                camera.position.z = 1;
-
-                const scene = new THREE.Scene();
-                const geometry = new THREE.PlaneGeometry(2, 2);
+                const fragmentShader = `
+                    #ifdef GL_ES
+                        precision lowp float;
+                    #endif
+                    uniform float iTime;
+                    uniform vec2 iResolution;
+                    varying vec2 vUv;
+                    
+                    vec4 buf[8];
+                    
+                    vec4 sigmoid(vec4 x) { return 1. / (1. + exp(-x)); }
+                    
+                    vec4 cppn_fn(vec2 coordinate, float in0, float in1, float in2) {
+                        buf[6] = vec4(coordinate.x, coordinate.y, 0.3948333106474662 + in0, 0.36 + in1);
+                        buf[7] = vec4(0.14 + in2, sqrt(coordinate.x * coordinate.x + coordinate.y * coordinate.y), 0., 0.);
+                        buf[0]=mat4(vec4(6.5404263,-3.6126034,0.7590882,-1.13613),vec4(2.4582713,3.1660357,1.2219609,0.06276096),vec4(-5.478085,-6.159632,1.8701609,-4.7742867),vec4(6.039214,-5.542865,-0.90925294,3.251348))*buf[6]+mat4(vec4(0.8473259,-5.722911,3.975766,1.6522468),vec4(-0.24321538,0.5839259,-1.7661959,-5.350116),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(0.21808943,1.1243913,-1.7969975,5.0294676);
+                        buf[1]=mat4(vec4(-3.3522482,-6.0612736,0.55641043,-4.4719114),vec4(0.8631464,1.7432913,5.643898,1.6106541),vec4(2.4941394,-3.5012043,1.7184316,6.357333),vec4(3.310376,8.209261,1.1355612,-1.165539))*buf[6]+mat4(vec4(5.24046,-13.034365,0.009859298,15.870829),vec4(2.987511,3.129433,-0.89023495,-1.6822904),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-5.9457836,-6.573602,-0.8812491,1.5436668);
+                        buf[0]=sigmoid(buf[0]);
+                        buf[1]=sigmoid(buf[1]);
+                        buf[2]=mat4(vec4(-15.219568,8.095543,-2.429353,-1.9381982),vec4(-5.951362,4.3115187,2.6393783,1.274315),vec4(-7.3145227,6.7297835,5.2473326,5.9411426),vec4(5.0796127,8.979051,-1.7278991,-1.158976))*buf[6]+mat4(vec4(-11.967154,-11.608155,6.1486754,11.237008),vec4(2.124141,-6.263192,-1.7050359,-0.7021966),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-4.17164,-3.2281182,-4.576417,-3.6401186);
+                        buf[3]=mat4(vec4(3.1832156,-13.738922,1.879223,3.233465),vec4(0.64300746,12.768129,1.9141049,0.50990224),vec4(-0.049295485,4.4807224,1.4733979,1.801449),vec4(5.0039253,13.000481,3.3991797,-4.5561905))*buf[6]+mat4(vec4(-0.1285731,7.720628,-3.1425676,4.742367),vec4(0.6393625,3.714393,-0.8108378,-0.39174938),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-1.1811101,-21.621881,0.7851888,1.2329718);
+                        buf[2]=sigmoid(buf[2]);
+                        buf[3]=sigmoid(buf[3]);
+                        buf[4]=mat4(vec4(5.214916,-7.183024,2.7228765,2.6592617),vec4(-5.601878,-25.3591,4.067988,0.4602802),vec4(-10.57759,24.286327,21.102104,37.546658),vec4(4.3024497,-1.9625226,2.3458803,-1.372816))*buf[0]+mat4(vec4(-17.6526,-10.507558,2.2587414,12.462782),vec4(6.265566,-502.75443,-12.642513,0.9112289),vec4(-10.983244,20.741234,-9.701768,-0.7635988),vec4(5.383626,1.4819539,-4.1911616,-4.8444734))*buf[1]+mat4(vec4(12.785233,-16.345072,-0.39901125,1.7955981),vec4(-30.48365,-1.8345358,1.4542528,-1.1118771),vec4(19.872723,-7.337935,-42.941723,-98.52709),vec4(8.337645,-2.7312303,-2.2927687,-36.142323))*buf[2]+mat4(vec4(-16.298317,3.5471997,-0.44300047,-9.444417),vec4(57.5077,-35.609753,16.163465,-4.1534753),vec4(-0.07470326,-3.8656476,-7.0901804,3.1523974),vec4(-12.559385,-7.077619,1.490437,-0.8211543))*buf[3]+vec4(-7.67914,15.927437,1.3207729,-1.6686112);
+                        buf[5]=mat4(vec4(-1.4109162,-0.372762,-3.770383,-21.367174),vec4(-6.2103205,-9.35908,0.92529047,8.82561),vec4(11.460242,-22.348068,13.625772,-18.693201),vec4(-0.3429052,-3.9905605,-2.4626114,-0.45033523))*buf[0]+mat4(vec4(7.3481627,-4.3661838,-6.3037653,-3.868115),vec4(1.5462853,6.5488915,1.9701879,-0.58291394),vec4(6.5858274,-2.2180402,3.7127688,-1.3730392),vec4(-5.7973905,10.134961,-2.3395722,-5.965605))*buf[1]+mat4(vec4(-2.5132585,-6.6685553,-1.4029363,-0.16285264),vec4(-0.37908727,0.53738135,4.389061,-1.3024765),vec4(-0.70647055,2.0111287,-5.1659346,-3.728635),vec4(-13.562562,10.487719,-0.9173751,-2.6487076))*buf[2]+mat4(vec4(-8.645013,6.5546675,-6.3944063,-5.5933375),vec4(-0.57783127,-1.077275,36.91025,5.736769),vec4(14.283112,3.7146652,7.1452246,-4.5958776),vec4(2.7192075,3.6021907,-4.366337,-2.3653464))*buf[3]+vec4(-5.9000807,-4.329569,1.2427121,8.59503);
+                        buf[4]=sigmoid(buf[4]);
+                        buf[5]=sigmoid(buf[5]);
+                        buf[6]=mat4(vec4(-1.61102,0.7970257,1.4675229,0.20917463),vec4(-28.793737,-7.1390953,1.5025433,4.656581),vec4(-10.94861,39.66238,0.74318546,-10.095605),vec4(-0.7229728,-1.5483948,0.7301322,2.1687684))*buf[0]+mat4(vec4(3.2547753,21.489103,-1.0194173,-3.3100595),vec4(-3.7316632,-3.3792162,-7.223193,-0.23685838),vec4(13.1804495,0.7916005,5.338587,5.687114),vec4(-4.167605,-17.798311,-6.815736,-1.6451967))*buf[1]+mat4(vec4(0.604885,-7.800309,-7.213122,-2.741014),vec4(-3.522382,-0.12359311,-0.5258442,0.43852118),vec4(9.6752825,-22.853785,2.062431,0.099892326),vec4(-4.3196306,-17.730087,2.5184598,5.30267))*buf[2]+mat4(vec4(-6.545563,-15.790176,-6.0438633,-5.415399),vec4(-43.591583,28.551912,-16.00161,18.84728),vec4(4.212382,8.394307,3.0958717,8.657522),vec4(-5.0237565,-4.450633,-4.4768,-5.5010443))*buf[3]+mat4(vec4(1.6985557,-67.05806,6.897715,1.9004834),vec4(1.8680354,2.3915145,2.5231109,4.081538),vec4(11.158006,1.7294737,2.0738268,7.386411),vec4(-4.256034,-306.24686,8.258898,-17.132736))*buf[4]+mat4(vec4(1.6889864,-4.5852966,3.8534803,-6.3482175),vec4(1.3543309,-1.2640043,9.932754,2.9079645),vec4(-5.2770967,0.07150358,-0.13962056,3.3269649),vec4(28.34703,-4.918278,6.1044083,4.085355))*buf[5]+vec4(6.6818056,12.522166,-3.7075126,-4.104386);
+                        buf[7]=mat4(vec4(-8.265602,-4.7027016,5.098234,0.7509808),vec4(8.6507845,-17.15949,16.51939,-8.884479),vec4(-4.036479,-2.3946867,-2.6055532,-1.9866527),vec4(-2.2167742,-1.8135649,-5.9759874,4.8846445))*buf[0]+mat4(vec4(6.7790847,3.5076547,-2.8191125,-2.7028968),vec4(-5.743024,-0.27844876,1.4958696,-5.0517144),vec4(13.122226,15.735168,-2.9397483,-4.101023),vec4(-14.375265,-5.030483,-6.2599335,2.9848232))*buf[1]+mat4(vec4(4.0950394,-0.94011575,-5.674733,4.755022),vec4(4.3809423,4.8310084,1.7425908,-3.437416),vec4(2.117492,0.16342592,-104.56341,16.949184),vec4(-5.22543,-2.994248,3.8350096,-1.9364246))*buf[2]+mat4(vec4(-5.900337,1.7946124,-13.604192,-3.8060522),vec4(6.6583457,31.911177,25.164474,91.81147),vec4(11.840538,4.1503043,-0.7314397,6.768467),vec4(-6.3967767,4.034772,6.1714606,-0.32874924))*buf[3]+mat4(vec4(3.4992442,-196.91893,-8.923708,2.8142626),vec4(3.4806502,-3.1846354,5.1725626,5.1804223),vec4(-2.4009497,15.585794,1.2863957,2.0252278),vec4(-71.25271,-62.441242,-8.138444,0.50670296))*buf[4]+mat4(vec4(-12.291733,-11.176166,-7.3474145,4.390294),vec4(10.805477,5.6337385,-0.9385842,-4.7348723),vec4(-12.869276,-7.039391,5.3029537,7.5436664),vec4(1.4593618,8.91898,3.5101583,5.840625))*buf[5]+vec4(2.2415268,-6.705987,-0.98861027,-2.117676);
+                        buf[6]=sigmoid(buf[6]);
+                        buf[7]=sigmoid(buf[7]);
+                        buf[0]=mat4(vec4(1.6794263,1.3817469,2.9625452,0.),vec4(-1.8834411,-1.4806935,-3.5924516,0.),vec4(-1.3279216,-1.0918057,-2.3124623,0.),vec4(0.2662234,0.23235129,0.44178495,0.))*buf[0]+mat4(vec4(-0.6299101,-0.5945583,-0.9125601,0.),vec4(0.17828953,0.18300213,0.18182953,0.),vec4(-2.96544,-2.5819945,-4.9001055,0.),vec4(1.4195864,1.1868085,2.5176322,0.))*buf[1]+mat4(vec4(-1.2584374,-1.0552157,-2.1688404,0.),vec4(-0.7200217,-0.52666044,-1.438251,0.),vec4(0.15345335,0.15196142,0.272854,0.),vec4(0.945728,0.8861938,1.2766753,0.))*buf[2]+mat4(vec4(-2.4218085,-1.968602,-4.35166,0.),vec4(-22.683098,-18.0544,-41.954372,0.),vec4(0.63792,0.5470648,1.1078634,0.),vec4(-1.5489894,-1.3075932,-2.6444845,0.))*buf[3]+mat4(vec4(-0.49252132,-0.39877754,-0.91366625,0.),vec4(0.95609266,0.7923952,1.640221,0.),vec4(0.30616966,0.15693925,0.8639857,0.),vec4(1.1825981,0.94504964,2.176963,0.))*buf[4]+mat4(vec4(0.35446745,0.3293795,0.59547555,0.),vec4(-0.58784515,-0.48177817,-1.0614829,0.),vec4(2.5271258,1.9991658,4.6846647,0.),vec4(0.13042648,0.08864098,0.30187556,0.))*buf[5]+mat4(vec4(-1.7718065,-1.4033192,-3.3355875,0.),vec4(3.1664357,2.638297,5.378702,0.),vec4(-3.1724713,-2.6107926,-5.549295,0.),vec4(-2.851368,-2.249092,-5.3013067,0.))*buf[6]+mat4(vec4(1.5203838,1.2212278,2.8404984,0.),vec4(1.5210563,1.2651345,2.683903,0.),vec4(2.9789467,2.4364579,5.2347264,0.),vec4(2.2270417,1.8825914,3.8028636,0.))*buf[7]+vec4(-1.5468478,-3.6171484,0.24762098,0.);
+                        buf[0] = sigmoid(buf[0]);
+                        return vec4(buf[0].x, buf[0].y, buf[0].z, 1.0);
+                    }
+                    
+                    void main() {
+                        vec2 uv = vUv * 2.0 - 1.0; uv.y *= -1.0;
+                        vec4 original_color = cppn_fn(uv, 0.1 * sin(0.3 * iTime), 0.1 * sin(0.69 * iTime), 0.1 * sin(0.44 * iTime));
+                        vec3 gold_color = vec3(1.0, 0.75, 0.1);
+                        float luminance = dot(original_color.rgb, vec3(0.299, 0.587, 0.114));
+                        vec3 final_color = gold_color * luminance;
+                        gl_FragColor = vec4(final_color, 1.0);
+                    }
+                `;
 
                 const uniforms = {
-                    time: { type: "f", value: 1.0 },
-                    resolution: { type: "v2", value: new THREE.Vector2() },
-                    eleganceColor: { type: "v3", value: new THREE.Color(0xf59e0b) }
+                    iTime: {
+                        value: 0
+                    },
+                    iResolution: {
+                        value: new THREE.Vector2(container.clientWidth, container.clientHeight)
+                    },
                 };
 
                 const material = new THREE.ShaderMaterial({
                     uniforms: uniforms,
-                    vertexShader: vertexShader,
-                    fragmentShader: fragmentShader,
+                    vertexShader,
+                    fragmentShader,
                 });
 
-                const mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
-
-                const renderer = new THREE.WebGLRenderer({ antialias: true });
-                renderer.setPixelRatio(window.devicePixelRatio);
-                container.appendChild(renderer.domElement);
-
-                const onWindowResize = () => {
-                    const width = container.clientWidth;
-                    const height = container.clientHeight;
-                    renderer.setSize(width, height);
-                    uniforms.resolution.value.x = renderer.domElement.width;
-                    uniforms.resolution.value.y = renderer.domElement.height;
-                };
-
-                onWindowResize();
-                window.addEventListener("resize", onWindowResize, false);
+                const plane = new THREE.Mesh(new THREE.PlaneGeometry(4, 4), material);
+                plane.position.set(0, -0.75, -0.5);
+                scene.add(plane);
 
                 let animationId;
-                const animate = () => {
+                const clock = new THREE.Clock();
+
+                function animate() {
                     animationId = requestAnimationFrame(animate);
-                    uniforms.time.value += 0.05;
+                    uniforms.iTime.value = clock.getElapsedTime();
                     renderer.render(scene, camera);
-                    if (shaderAnimationScene) {
-                       shaderAnimationScene.animationId = animationId;
+                     if (neuralNetworkAnimationScene) {
+                        neuralNetworkAnimationScene.animationId = animationId;
                     }
-                };
+                }
+
+                function onWindowResize() {
+                    camera.aspect = container.clientWidth / container.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                    uniforms.iResolution.value.set(container.clientWidth, container.clientHeight);
+                }
+
+                window.addEventListener('resize', onWindowResize, false);
                 
-                shaderAnimationScene = { renderer, animationId: 0, removeListeners: () => window.removeEventListener("resize", onWindowResize) };
+                neuralNetworkAnimationScene = { renderer, animationId: 0, removeListeners: () => window.removeEventListener("resize", onWindowResize) };
                 animate();
             }
 
             // -----------------------------------------------------------------------------
             // 9. FUNCIONALIDADE: CONFIGURAÇÕES
             // -----------------------------------------------------------------------------
-            
+
             const handleChangePassword = async (event) => {
                 event.preventDefault();
                 const msgEl = document.getElementById('password-change-message');
-                msgEl.textContent = ''; msgEl.className = 'text-sm h-5';
-                
+                msgEl.textContent = '';
+                msgEl.className = 'text-sm h-5';
+
                 const currentPassword = document.getElementById('current-password').value;
                 const newPassword = document.getElementById('new-password').value;
                 const confirmPassword = document.getElementById('confirm-password').value;
 
                 if (newPassword !== confirmPassword) {
-                    msgEl.textContent = 'As novas senhas não coincidem.'; msgEl.classList.add('text-red-500'); return;
+                    msgEl.textContent = 'As novas senhas não coincidem.';
+                    msgEl.classList.add('text-red-500');
+                    return;
                 }
                 if (newPassword.length < 6) {
-                    msgEl.textContent = 'A nova senha deve ter no mínimo 6 caracteres.'; msgEl.classList.add('text-red-500'); return;
+                    msgEl.textContent = 'A nova senha deve ter no mínimo 6 caracteres.';
+                    msgEl.classList.add('text-red-500');
+                    return;
                 }
 
                 const sessionData = JSON.parse(localStorage.getItem('clinicSession') || sessionStorage.getItem('clinicSession'));
                 if (sessionData.senha !== currentPassword) {
-                    msgEl.textContent = 'A senha atual está incorreta.'; msgEl.classList.add('text-red-500'); return;
+                    msgEl.textContent = 'A senha atual está incorreta.';
+                    msgEl.classList.add('text-red-500');
+                    return;
                 }
-                
-                const { error } = await supabase.from('usuarios_site').update({ senha: newPassword }).eq('email', sessionData.email);
+
+                const {
+                    error
+                } = await supabase.from('usuarios_site').update({
+                    senha: newPassword
+                }).eq('email', sessionData.email);
 
                 if (error) {
-                    msgEl.textContent = 'Erro ao atualizar a senha. Tente novamente.'; msgEl.classList.add('text-red-500');
+                    msgEl.textContent = 'Erro ao atualizar a senha. Tente novamente.';
+                    msgEl.classList.add('text-red-500');
                 } else {
-                    msgEl.textContent = 'Senha alterada com sucesso!'; msgEl.classList.add('text-green-500');
+                    msgEl.textContent = 'Senha alterada com sucesso!';
+                    msgEl.classList.add('text-green-500');
                     sessionData.senha = newPassword;
                     const storage = localStorage.getItem('clinicSession') ? localStorage : sessionStorage;
                     storage.setItem('clinicSession', JSON.stringify(sessionData));
@@ -2039,9 +2398,14 @@
                     const ageDifMs = Date.now() - birthDate.getTime();
                     const ageDate = new Date(ageDifMs);
                     return Math.abs(ageDate.getUTCFullYear() - 1970);
-                } catch (e) { return null; }
+                } catch (e) {
+                    return null;
+                }
             };
-            const formatTimestamp = (iso) => iso ? new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+            const formatTimestamp = (iso) => iso ? new Date(iso).toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : '';
             const togglePasswordVisibility = () => {
                 const passwordInput = document.getElementById('password-input');
                 const isPassword = passwordInput.type === 'password';
@@ -2077,18 +2441,21 @@
 
             appSidebar.addEventListener('mouseenter', expandSidebar);
             appSidebar.addEventListener('mouseleave', collapseSidebar);
-             if (window.innerWidth >= 1024) {
+            if (window.innerWidth >= 1024) {
                 collapseSidebar();
             }
 
 
             loginForm.addEventListener('submit', handleLogin);
-            document.getElementById('logout-link').addEventListener('click', (e) => { e.preventDefault(); showLogin(); });
+            document.getElementById('logout-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showLogin();
+            });
             passwordToggle.addEventListener('click', togglePasswordVisibility);
             document.getElementById('password-change-form').addEventListener('submit', handleChangePassword);
 
             window.addEventListener('hashchange', () => showSection(window.location.hash));
-            
+
             const handleNavClick = (e) => {
                 const link = e.target.closest('a');
                 if (link && link.hash) {
@@ -2100,16 +2467,16 @@
                     }
                 }
             };
-            
+
             navLinks.addEventListener('click', handleNavClick);
             mobileNavLinks.addEventListener('click', handleNavClick);
 
             document.getElementById('user-profile-link-wrapper').addEventListener('click', (e) => {
-                 const link = e.target.closest('a');
-                 if (link && link.hash) {
+                const link = e.target.closest('a');
+                if (link && link.hash) {
                     e.preventDefault();
                     window.location.hash = link.hash;
-                 }
+                }
             });
 
             mobileMenuButton.addEventListener('click', () => {
@@ -2123,24 +2490,24 @@
                 appSidebar.classList.add('hidden');
                 mobileMenuOverlay.classList.add('hidden');
             });
-            
+
 
             const agendaSection = document.getElementById('agendamentos-section');
-            if(agendaSection) {
+            if (agendaSection) {
                 agendaSection.addEventListener('click', (e) => {
-                     if (e.target.closest('#today-btn')) {
+                    if (e.target.closest('#today-btn')) {
                         currentDate = new Date();
                         fetchAndRenderAgenda();
-                     }
-                     if (e.target.closest('#prev-week-btn')) {
+                    }
+                    if (e.target.closest('#prev-week-btn')) {
                         currentDate.setDate(currentDate.getDate() - (currentCalendarView === 'daily' ? 1 : 7));
                         fetchAndRenderAgenda();
-                     }
-                     if (e.target.closest('#next-week-btn')) {
+                    }
+                    if (e.target.closest('#next-week-btn')) {
                         currentDate.setDate(currentDate.getDate() + (currentCalendarView === 'daily' ? 1 : 7));
                         fetchAndRenderAgenda();
-                     }
-                     if(e.target.matches('.view-toggle-btn')) {
+                    }
+                    if (e.target.matches('.view-toggle-btn')) {
                         currentCalendarView = e.target.dataset.view;
                         renderAgendaView();
                     }
@@ -2152,10 +2519,12 @@
             const newSendButton = document.getElementById('new-send-button');
 
             if (newSendButton) newSendButton.addEventListener('click', sendMessage);
-            if (newChatInput) newChatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-            
+            if (newChatInput) newChatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
             const chatSearchInput = document.getElementById('chat-search-input');
-            if(chatSearchInput) {
+            if (chatSearchInput) {
                 chatSearchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
                     const filteredChats = currentChats.filter(chat => chat.nomewpp.toLowerCase().includes(searchTerm) || chat.phone.includes(searchTerm));
@@ -2164,18 +2533,56 @@
             }
 
             const clientSearchInput = document.getElementById('client-search-input');
-            if(clientSearchInput){
-                 clientSearchInput.addEventListener('input', (e) => {
+            if (clientSearchInput) {
+                clientSearchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
                     const filteredClients = allClients.filter(client => client.nomewpp.toLowerCase().includes(searchTerm) || client.telefone.includes(searchTerm));
                     renderClientList(filteredClients);
                 });
             }
+            
+            // --- EFEITOS DO NOVO LOGIN ---
+            const loginFormContainer = document.getElementById('login-form-container');
+            const gradientBlob = document.getElementById('gradient-blob');
+
+            loginFormContainer.addEventListener('mousemove', (e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                gradientBlob.style.transform = `translate(${x - 250}px, ${y - 250}px)`;
+            });
+
+            loginFormContainer.addEventListener('mouseenter', () => {
+                gradientBlob.style.opacity = '1';
+            });
+
+            loginFormContainer.addEventListener('mouseleave', () => {
+                gradientBlob.style.opacity = '0';
+            });
+            
+            document.querySelectorAll('.animated-input-wrapper').forEach(wrapper => {
+                const input = wrapper.querySelector('input');
+                const glowTop = wrapper.querySelector('.input-glow-top');
+                const glowBottom = wrapper.querySelector('.input-glow-bottom');
+
+                wrapper.addEventListener('mousemove', (e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    glowTop.style.background = `radial-gradient(30px circle at ${x}px 0px, hsl(var(--primary)) 0%, transparent 70%)`;
+                    glowBottom.style.background = `radial-gradient(30px circle at ${x}px 2px, hsl(var(--primary)) 0%, transparent 70%)`;
+                });
+
+                 wrapper.addEventListener('mouseleave', () => {
+                    glowTop.style.background = 'none';
+                    glowBottom.style.background = 'none';
+                 });
+            });
+
 
             // -----------------------------------------------------------------------------
             // 12. INICIALIZAÇÃO DA APLICAÇÃO
             // -----------------------------------------------------------------------------
-            
+
             initializeCharts();
             renderThemeToggle();
             checkSession();
