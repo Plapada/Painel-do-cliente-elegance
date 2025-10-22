@@ -55,7 +55,9 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -111,6 +113,15 @@
             }
         }
         
+        #auth-section .tracking-wider {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        .page-section h1, #login-form h1 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
         /* Mapeamento das variáveis de cor para o novo componente */
         :root {
             --color-bg: hsl(var(--background));
@@ -301,21 +312,28 @@
         }
 
         /* Oculta a navegação mobile na tela de login */
-        #auth-section:not([style*="display: none"]) ~ #new-mobile-nav {
+        #auth-section:not([style*="display: none"]) ~ #new-mobile-nav,
+        #auth-section:not([style*="display: none"]) ~ #mobile-profile-modal {
             display: none;
         }
         
-        /* Permite scroll horizontal na agenda em telas pequenas */
-        #agenda-views-container {
-           @apply overflow-auto;
+        /* Estilos para Agenda Mobile */
+        @media (max-width: 767px) {
+            #agendamentos-section {
+                @apply flex-col;
+            }
+            #agendamentos-section > .flex-grow {
+                @apply mt-0;
+            }
+            #agenda-views-container, 
+            #weekly-view-date-range,
+            #view-toggle-buttons {
+                display: none;
+            }
+            #mobile-agenda-list {
+                display: block;
+            }
         }
-        #weekly-view {
-           min-width: 700px;
-        }
-        #daily-view {
-           min-width: 400px;
-        }
-
     </style>
 </head>
 
@@ -393,7 +411,7 @@
                         </svg>
                         <div>
                             <span class="text-5xl font-bold tracking-wider">Elegance</span>
-                            <p class="text-base text-muted-foreground tracking-widest">Marketing Médico e Inovação</p>
+                            <p class="text-base text-muted-foreground tracking-widest">Marketing Médico em Inovação</p>
                         </div>
                     </a>
                     <p class="text-center text-muted-foreground text-sm mt-4">Automatizando e otimizando seu consultório.</p>
@@ -665,12 +683,12 @@
                 </section>
 
                 <!-- Seção Agendamentos -->
-                <section id="agendamentos-section" class="page-section hidden flex flex-col md:flex-row gap-6 h-full p-4 md:p-6 lg:p-8">
+                <section id="agendamentos-section" class="page-section hidden flex flex-col gap-6 h-full p-4 md:p-6 lg:p-8">
                     <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 absolute pt-8 md:pt-0">Agendamentos</h1>
                     <div class="md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
                         <div id="full-calendar-container"></div>
                     </div>
-                    <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16">
+                    <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16 md:mt-16">
                         <div class="flex flex-wrap justify-between items-center border-b pb-4 mb-4 gap-4">
                             <div class="flex items-center gap-2">
                                 <button id="today-btn" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">Hoje</button>
@@ -699,6 +717,7 @@
                                 <div id="daily-body" class="flex-grow overflow-y-auto relative h-full"></div>
                             </div>
                         </div>
+                         <div id="mobile-agenda-list" class="hidden flex-grow overflow-y-auto space-y-3 pt-4"></div>
                     </div>
                 </section>
 
@@ -830,11 +849,35 @@
             <a href="#conversas" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
             </a>
-            <a href="#configuracoes" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-            </a>
+            <button id="mobile-profile-trigger" class="mobile-nav-item z-10 flex-1 flex items-center justify-center p-2 rounded-full text-muted-foreground">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </button>
         </div>
     </nav>
+
+    <!-- Modal de Perfil Mobile -->
+    <div id="mobile-profile-modal" class="fixed inset-0 z-[60] bg-black/60 hidden justify-center items-end" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div id="mobile-profile-modal-content" class="bg-card w-full max-w-md mx-auto mb-20 rounded-2xl p-4 space-y-4 transition-transform duration-300 translate-y-full shadow-2xl border">
+            <div class="flex items-center gap-3 border-b pb-3">
+                <img id="user-avatar-modal" alt="Avatar" class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border">
+                <div>
+                    <p id="user-name-modal" class="font-semibold text-foreground"></p>
+                    <p id="user-role-modal" class="text-muted-foreground text-sm"></p>
+                </div>
+            </div>
+            <nav class="space-y-1">
+                <a href="#configuracoes" id="modal-settings-link" class="flex items-center gap-3 rounded-lg p-3 text-foreground transition-all hover:bg-muted">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Configurações</span>
+                </a>
+                <a href="#" id="modal-logout-link" class="flex items-center gap-3 rounded-lg p-3 text-destructive transition-all hover:bg-destructive/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    <span>Sair</span>
+                </a>
+            </nav>
+            <button id="mobile-profile-modal-close" class="mt-2 w-full inline-flex items-center justify-center rounded-lg text-sm font-medium bg-muted text-muted-foreground h-10 px-4 py-2">Fechar</button>
+        </div>
+    </div>
 
 
     <script>
@@ -2025,7 +2068,13 @@
                         <h3 class="font-bold text-lg text-foreground">${htmlEncode(client.nomewpp)}</h3>
                         <p class="text-sm text-green-500">Online</p>
                     </div>
+                    <a id="chat-details-button" href="#" class="p-2 rounded-full hover:bg-muted text-foreground ml-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    </a>
                 `;
+                
+                const phoneForDetail = client.phone.replace(/\D/g, '');
+                chatHeader.querySelector('#chat-details-button').href = `#client-detail-${phoneForDetail}`;
 
                 chatHeader.querySelector('#back-to-chat-list')?.addEventListener('click', () => {
                     document.getElementById('chat-list-column').classList.remove('hidden');
@@ -2210,6 +2259,9 @@
 
             function renderAgendaView() {
                 renderFullCalendar();
+                renderWeeklyView();
+                renderDailyView();
+                renderMobileAgendaList();
 
                 const dateRange = document.getElementById('weekly-view-date-range');
                 const dailyBtn = document.querySelector('.view-toggle-btn[data-view="daily"]');
@@ -2225,17 +2277,51 @@
                 dailyBtn.classList.toggle('shadow-sm', currentCalendarView !== 'weekly');
 
                 if (currentCalendarView === 'weekly') {
-                    renderWeeklyView();
                     const startOfWeek = new Date(currentDate);
                     startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
                     const endOfWeek = new Date(startOfWeek);
                     endOfWeek.setDate(endOfWeek.getDate() + 6);
                     dateRange.textContent = `${startOfWeek.toLocaleDateString('pt-BR', {month: 'long', day: 'numeric'})} - ${endOfWeek.toLocaleDateString('pt-BR', {day: 'numeric', month: 'long', year: 'numeric'})}`;
                 } else {
-                    renderDailyView();
                     dateRange.textContent = `${currentDate.toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric', month: 'long'})}`;
                 }
             }
+            
+            function renderMobileAgendaList() {
+                const container = document.getElementById('mobile-agenda-list');
+                container.innerHTML = '';
+
+                const dayAppointments = allAppointments
+                    .filter(apt => new Date(apt.data_inicio).toDateString() === currentDate.toDateString())
+                    .sort((a, b) => new Date(a.data_inicio) - new Date(b.data_inicio));
+
+                if (dayAppointments.length === 0) {
+                    container.innerHTML = '<p class="text-center text-muted-foreground p-8">Nenhum agendamento para este dia.</p>';
+                    return;
+                }
+
+                dayAppointments.forEach(apt => {
+                    const item = document.createElement('div');
+                    item.className = 'appointment-item flex items-center gap-4 p-3 rounded-lg bg-muted/50 cursor-pointer';
+                    item.dataset.appointment = JSON.stringify(apt);
+                    item.innerHTML = `
+                        <div class="text-center w-12 shrink-0">
+                            <p class="font-bold text-foreground">${formatTimestamp(apt.data_inicio)}</p>
+                        </div>
+                        <div class="w-1.5 h-10 bg-primary rounded-full"></div>
+                        <div class="flex-grow overflow-hidden">
+                            <p class="font-semibold text-foreground truncate">${htmlEncode(apt.nome_cliente)}</p>
+                            <p class="text-sm text-muted-foreground truncate">${htmlEncode(apt.tipo_consulta)}</p>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+
+                container.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => {
+                    if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos');
+                }));
+            }
+
 
             function renderFullCalendar() {
                 const container = document.getElementById('full-calendar-container');
@@ -2672,6 +2758,9 @@
                     indicator.style.left = `${itemRect.left - containerRect.left}px`;
                     activeItem.classList.add('text-primary');
                     activeItem.classList.remove('text-muted-foreground');
+                } else {
+                     // If no link is active (e.g. profile button), hide indicator
+                     indicator.style.width = '0px';
                 }
             };
             
@@ -2751,11 +2840,15 @@
                         fetchAndRenderAgenda();
                     }
                     if (e.target.closest('#prev-week-btn')) {
-                        currentDate.setDate(currentDate.getDate() - (currentCalendarView === 'daily' ? 1 : 7));
+                        const isMobile = window.innerWidth < 768;
+                        const view = isMobile ? 'daily' : currentCalendarView;
+                        currentDate.setDate(currentDate.getDate() - (view === 'daily' ? 1 : 7));
                         fetchAndRenderAgenda();
                     }
                     if (e.target.closest('#next-week-btn')) {
-                        currentDate.setDate(currentDate.getDate() + (currentCalendarView === 'daily' ? 1 : 7));
+                        const isMobile = window.innerWidth < 768;
+                        const view = isMobile ? 'daily' : currentCalendarView;
+                        currentDate.setDate(currentDate.getDate() + (view === 'daily' ? 1 : 7));
                         fetchAndRenderAgenda();
                     }
                     if (e.target.matches('.view-toggle-btn')) {
@@ -2828,6 +2921,49 @@
                     glowBottom.style.background = 'none';
                  });
             });
+
+            // --- LÓGICA DO MODAL DE PERFIL MOBILE ---
+            const mobileProfileTrigger = document.getElementById('mobile-profile-trigger');
+            const mobileProfileModal = document.getElementById('mobile-profile-modal');
+            const mobileProfileModalContent = document.getElementById('mobile-profile-modal-content');
+            const closeModalButton = document.getElementById('mobile-profile-modal-close');
+            const modalLogoutLink = document.getElementById('modal-logout-link');
+            const modalSettingsLink = document.getElementById('modal-settings-link');
+
+            if (mobileProfileTrigger) {
+                mobileProfileTrigger.addEventListener('click', () => {
+                    document.getElementById('user-avatar-modal').src = document.getElementById('user-avatar-header').src;
+                    document.getElementById('user-name-modal').textContent = document.getElementById('user-name-header').textContent;
+                    document.getElementById('user-role-modal').textContent = document.getElementById('user-role-header').textContent;
+                    
+                    mobileProfileModal.classList.remove('hidden');
+                    mobileProfileModal.classList.add('flex');
+                    setTimeout(() => {
+                        mobileProfileModalContent.classList.remove('translate-y-full');
+                    }, 10);
+                });
+
+                const closeModal = () => {
+                    mobileProfileModalContent.classList.add('translate-y-full');
+                    setTimeout(() => {
+                        mobileProfileModal.classList.add('hidden');
+                        mobileProfileModal.classList.remove('flex');
+                    }, 300);
+                };
+                
+                closeModalButton.addEventListener('click', closeModal);
+                mobileProfileModal.addEventListener('click', (e) => {
+                    if (e.target === mobileProfileModal) closeModal();
+                });
+                modalLogoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    closeModal();
+                    setTimeout(showLogin, 350); 
+                });
+                modalSettingsLink.addEventListener('click', () => {
+                    closeModal();
+                });
+            }
 
 
             // -----------------------------------------------------------------------------
