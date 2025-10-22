@@ -640,7 +640,7 @@
                                 </div>
                             </div>
                             <nav class="flex-1 overflow-y-auto">
-                                <ul id="chat-list-container" class="p-2 space-y-1">
+                                <ul id="chat-list-container">
                                     <!-- Chat items will be injected here -->
                                 </ul>
                             </nav>
@@ -1910,6 +1910,8 @@
             const renderChatList = (chats) => {
                 const chatListContainer = document.getElementById('chat-list-container');
                 chatListContainer.innerHTML = '';
+                chatListContainer.className = 'flex-1 overflow-y-auto';
+
                 if (chats.length === 0) {
                     chatListContainer.innerHTML = `<li class="p-8 text-center text-muted-foreground">Nenhuma conversa.</li>`;
                     return;
@@ -1920,19 +1922,14 @@
                     const initials = getInitials(chat.nomewpp);
 
                     chatLi.innerHTML = `
-                        <a class="flex items-center gap-4 p-3 rounded-lg hover:bg-muted transition-colors" href="#" data-chat-id="${chat.phone}">
-                            <div class="relative">
-                                <img class="h-14 w-14 rounded-full object-cover" src="https://placehold.co/56x56/f59e0b/000000?text=${initials}" alt="Foto de perfil de ${htmlEncode(chat.nomewpp)}">
-                                <span class="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-card"></span>
-                            </div>
+                        <a class="flex items-center gap-4 p-4 border-b hover:bg-muted transition-colors" href="#" data-chat-id="${chat.phone}">
+                            <img class="h-12 w-12 rounded-full object-cover" src="https://placehold.co/56x56/f59e0b/000000?text=${initials}" alt="Foto de perfil de ${htmlEncode(chat.nomewpp)}">
                             <div class="flex-1 overflow-hidden">
-                                <div class="flex justify-between items-start">
-                                    <p class="font-semibold text-foreground">${htmlEncode(chat.nomewpp)}</p>
-                                    <span class="text-xs text-muted-foreground">${formatTimestamp(chat.updated_at)}</span>
+                                <div class="flex justify-between items-baseline">
+                                    <p class="font-semibold text-foreground truncate">${htmlEncode(chat.nomewpp)}</p>
+                                    <span class="text-xs text-muted-foreground ml-2 shrink-0">${formatTimestamp(chat.updated_at)}</span>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <p class="text-sm text-muted-foreground truncate">${htmlEncode(chat.last_message)}</p>
-                                </div>
+                                <p class="text-sm text-muted-foreground truncate mt-0.5">${htmlEncode(chat.last_message)}</p>
                             </div>
                         </a>
                     `;
@@ -2290,33 +2287,52 @@
             function renderMobileAgendaList() {
                 const container = document.getElementById('mobile-agenda-list');
                 container.innerHTML = '';
+            
+                const startOfWeek = new Date(currentDate);
+                startOfWeek.setDate(currentDate.getDate() - startOfWeek.getDay());
+                startOfWeek.setHours(0, 0, 0, 0);
 
-                const dayAppointments = allAppointments
-                    .filter(apt => new Date(apt.data_inicio).toDateString() === currentDate.toDateString())
-                    .sort((a, b) => new Date(a.data_inicio) - new Date(b.data_inicio));
+                let weekHasAppointments = false;
 
-                if (dayAppointments.length === 0) {
-                    container.innerHTML = '<p class="text-center text-muted-foreground p-8">Nenhum agendamento para este dia.</p>';
-                    return;
+                for (let i = 0; i < 7; i++) {
+                    const day = new Date(startOfWeek);
+                    day.setDate(day.getDate() + i);
+
+                    const dayAppointments = allAppointments
+                        .filter(apt => new Date(apt.data_inicio).toDateString() === day.toDateString())
+                        .sort((a, b) => new Date(a.data_inicio) - new Date(b.data_inicio));
+                    
+                    if (dayAppointments.length > 0) {
+                        weekHasAppointments = true;
+                        
+                        const dayHeader = document.createElement('h4');
+                        dayHeader.className = 'font-bold text-lg text-foreground p-2 mt-4 border-b';
+                        dayHeader.textContent = day.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'short' });
+                        container.appendChild(dayHeader);
+
+                        dayAppointments.forEach(apt => {
+                            const item = document.createElement('div');
+                            item.className = 'appointment-item flex items-center gap-4 p-3 rounded-lg bg-muted/50 cursor-pointer mt-2';
+                            item.dataset.appointment = JSON.stringify(apt);
+                            item.innerHTML = `
+                                <div class="text-center w-12 shrink-0">
+                                    <p class="font-bold text-foreground">${formatTimestamp(apt.data_inicio)}</p>
+                                </div>
+                                <div class="w-1.5 h-10 bg-primary rounded-full"></div>
+                                <div class="flex-grow overflow-hidden">
+                                    <p class="font-semibold text-foreground truncate">${htmlEncode(apt.nome_cliente)}</p>
+                                    <p class="text-sm text-muted-foreground truncate">${htmlEncode(apt.tipo_consulta)}</p>
+                                </div>
+                            `;
+                            container.appendChild(item);
+                        });
+                    }
                 }
 
-                dayAppointments.forEach(apt => {
-                    const item = document.createElement('div');
-                    item.className = 'appointment-item flex items-center gap-4 p-3 rounded-lg bg-muted/50 cursor-pointer';
-                    item.dataset.appointment = JSON.stringify(apt);
-                    item.innerHTML = `
-                        <div class="text-center w-12 shrink-0">
-                            <p class="font-bold text-foreground">${formatTimestamp(apt.data_inicio)}</p>
-                        </div>
-                        <div class="w-1.5 h-10 bg-primary rounded-full"></div>
-                        <div class="flex-grow overflow-hidden">
-                            <p class="font-semibold text-foreground truncate">${htmlEncode(apt.nome_cliente)}</p>
-                            <p class="text-sm text-muted-foreground truncate">${htmlEncode(apt.tipo_consulta)}</p>
-                        </div>
-                    `;
-                    container.appendChild(item);
-                });
-
+                if (!weekHasAppointments) {
+                    container.innerHTML = '<p class="text-center text-muted-foreground p-8">Nenhum agendamento para esta semana.</p>';
+                }
+                
                 container.querySelectorAll('.appointment-item').forEach(item => item.addEventListener('click', () => {
                     if (item.dataset.appointment) showAppointmentDetailsView(JSON.parse(item.dataset.appointment), '#agendamentos');
                 }));
@@ -2840,15 +2856,11 @@
                         fetchAndRenderAgenda();
                     }
                     if (e.target.closest('#prev-week-btn')) {
-                        const isMobile = window.innerWidth < 768;
-                        const view = isMobile ? 'daily' : currentCalendarView;
-                        currentDate.setDate(currentDate.getDate() - (view === 'daily' ? 1 : 7));
+                         currentDate.setDate(currentDate.getDate() - 7);
                         fetchAndRenderAgenda();
                     }
                     if (e.target.closest('#next-week-btn')) {
-                        const isMobile = window.innerWidth < 768;
-                        const view = isMobile ? 'daily' : currentCalendarView;
-                        currentDate.setDate(currentDate.getDate() + (view === 'daily' ? 1 : 7));
+                        currentDate.setDate(currentDate.getDate() + 7);
                         fetchAndRenderAgenda();
                     }
                     if (e.target.matches('.view-toggle-btn')) {
