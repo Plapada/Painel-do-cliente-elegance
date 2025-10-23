@@ -325,17 +325,10 @@
             #agendamentos-section > .flex-grow {
                 @apply mt-0;
             }
-            /* Esconde o mini-calendário no mobile */
-            #agendamentos-section > div:first-child {
-                display: none;
-            }
-            #agenda-views-container, 
-            #weekly-view-date-range,
-            #view-toggle-buttons {
-                display: none;
-            }
+            /* O mini-calendário (primeiro div) agora é controlado por classes no HTML e fica visível */
+            /* A view principal da agenda e seus controles não são mais escondidos */
             #mobile-agenda-list {
-                display: block;
+                display: none; /* A lista específica para mobile é desativada */
             }
         }
     </style>
@@ -633,7 +626,7 @@
 
                 <!-- Seção Conversas -->
                 <section id="conversas-section" class="page-section hidden h-full">
-                    <div class="relative overflow-hidden flex h-full w-full">
+                    <div class="relative overflow-hidden md:flex h-full w-full">
                         <!-- Coluna da Lista de Conversas -->
                         <aside id="chat-list-column" class="w-full md:w-[360px] bg-card flex flex-col border-r">
                             <div class="p-4">
@@ -689,7 +682,7 @@
                 <!-- Seção Agendamentos -->
                 <section id="agendamentos-section" class="page-section hidden flex flex-col md:flex-row gap-6 h-full p-4 md:p-6 lg:p-8">
                     <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0 md:absolute">Agendamentos</h1>
-                    <div class="hidden md:flex md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
+                    <div class="flex md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
                         <div id="full-calendar-container"></div>
                     </div>
                     <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16 md:mt-16">
@@ -871,7 +864,7 @@
             </div>
             <nav class="space-y-1">
                 <a href="#configuracoes" id="modal-settings-link" class="flex items-center gap-3 rounded-lg p-3 text-foreground transition-all hover:bg-muted">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 shrink-0"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     <span>Configurações</span>
                 </a>
                 <a href="#" id="modal-logout-link" class="flex items-center gap-3 rounded-lg p-3 text-destructive transition-all hover:bg-destructive/10">
