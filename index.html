@@ -68,6 +68,7 @@
     <style>
         @layer base {
             :root {
+                --radius: 0.75rem;
                 --background: 0 0% 100%;
                 --foreground: 0 0% 15%;
                 --card: 0 0% 100%;
@@ -176,6 +177,10 @@
             .dark .nav-link:not(.active):hover span,
             .dark .nav-link:not(.active):hover svg {
                 color: hsl(var(--primary));
+            }
+
+            .dark #user-profile-link-wrapper .nav-text {
+                color: hsl(var(--foreground));
             }
 
             .light .dashboard-card {
@@ -315,6 +320,47 @@
         #auth-section:not([style*="display: none"]) ~ #mobile-profile-modal {
             display: none;
         }
+
+        /* === Dark Mode Visual Enhancements Start === */
+        .dark .dashboard-card,
+        .dark .kanban-card,
+        .dark #clientes-section > .rounded-xl,
+        .dark #automacoes-section > .rounded-xl,
+        .dark #configuracoes-section > .rounded-xl,
+        .dark #desktop-agenda-wrapper > .bg-card,
+        .dark #mobile-agenda-wrapper .bg-card.rounded-t-xl,
+        .dark #mobile-nav-container,
+        .dark #mobile-profile-modal-content,
+        .dark #client-list-container .bg-card {
+            border-color: transparent !important; /* Force remove border */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -2px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Remove separator lines inside components */
+        .dark #app-sidebar,
+        .dark #app-sidebar .border-b,
+        .dark #app-sidebar .border-t,
+        .dark #chat-list-column,
+        .dark #chat-details-panel,
+        .dark #clientes-section .border-b,
+        .dark #agendamentos-section .border-b,
+        .dark #chat-active-header,
+        .dark #chat-list-container .border-b,
+        .dark #client-detail-section .border-y,
+        .dark #mobile-profile-modal-content .border-b {
+            border-color: transparent !important;
+        }
+
+        /* Specific adjustments for Kanban cards to not have double shadows */
+        .dark .kanban-card {
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+        }
+        
+        /* Ensure chat items get the correct background on hover without a border */
+        .dark #chat-list-container a:hover {
+            background-color: hsl(var(--muted) / 0.5);
+        }
+        /* === Dark Mode Visual Enhancements End === */
         
     </style>
 </head>
@@ -669,10 +715,10 @@
                     <!-- Desktop View -->
                     <div id="desktop-agenda-wrapper" class="hidden md:flex md:flex-row md:gap-6 w-full h-full">
                          <h1 class="text-3xl font-bold tracking-tight text-foreground mb-8 pt-8 md:pt-0 md:absolute">Agendamentos</h1>
-                         <div class="flex md:w-auto bg-card p-4 rounded-lg border flex-shrink-0 h-fit mt-16">
+                         <div class="flex md:w-auto bg-card p-4 rounded-2xl border flex-shrink-0 h-fit mt-16">
                             <div id="full-calendar-container"></div>
                         </div>
-                        <div class="flex-grow bg-card rounded-lg border p-4 flex flex-col mt-16 md:mt-16">
+                        <div class="flex-grow bg-card rounded-2xl border p-4 flex flex-col mt-16 md:mt-16">
                             <div class="flex flex-wrap justify-between items-center border-b pb-4 mb-4 gap-4">
                                 <div class="flex items-center gap-2">
                                     <button id="today-btn" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3">Hoje</button>
@@ -2047,6 +2093,7 @@
                 const { data } = await supabase.from('n8n_chat_histories').select('created_at, content, role').eq('session_id', sessionId).eq('clinic_id', currentClinicId).order('created_at', { ascending: true });
 
                 if (data) {
+                    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                     data.forEach(msg => {
                         if (!msg.content) return;
                         const isFromClient = msg.role?.toLowerCase() === 'user';
@@ -2056,7 +2103,7 @@
                              <div class="max-w-[85%]">
                                 <div class="${isFromClient ? 'bg-card' : 'bg-primary text-primary-foreground'} p-2 rounded-xl ${isFromClient ? 'rounded-tl-none' : 'rounded-br-none'} shadow-sm border">
                                     <p class="text-sm">${htmlEncode(msg.content)}</p>
-                                    <p class="text-xs text-right ${isFromClient ? 'text-muted-foreground/70' : 'text-primary-foreground/70'} mt-1">${formatTimestamp(msg.created_at)}</p>
+                                    <p class="text-xs text-right ${isFromClient ? 'text-muted-foreground/70' : 'text-primary-foreground/70'} mt-1">${formatTimestamp(msg.created_at, isFromClient)}</p>
                                 </div>
                             </div>
                         `;
@@ -2243,6 +2290,7 @@
                 if (error) {
                     messagesContainer.innerHTML = `<div class="text-center text-red-400">Erro ao carregar mensagens.</div>`;
                 } else if (data && data.length > 0) {
+                    data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
                     data.forEach(msg => appendMessageToNewChat(msg, client.nomewpp));
                 } else {
                     messagesContainer.innerHTML = `<div class="text-center text-muted-foreground">Sem mensagens nesta conversa.</div>`;
@@ -2295,7 +2343,7 @@
                         <div class="${bubbleClasses} p-4 rounded-xl">
                             <p>${htmlEncode(message.content)}</p>
                         </div>
-                        <span class="text-xs text-muted-foreground mt-1 px-2 ${timeAlignment}">${formatTimestamp(message.created_at)}</span>
+                        <span class="text-xs text-muted-foreground mt-1 px-2 ${timeAlignment}">${formatTimestamp(message.created_at, isFromClient)}</span>
                     </div>
                 `;
 
@@ -2346,7 +2394,7 @@
                                 <span class="text-sm px-2 py-0.5 bg-muted rounded-full text-muted-foreground">${tasks.length}</span>
                             </div>
                             <button class="kanban-column-handle p-2 text-muted-foreground hover:text-foreground cursor-grab active:cursor-grabbing">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M12 5v14"/><path d="M8 5v14"/><path d="M16 5v14"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M12 5v14"/><path d="M8 5v14"/><path d="M16 5v14"/></svg>
                             </button>
                         </div>
                         <div class="kanban-cards-container flex-grow space-y-3 p-1 min-h-[200px] bg-muted/50 rounded-lg" data-column-id="${columnId}">
@@ -2428,7 +2476,7 @@
 
                 if (currentCalendarView === 'weekly') {
                     const startOfWeek = new Date(currentDate);
-                    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+                    startOfWeek.setDate(currentDate.getDate() - startOfWeek.getDay());
                     const endOfWeek = new Date(startOfWeek);
                     endOfWeek.setDate(endOfWeek.getDate() + 6);
                     dateRange.textContent = `${startOfWeek.toLocaleDateString('pt-BR', {month: 'long', day: 'numeric'})} - ${endOfWeek.toLocaleDateString('pt-BR', {day: 'numeric', month: 'long', year: 'numeric'})}`;
@@ -2932,17 +2980,16 @@
                     return null;
                 }
             };
-            const formatTimestamp = (iso) => {
+            const formatTimestamp = (iso, isUserMessage = false) => {
                 if (!iso) return '';
-                try {
-                    const date = new Date(iso);
-                    const hours = String(date.getUTCHours()).padStart(2, '0');
-                    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-                    return `${hours}:${minutes}`;
-                } catch (e) {
-                    const timePart = iso.split('T')[1];
-                    return timePart ? timePart.substring(0, 5) : '';
+                const date = new Date(iso);
+                if (isUserMessage) {
+                    date.setHours(date.getHours() + 3);
                 }
+                return date.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
             };
             const togglePasswordVisibility = () => {
                 const passwordInput = document.getElementById('password-input');
