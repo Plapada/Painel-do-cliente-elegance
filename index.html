@@ -278,6 +278,10 @@
             }
         }
         
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
         /* Estilos para o novo container de login */
         #auth-section {
             background-color: var(--color-bg);
@@ -359,6 +363,12 @@
         /* Ensure chat items get the correct background on hover without a border */
         .dark #chat-list-container a:hover {
             background-color: hsl(var(--muted) / 0.5);
+        }
+
+        /* Fix for conversation summary text color in dark mode */
+        .dark #conversation-summary-text .prose,
+        .dark #conversation-summary-text .prose strong {
+            color: hsl(var(--foreground));
         }
         /* === Dark Mode Visual Enhancements End === */
         
@@ -1851,14 +1861,14 @@
                                 <p class="text-foreground text-sm font-normal">${formattedBirthdate} ${age ? `(${age} anos)` : ''}</p>
                             </div>
                         </div>
-                        <div class="bg-card p-6 rounded-xl m-4 border">
+                        <div class="bg-card p-6 rounded-xl m-4 shadow-xl">
                             <div class="flex justify-between items-center mb-4">
                                 <h4 class="font-semibold text-foreground">Resumo da Conversa</h4>
-                                <button title="Atualizar resumo da conversa" class="text-muted-foreground hover:text-primary transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
+                                <button id="update-summary-btn" title="Atualizar resumo da conversa" class="text-muted-foreground hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg id="update-summary-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>
                                 </button>
                             </div>
-                            <p class="text-sm text-muted-foreground">O resumo da conversa com o cliente aparecerá aqui. Esta funcionalidade está em desenvolvimento.</p>
+                            <div id="conversation-summary-text" class="text-sm text-muted-foreground space-y-3">Clique no botão acima para gerar um resumo da conversa.</div>
                         </div>
                         <h2 class="text-foreground text-[22px] font-bold leading-tight px-4 pb-3 pt-5">Consultas</h2>
                         <div class="flex px-4 py-3">
@@ -1884,10 +1894,89 @@
                     </main>
                 `;
                 
+                const summaryText = detailSection.querySelector('#conversation-summary-text');
+                
+                // Initial display
+                if(clientData.resumo_conversa) {
+                    summaryText.innerHTML = formatSummary(clientData.resumo_conversa);
+                    summaryText.classList.remove('text-muted-foreground');
+                } else {
+                    summaryText.textContent = 'Clique no botão para gerar um resumo da conversa.';
+                }
+
                 detailSection.querySelector('#back-to-previous-view-btn').addEventListener('click', (e) => {
                     e.preventDefault();
                     window.history.back();
                 });
+
+                const updateSummaryBtn = detailSection.querySelector('#update-summary-btn');
+                if (updateSummaryBtn) {
+                    const summaryIcon = detailSection.querySelector('#update-summary-icon');
+
+                    updateSummaryBtn.addEventListener('click', async () => {
+                        if (updateSummaryBtn.disabled) return;
+
+                        updateSummaryBtn.disabled = true;
+                        summaryIcon.classList.add('animate-spin');
+                        summaryText.textContent = 'Solicitação de resumo enviada. Atualizando em 7 segundos...';
+                        
+                        try {
+                             await fetch('https://n8n-webhook.jje6ux.easypanel.host/webhook/webhookresumirconversas', {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ telefone: clientPhoneNumber }),
+                            });
+                        } catch(e) {
+                            console.error("Webhook trigger error (no-cors mode, expected)", e);
+                        }
+
+                        // Add a 7-second timeout to fetch the summary manually as a fallback
+                        setTimeout(async () => {
+                            const { data: updatedClientData, error } = await supabase
+                                .from('dados_cliente')
+                                .select('resumo_conversa')
+                                .eq('id', clientData.id)
+                                .single();
+
+                            updateSummaryBtn.disabled = false;
+                            summaryIcon.classList.remove('animate-spin');
+
+                            if (error) {
+                                console.error('Error fetching updated summary:', error);
+                                summaryText.textContent = 'Erro ao buscar o resumo. Tente novamente.';
+                                return;
+                            }
+
+                            if (updatedClientData && updatedClientData.resumo_conversa) {
+                                summaryText.innerHTML = formatSummary(updatedClientData.resumo_conversa);
+                                summaryText.classList.remove('text-muted-foreground');
+                            } else {
+                                // Only update the text if it hasn't been updated by the realtime listener already.
+                                if (summaryText.textContent.startsWith('Solicitação de resumo')) {
+                                    summaryText.textContent = 'Resumo ainda não disponível. Tente novamente em alguns instantes.';
+                                }
+                            }
+                        }, 7000);
+                    });
+                }
+
+                // Real-time subscription for summary updates
+                unsubscribeFromChannels(); // Clear any previous subscription
+                clientListSubscription = supabase.channel(`client-summary-${clientData.id}`)
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'dados_cliente',
+                        filter: `id=eq.${clientData.id}`
+                    }, payload => {
+                        const newSummary = payload.new.resumo_conversa;
+                        if (newSummary && summaryText) {
+                            summaryText.innerHTML = formatSummary(newSummary);
+                            summaryText.classList.remove('text-muted-foreground');
+                        }
+                    })
+                    .subscribe();
 
                 const tabs = detailSection.querySelectorAll('input[name="consultas-tab"]');
                 const upcomingList = detailSection.querySelector('#upcoming-appointments-list');
@@ -2103,7 +2192,7 @@
                              <div class="max-w-[85%]">
                                 <div class="${isFromClient ? 'bg-card' : 'bg-primary text-primary-foreground'} p-2 rounded-xl ${isFromClient ? 'rounded-tl-none' : 'rounded-br-none'} shadow-sm border">
                                     <p class="text-sm">${htmlEncode(msg.content)}</p>
-                                    <p class="text-xs text-right ${isFromClient ? 'text-muted-foreground/70' : 'text-primary-foreground/70'} mt-1">${formatTimestamp(msg.created_at, isFromClient)}</p>
+                                    <p class="text-xs text-right ${isFromClient ? 'text-muted-foreground/70' : 'text-primary-foreground/70'} mt-1">${formatTimestamp(msg.created_at, isUserMessage)}</p>
                                 </div>
                             </div>
                         `;
@@ -2997,6 +3086,17 @@
                 passwordInput.type = isPassword ? 'text' : 'password';
                 passwordToggle.querySelector('.eye-off').classList.toggle('hidden', isPassword);
                 passwordToggle.querySelector('.eye').classList.toggle('hidden', !isPassword);
+            };
+            const formatSummary = (text) => {
+                if (!text || typeof text !== 'string') {
+                    return '<p class="text-muted-foreground">Resumo indisponível.</p>';
+                }
+                // Escapa HTML, depois aplica formatação
+                const escapedText = htmlEncode(text);
+                const formattedText = escapedText
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Negrito para **texto**
+                    .replace(/\n/g, '<br>'); // Novas linhas
+                return `<div class="prose prose-sm dark:prose-invert max-w-none">${formattedText}</div>`;
             };
 
             // -----------------------------------------------------------------------------
